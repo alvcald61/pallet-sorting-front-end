@@ -14,28 +14,13 @@ import { getAuthToken } from "@/lib/api/auth/authApi";
 import { login } from "./action";
 import { useFormState, useFormStatus } from "react-dom";
 
-export default function LoginForm() {
+export default function LoginFormV2() {
   //falta manejar el error de login en state
   const [state, setActionState] = useActionState(login, undefined);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const authResponse = await getAuthToken(email, password);
-      localStorage.setItem("jwt", authResponse.accessToken);
-      window.location.href = "/order";
-    } catch (err: any) {
-      setError(err.message || "Error de autenticación");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="flex min-h-screen items-center justify-center ">
@@ -51,6 +36,7 @@ export default function LoginForm() {
               </Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -62,6 +48,7 @@ export default function LoginForm() {
               <Label htmlFor="password">Contraseña</Label>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

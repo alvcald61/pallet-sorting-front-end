@@ -22,38 +22,38 @@ export default function OrderLayout({
                 ></path>
               </svg>
             </div>
-            <h2 className="text-[#ffffff] text-lg font-bold leading-tight tracking-[-0.015em]">
+            <h2 className="text-[#000000] text-lg font-bold leading-tight tracking-[-0.015em]">
               SwiftShip
             </h2>
           </div>
           <div className="flex flex-1 justify-end gap-8">
             <div className="flex items-center gap-9">
               <a
-                className="text-[#ffffff] text-sm font-medium leading-normal"
+                className="text-[#000000] text-sm font-medium leading-normal"
                 href="#"
               >
                 Dashboard
               </a>
               <a
-                className="text-[#ffffff] text-sm font-medium leading-normal"
+                className="text-[#000000] text-sm font-medium leading-normal"
                 href="#"
               >
                 Orders
               </a>
               <a
-                className="text-[#ffffff] text-sm font-medium leading-normal"
+                className="text-[#000000] text-sm font-medium leading-normal"
                 href="#"
               >
                 Pricing
               </a>
               <a
-                className="text-[#ffffff] text-sm font-medium leading-normal"
+                className="text-[#000000] text-sm font-medium leading-normal"
                 href="#"
               >
                 Support
               </a>
             </div>
-            <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#000000] text-[#ffffff] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
+            <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#111418] text-[#000000] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
               <div
                 className="text-[#ffffff]"
                 data-icon="Bell"
@@ -74,7 +74,9 @@ export default function OrderLayout({
             <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"></div>
           </div>
         </header>
-        <main className="flex place-content-center grow ">{children}</main>
+        <main className="flex place-content-center h-full grow items-center">
+          {children}
+        </main>
       </div>
     </div>
   );

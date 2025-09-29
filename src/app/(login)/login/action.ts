@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 
 export async function login(prevState: any, formData: FormData) {
   // falta validar email y password
+  console.log(formData);
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
