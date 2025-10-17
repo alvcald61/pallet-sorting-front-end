@@ -1,10 +1,19 @@
+"use server";
 import { CreateOrderRequest } from "@/lib/types/orderRequest";
+import { cookies } from "next/headers";
 
-export const createOrder = async (orderData: CreateOrderRequest) : Promise<any> => {
-  const res = await fetch("/api/orders", {
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/order";
+
+export const createOrder = async (
+  orderData: any,
+  type: string
+): Promise<any> => {
+  const token = await getTokenFromLocalStorage();
+  const res = await fetch(`${API_BASE_URL}/solve/${type}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(orderData),
   });
@@ -12,9 +21,24 @@ export const createOrder = async (orderData: CreateOrderRequest) : Promise<any> 
   return res.json();
 };
 
-
 export const getOrders = async (): Promise<any[]> => {
-  const res = await fetch("/api/orders");
+  const res = await fetch(API_BASE_URL);
   if (!res.ok) throw new Error("Failed to fetch orders");
   return res.json();
+};
+
+export const getAvailableSlots = async (date: string): Promise<string[]> => {
+  const res = await fetch(`${API_BASE_URL}/available-slots?date=${date}`);
+  if (!res.ok) throw new Error("Failed to fetch available slots");
+  return res.json();
+};
+
+export async function getTokenFromLocalStorage(): Promise<string | null> {
+  const token = (await cookies()).get("session")?.value;
+  console.log("token", token);
+  return token || null;
+  // if (typeof window !== "undefined") {
+  //   return localStorage.getItem("jwt");
+  // }
+  // return null;
 }

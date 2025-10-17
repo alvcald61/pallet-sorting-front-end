@@ -1,50 +1,42 @@
 "use client";
 import React, { useState } from "react";
 
-import { Tabs } from "@mantine/core";
-
-import { BulkForm } from "./components/bulkForm";
 import useOrderStore from "@/lib/store/OrderStore";
-import { Card, CardContent } from "@/components/ui/card";
-import { useDisclosure } from "@mantine/hooks";
-import { Text } from "@mantine/core";
-import { TextInput } from "@mantine/core";
-import { Stepper, Button, Group } from "@mantine/core";
-
+import { Breadcrumbs, Anchor, Title, Button } from "@mantine/core";
+import { BsPlusCircle } from "react-icons/bs";
 import { PalletForm } from "./components/palletForm";
+import { createOrder } from "@/lib/api/order/orderApi";
 
 const Page = () => {
   const [active, setActive] = useState(1);
+  const { bulkOrder, address } = useOrderStore();
+  const callOrderApi = async () => {
+    try {
+      const response = await createOrder({ ...bulkOrder, ...address }, "bulk");
+      console.log("Order created successfully:", response);
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
+  };
+  const icon = <BsPlusCircle />;
   const nextStep = () =>
-    setActive((current) => (current < 3 ? current + 1 : current));
+    setActive((current) => {
+      if (current === 2) {
+        // Aquí puedes manejar el envío final de los datos
+        callOrderApi();
+        return current;
+      }
+      return current < 2 ? current + 1 : current;
+    });
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
-  const { bulkOrder } = useOrderStore();
   return (
-    <div className="tab-list">
-      <>
-        <Stepper active={active} onStepClick={setActive}>
-          <Stepper.Step label="First step" description="Create an account">
-            Step 1 content: Create an account
-          </Stepper.Step>
-          <Stepper.Step label="Second step" description="Verify email">
-            Step 2 content: Verify email
-          </Stepper.Step>
-          <Stepper.Step label="Final step" description="Get full access">
-            Step 3 content: Get full access
-          </Stepper.Step>
-          <Stepper.Completed>
-            Completed, click back button to get to previous step
-          </Stepper.Completed>
-        </Stepper>
-
-        <Group justify="center" mt="xl">
-          <Button variant="default" onClick={prevStep}>
-            Back
-          </Button>
-          <Button onClick={nextStep}>Next step</Button>
-        </Group>
-      </>
+    <div className="flex flex-col justify-start w-100 grow">
+      <Breadcrumbs className="mb-4">order</Breadcrumbs>
+      <div className="flex justify-between">
+        <Title order={2}>Tus Ordenes</Title>
+        <Button leftSection={icon}>Crear nueva orden</Button>
+      </div>
     </div>
   );
 };

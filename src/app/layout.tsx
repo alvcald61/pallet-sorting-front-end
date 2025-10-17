@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-import "@mantine/core/styles.css";
+// import "@mantine/core/styles.css";
+import "@mantine/core/styles.layer.css";
+import "mantine-datatable/styles.layer.css";
+import "@mantine/dates/styles.css";
 
 import React from "react";
 import {
@@ -10,6 +13,7 @@ import {
   mantineHtmlProps,
   MantineProvider,
 } from "@mantine/core";
+
 import { theme } from "../theme";
 
 const geistSans = Geist({
@@ -33,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head lang="en" {...mantineHtmlProps}>
         <ColorSchemeScript />
         <link rel="shortcut icon" href="/favicon.svg" />
@@ -41,10 +45,13 @@ export default function RootLayout({
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
         />
+        <script
+          async
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqCxVaANqODUr1sriUTZGVGAUSeceE1to&loading=async&libraries=places&callback=initMap"
+        ></script>
       </head>
       <body
 
-        
       // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <MantineProvider forceColorScheme="dark" theme={theme}>

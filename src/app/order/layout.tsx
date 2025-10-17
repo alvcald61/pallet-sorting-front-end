@@ -74,7 +74,7 @@ export default function OrderLayout({
             <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"></div>
           </div>
         </header>
-        <main className="flex place-content-center grow ">{children}</main>
+        <main className="flex grow m-10 ">{children}</main>
       </div>
     </div>
   );

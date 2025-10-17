@@ -26,14 +26,14 @@ export const BulkForm = () => {
         <CardHeader>
           <CardTitle>Solicitud transporte de bultos</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Ingrese los bultos que desea transportar
           </CardDescription>
         </CardHeader>
         <Separator className="my-4" />
 
         <CardContent>
           <form>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="volume">Volumen (m3)</Label>
                 <Input
