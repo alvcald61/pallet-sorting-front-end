@@ -42,3 +42,19 @@ export async function getTokenFromLocalStorage(): Promise<string | null> {
   // }
   // return null;
 }
+
+export const getOrdersByPage = async (
+  page: number,
+  pageSize: number
+): Promise<any> => {
+  const token = await getTokenFromLocalStorage();
+  const res = await fetch(`${API_BASE_URL}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error("Failed to create order");
+  return res.json();
+};

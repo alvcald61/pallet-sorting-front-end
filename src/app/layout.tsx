@@ -1,30 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "@mantine/core/styles.css";
 
-// import "@mantine/core/styles.css";
-import "@mantine/core/styles.layer.css";
+// import "@mantine/core/styles.layer.css";
 import "mantine-datatable/styles.layer.css";
 import "@mantine/dates/styles.css";
-
 import React from "react";
 import {
   ColorSchemeScript,
-  mantineHtmlProps,
   MantineProvider,
+  mantineHtmlProps,
 } from "@mantine/core";
-
 import { theme } from "../theme";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -37,23 +24,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head lang="en" {...mantineHtmlProps}>
+    <html lang="en" {...mantineHtmlProps}>
+      <head>
         <ColorSchemeScript />
         <link rel="shortcut icon" href="/favicon.svg" />
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
         />
+        <ColorSchemeScript defaultColorScheme="dark" />
         <script
           async
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqCxVaANqODUr1sriUTZGVGAUSeceE1to&loading=async&libraries=places&callback=initMap"
-        ></script>
+          defer
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+        />
       </head>
-      <body
-
-      // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
         <MantineProvider forceColorScheme="dark" theme={theme}>
           {children}
         </MantineProvider>
