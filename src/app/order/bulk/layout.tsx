@@ -71,18 +71,12 @@ export default function OrderLayout({
           active={active}
           onStepClick={redirectOnChange}
         >
-          <Stepper.Step
-            label="First step"
-            description="Create an account"
-          ></Stepper.Step>
+          <Stepper.Step label="First step" description="Bultos"></Stepper.Step>
           <Stepper.Step
             label="Second step"
-            description="Verify email"
+            description="Envio y dirección"
           ></Stepper.Step>
-          <Stepper.Step
-            label="Final step"
-            description="Get full access"
-          ></Stepper.Step>
+          <Stepper.Step label="Final step" description="Resumen"></Stepper.Step>
         </Stepper>
 
         {children}

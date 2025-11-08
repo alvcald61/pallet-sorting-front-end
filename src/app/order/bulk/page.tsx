@@ -1,33 +1,143 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Tabs } from "@mantine/core";
-
-import { BulkForm } from "../components/bulkForm";
 import useOrderStore from "@/lib/store/OrderStore";
-import { Card, CardContent } from "@/components/ui/card";
-import { useDisclosure } from "@mantine/hooks";
+
+import { Pallet } from "@/lib/types/palletType";
+import { getAllPallets } from "@/lib/api/order/palletApi";
+// @ts-ignore: allow importing CSS without a module declaration
+import "./order.css";
+import { Bulk } from "@/lib/types/bulkType";
+import { BulkItem } from "../components/BulkItem";
+import { Breadcrumbs } from "@mantine/core";
 
 const Page = () => {
-  const [opened, { open, close }] = useDisclosure(false);
-  const { bulkOrder } = useOrderStore();
+  const [select, setSelect] = useState([]);
+  const [pallets, setPallets] = useState<Pallet[]>([]);
+  const { addBulk, bulkOrder, deleteItem } = useOrderStore();
+
+  const [form, setForm] = useState({
+    id: "",
+    volume: 0,
+    weight: 0,
+    quantity: 0,
+  });
+
+  useEffect(() => {
+    const fetchPallets = async () => {
+      const response = (await getAllPallets()) || [];
+      setPallets(response.data);
+      setSelect(
+        response.data.map((pallet: any) => {
+          return {
+            value: pallet.id,
+            label: `${pallet.width}m x ${pallet.height}m x ${pallet.length}m`,
+          };
+        })
+      );
+    };
+    fetchPallets();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   return (
-    <div className="flex flex-col justify-center items-center p-4 w-full">
-      <div className="">
-        <BulkForm />
-      </div>
-      <div className="flex flex-col items-center mt-4 min-h-32">
-        <h2 className="text-lg font-bold mb-2">Lista de Bultos</h2>
-        <div className="flex flex-row gap-2 flex-wrap overflow-y-auto ">
-          {bulkOrder.map((bulk, index) => (
-            <Card key={index}>
-              <CardContent>
-                Volumen: {bulk.volume},
-                <br />
-                Cantidad: {bulk.quantity}, Peso: {bulk.weight}
-              </CardContent>
-            </Card>
-          ))}
+    <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+      <div className="layout-container flex h-full grow flex-col">
+        <div className="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-5">
+          <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <div className="flex flex-col gap-8 p-4">
+              <Breadcrumbs className="mb-4">{["order", "create"]}</Breadcrumbs>
+              <div className="flex flex-wrap justify-between gap-3">
+                <div className="flex min-w-72 flex-col gap-2">
+                  <p className="text-4xl font-black leading-tight tracking-[-0.033em]">
+                    Añadir Bultos
+                  </p>
+                  <p className="text-base font-normal leading-normal text-gray-500 dark:text-gray-400">
+                    Añade los detalles de los bultos que deseas enviar.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-6 border-b border-border-light dark:border-border-dark pb-8">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <label className="flex flex-col min-w-40 flex-1">
+                    <p className="text-base font-medium leading-normal pb-2">
+                      Volumen
+                    </p>
+                    <div className="relative flex items-center">
+                      <input
+                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
+                        placeholder="e.g., 20"
+                        value={form.volume}
+                        onChange={handleChange}
+                        name="volume"
+                      />
+                      <span className="absolute right-4 text-gray-500 dark:text-gray-400">
+                        m3
+                      </span>
+                    </div>
+                  </label>
+                  <label className="flex flex-col min-w-40 flex-1">
+                    <p className="text-base font-medium leading-normal pb-2">
+                      Peso
+                    </p>
+                    <div className="relative flex items-center">
+                      <input
+                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
+                        placeholder="e.g., 5"
+                        value={form.weight}
+                        onChange={handleChange}
+                        name="weight"
+                      />
+                      <span className="absolute right-4 text-gray-500 dark:text-gray-400">
+                        kg
+                      </span>
+                    </div>
+                  </label>
+                  <label className="flex flex-col min-w-40 flex-1">
+                    <p className="text-base font-medium leading-normal pb-2">
+                      Cantidad
+                    </p>
+                    <div className="relative flex items-center">
+                      <input
+                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
+                        placeholder="e.g., 1"
+                        value={form.quantity}
+                        onChange={handleChange}
+                        name="quantity"
+                      />
+                    </div>
+                  </label>
+                </div>
+                <div className="flex justify-end pt-2">
+                  <button
+                    className="flex items-center justify-center gap-2 rounded-lg bg-blue-200 px-5 py-3 text-base font-semibold text-text-light dark:text-text-dark hover:bg-blue-300  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 dark:focus:ring-offset-background-dark"
+                    onClick={() => {
+                      addBulk({ ...form, tempId: crypto.randomUUID() } as Bulk);
+                    }}
+                  >
+                    <span>Añadir</span>
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-col gap-4 pt-8">
+                <h3 className="text-xl font-bold leading-7">Pallets</h3>
+                <div className="flex flex-col gap-4">
+                  {bulkOrder.map((pallet: Bulk, index: number) => (
+                    <BulkItem
+                      key={index}
+                      id={index + 1 + ""}
+                      {...pallet}
+                      name={"Bulto"}
+                      onDelete={(id: string) => deleteItem(pallet.tempId)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

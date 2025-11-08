@@ -1,28 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import {
-  Button,
-  Checkbox,
-  Input,
-  Select,
-  Tabs,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { Breadcrumbs, Checkbox, Select } from "@mantine/core";
 
 import useOrderStore from "@/lib/store/OrderStore";
-import { Card, CardContent } from "@/components/ui/card";
-import { useDisclosure } from "@mantine/hooks";
 
-import { PalletForm } from "../components/palletForm";
 import { Pallet } from "@/lib/types/palletType";
 import { getAllPallets } from "@/lib/api/order/palletApi";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { ActionIcon } from "@mantine/core";
 import { PackageItem } from "../components/packageItem";
 // @ts-ignore: allow importing CSS without a module declaration
 import "./order.css";
+import { randomUUID } from "crypto";
 const Page = () => {
   const [select, setSelect] = useState([]);
   const [pallets, setPallets] = useState<Pallet[]>([]);
@@ -37,11 +25,6 @@ const Page = () => {
     length: 0,
     weight: 0,
     quantity: 0,
-  });
-  const [modalOpen, setModalOpen] = useState(false);
-  const [pickup, setPickup] = useState({
-    address: "",
-    time: "",
   });
 
   useEffect(() => {
@@ -64,26 +47,13 @@ const Page = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handlePickupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPickup({ ...pickup, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setModalOpen(true);
-  };
-
-  const handleModalSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setModalOpen(false);
-    // Aquí puedes manejar el envío final de los datos
-  };
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
         <div className="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
             <div className="flex flex-col gap-8 p-4">
+              <Breadcrumbs className="mb-4">{["order", "create"]}</Breadcrumbs>
               <div className="flex flex-wrap justify-between gap-3">
                 <div className="flex min-w-72 flex-col gap-2">
                   <p className="text-4xl font-black leading-tight tracking-[-0.033em]">
@@ -247,11 +217,14 @@ const Page = () => {
                   <button
                     className="flex items-center justify-center gap-2 rounded-lg bg-blue-200 px-5 py-3 text-base font-semibold text-text-light dark:text-text-dark hover:bg-blue-300  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 dark:focus:ring-offset-background-dark"
                     onClick={() => {
-                      addPallet({ ...form } as Pallet);
+                      addPallet({
+                        ...form,
+                        tempId: crypto.randomUUID(),
+                      } as Pallet);
                     }}
                   >
                     <span>Añadir</span>
-                  </button> 
+                  </button>
                 </div>
               </div>
               <div className="flex flex-col gap-4 pt-8">

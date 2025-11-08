@@ -120,6 +120,7 @@ const Page = () => {
             noRecordsText="No records found"
             page={page}
             fetching={fetching}
+            height={500}
           />
         </div>
       </div>
