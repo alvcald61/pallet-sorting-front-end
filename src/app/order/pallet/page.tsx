@@ -1,20 +1,29 @@
+"use client";
 import React, { useEffect, useState } from "react";
 
-import { Checkbox, Select } from "@mantine/core";
+import {
+  Button,
+  Checkbox,
+  Input,
+  Select,
+  Tabs,
+  Text,
+  TextInput,
+} from "@mantine/core";
 
 import useOrderStore from "@/lib/store/OrderStore";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDisclosure } from "@mantine/hooks";
 
+import { PalletForm } from "../components/palletForm";
 import { Pallet } from "@/lib/types/palletType";
 import { getAllPallets } from "@/lib/api/order/palletApi";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { ActionIcon } from "@mantine/core";
-import { PackageItem } from "./packageItem";
-import "./style.css";
-import { randomUUID } from "crypto";
-
-export const PalletForm = () => {
+import { PackageItem } from "../components/packageItem";
+// @ts-ignore: allow importing CSS without a module declaration
+import "./order.css";
+const Page = () => {
   const [select, setSelect] = useState([]);
   const [pallets, setPallets] = useState<Pallet[]>([]);
   const [selectedPallet, setSelectedPallet] = useState("");
@@ -22,13 +31,12 @@ export const PalletForm = () => {
   const { addPallet, palletOrder, deleteItem } = useOrderStore();
 
   const [form, setForm] = useState({
-    palletId: "",
+    id: "",
     width: 0,
     height: 0,
     length: 0,
     weight: 0,
     quantity: 0,
-    tempId: "",
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [pickup, setPickup] = useState({
@@ -79,10 +87,10 @@ export const PalletForm = () => {
               <div className="flex flex-wrap justify-between gap-3">
                 <div className="flex min-w-72 flex-col gap-2">
                   <p className="text-4xl font-black leading-tight tracking-[-0.033em]">
-                    Place a New Order
+                    Añadir Pallets
                   </p>
                   <p className="text-base font-normal leading-normal text-gray-500 dark:text-gray-400">
-                    Step 1: Enter Package Information
+                    Añade los detalles de los pallets que deseas enviar.
                   </p>
                 </div>
               </div>
@@ -114,7 +122,7 @@ export const PalletForm = () => {
                   </label> */}
                   <Select
                     label="Escoja un pallet"
-                    placeholder="Pick value"
+                    placeholder="Escoja un pallet"
                     data={select}
                     searchable
                     classNames={{
@@ -129,17 +137,18 @@ export const PalletForm = () => {
                           width: pallet.width,
                           height: pallet.height,
                           length: pallet.length,
-                          palletId: pallet.palletId,
+                          id: pallet.id,
                         });
                       }
                     }}
                   />
                   <label className="flex flex-col min-w-40 flex-1">
                     <p className="text-base font-medium leading-normal pb-2">
-                      Length
+                      Largo
                     </p>
                     <div className="relative flex items-center">
                       <input
+                        disabled
                         className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
                         placeholder="e.g., 20"
                         value={form.length}
@@ -147,16 +156,17 @@ export const PalletForm = () => {
                         name="length"
                       />
                       <span className="absolute right-4 text-gray-500 dark:text-gray-400">
-                        cm
+                        m
                       </span>
                     </div>
                   </label>
                   <label className="flex flex-col min-w-40 flex-1">
                     <p className="text-base font-medium leading-normal pb-2">
-                      Width
+                      Ancho
                     </p>
                     <div className="relative flex items-center">
                       <input
+                        disabled
                         className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
                         placeholder="e.g., 20"
                         value={form.width}
@@ -164,17 +174,18 @@ export const PalletForm = () => {
                         name="width"
                       />
                       <span className="absolute right-4 text-gray-500 dark:text-gray-400">
-                        cm
+                        m
                       </span>
                     </div>
                   </label>
                   {checked && (
                     <label className="flex flex-col min-w-40 flex-1">
                       <p className="text-base font-medium leading-normal pb-2">
-                        Height
+                        Altura
                       </p>
                       <div className="relative flex items-center">
                         <input
+                          disabled
                           className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
                           placeholder="e.g., 20"
                           value={form.height}
@@ -191,7 +202,7 @@ export const PalletForm = () => {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <label className="flex flex-col min-w-40 flex-1">
                     <p className="text-base font-medium leading-normal pb-2">
-                      Weight
+                      Peso
                     </p>
                     <div className="relative flex items-center">
                       <input
@@ -208,7 +219,7 @@ export const PalletForm = () => {
                   </label>
                   <label className="flex flex-col min-w-40 flex-1">
                     <p className="text-base font-medium leading-normal pb-2">
-                      Quantity
+                      Cantidad
                     </p>
                     <div className="relative flex items-center">
                       <input
@@ -236,14 +247,11 @@ export const PalletForm = () => {
                   <button
                     className="flex items-center justify-center gap-2 rounded-lg bg-blue-200 px-5 py-3 text-base font-semibold text-text-light dark:text-text-dark hover:bg-blue-300  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 dark:focus:ring-offset-background-dark"
                     onClick={() => {
-                      addPallet({
-                        ...form,
-                        tempId: crypto.randomUUID(),
-                      } as Pallet);
+                      addPallet({ ...form } as Pallet);
                     }}
                   >
                     <span>Añadir</span>
-                  </button>
+                  </button> 
                 </div>
               </div>
               <div className="flex flex-col gap-4 pt-8">
@@ -271,3 +279,5 @@ export const PalletForm = () => {
     </div>
   );
 };
+
+export default Page;

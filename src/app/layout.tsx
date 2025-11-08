@@ -12,6 +12,8 @@ import {
   mantineHtmlProps,
 } from "@mantine/core";
 import { theme } from "../theme";
+// import "style.css"
+import "./styles.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -32,15 +34,18 @@ export default function RootLayout({
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
         />
-        <ColorSchemeScript defaultColorScheme="dark" />
+        <ColorSchemeScript />
         <script
           async
           defer
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
         />
       </head>
-      <body>
-        <MantineProvider forceColorScheme="dark" theme={theme}>
+      <body className="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+        <MantineProvider
+          // forceColorScheme="dark"
+          theme={theme}
+        >
           {children}
         </MantineProvider>
       </body>

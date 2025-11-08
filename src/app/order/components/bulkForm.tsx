@@ -19,6 +19,7 @@ export const BulkForm = () => {
   // const [bulks, setBulks] = React.useState<Bulk[]>([]);
   const [volume, setVolume] = React.useState(20);
   const [quantity, setQuantity] = React.useState(20);
+  const [weight, setWeight] = React.useState(20);
   const { addBulk } = useOrderStore();
   return (
     <>
@@ -39,7 +40,7 @@ export const BulkForm = () => {
                 <Input
                   id="volume"
                   type="volume"
-                  placeholder="20"
+                  placeholder="2"
                   value={volume}
                   onChange={(e) => setVolume(Number(e.target.value))}
                   required
@@ -50,9 +51,20 @@ export const BulkForm = () => {
                 <Input
                   id="quantity"
                   type="quantity"
-                  placeholder="20"
+                  placeholder="1"
                   value={quantity}
                   onChange={(e) => setQuantity(Number(e.target.value))}
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="quantity">Peso (Kg)</Label>
+                <Input
+                  id="weight"
+                  type="weight"
+                  placeholder="3"
+                  value={weight}
+                  onChange={(e) => setWeight(Number(e.target.value))}
                   required
                 />
               </div>
@@ -66,7 +78,7 @@ export const BulkForm = () => {
               addBulk({
                 volume: volume,
                 quantity: quantity,
-                weight: 0, // set a default or calculated value for weight
+                weight: weight, // set a default or calculated value for weight
               });
             }}
           >

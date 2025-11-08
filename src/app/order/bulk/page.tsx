@@ -7,13 +7,6 @@ import { BulkForm } from "../components/bulkForm";
 import useOrderStore from "@/lib/store/OrderStore";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDisclosure } from "@mantine/hooks";
-import { Modal, Button } from "@mantine/core";
-import { Radio, Group } from "@mantine/core";
-import { Text } from "@mantine/core";
-import { TextInput } from "@mantine/core";
-import { Stepper } from "@mantine/core";
-
-import { PalletForm } from "../components/palletForm";
 
 const Page = () => {
   const [opened, { open, close }] = useDisclosure(false);

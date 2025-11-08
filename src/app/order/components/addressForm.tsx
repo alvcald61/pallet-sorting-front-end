@@ -4,18 +4,15 @@ import { Card, TextInput, Text, Badge, Button, Group } from "@mantine/core";
 import { DatePickerInput, TimeGrid } from "@mantine/dates";
 import { getAvailableSlots } from "@/lib/api/order/orderApi";
 import { AsyncAutocomplete } from "./asyncAutoComplete";
-import { Client } from "@googlemaps/google-maps-services-js";
-// import { Bulk } from "../../../lib/types/bulkType";
 import useOrderStore from "@/lib/store/OrderStore";
 
 export const AddressForm = () => {
-  // const [bulks, setBulks] = React.useState<Bulk[]>([]);
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const { addAddress, address } = useOrderStore();
+  const [from, setFrom] = useState(address?.fromAddress || "");
+  const [to, setTo] = useState(address?.toAddress || "");
   const [date, setDate] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
   const [hours, setHours] = useState<string[] | null>(null);
-  const { addAddress } = useOrderStore();
   const [placesSuggestions, setPlacesSuggestions] = useState<string[]>([]);
 
   useEffect(() => {

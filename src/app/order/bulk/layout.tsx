@@ -12,7 +12,7 @@ export default function OrderLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const steps = ["bulk", "address", "summary"];
+  const steps = ["", "address", "summary"];
   const [active, setActive] = useState(0);
   const { bulkOrder, address } = useOrderStore();
   const [notificationVisible, setNotificationVisible] = useState(false);
@@ -47,18 +47,18 @@ export default function OrderLayout({
         }, 3000);
         return current;
       }
-      return redirect(`/order/create/${steps[active + 1]}`);
+      return redirect(`/order/bulk/${steps[active + 1]}`);
     });
-  const prevStep = () => redirect(`/order/create/${steps[active - 1]}`);
+  const prevStep = () => redirect(`/order/bulk/${steps[active - 1]}`);
   useEffect(() => {
     const pathSegment = pathname.split("/").pop();
-    const stepIndex = steps.indexOf(pathSegment || "bulk");
+    const stepIndex = steps.indexOf(pathSegment || "create");
     setActive(stepIndex !== -1 ? stepIndex : 0);
   }, [pathname]);
 
   const redirectOnChange = (step: number) => {
     console.log("step", step);
-    redirect(`/order/${steps[step]}`);
+    redirect(`/order/bulk/${steps[step]}`);
   };
 
   return (
@@ -91,7 +91,7 @@ export default function OrderLayout({
           <Button variant="default" onClick={prevStep}>
             Anterior
           </Button>
-          <Button onClick={nextStep}>
+          <Button onClick={active == 2 ? callOrderApi : nextStep}>
             {active == 2 ? "Enviar" : "Siguiente"}
           </Button>
         </Group>

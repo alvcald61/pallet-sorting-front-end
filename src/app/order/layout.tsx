@@ -1,3 +1,5 @@
+import { NavbarNested } from "./components/NavBar";
+
 export default function OrderLayout({
   children,
 }: {
@@ -8,7 +10,7 @@ export default function OrderLayout({
       <div className="layout-container flex h-full grow flex-col">
         {/* Layout UI */}
         {/* Place children where you want to render a page or nested layout */}
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#ffffff] px-10 py-3">
+        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#000000] px-10 py-3">
           <div className="flex items-center gap-4 text-[#000000]">
             <div className="size-4">
               <svg
@@ -22,38 +24,38 @@ export default function OrderLayout({
                 ></path>
               </svg>
             </div>
-            <h2 className="text-[#ffffff] text-lg font-bold leading-tight tracking-[-0.015em]">
+            <h2 className="text-[#000000] text-lg font-bold leading-tight tracking-[-0.015em]">
               SwiftShip
             </h2>
           </div>
           <div className="flex flex-1 justify-end gap-8">
             <div className="flex items-center gap-9">
               <a
-                className="text-[#ffffff] text-sm font-medium leading-normal"
+                className="text-[#000000] text-sm font-medium leading-normal"
                 href="#"
               >
                 Dashboard
               </a>
               <a
-                className="text-[#ffffff] text-sm font-medium leading-normal"
+                className="text-[#000000] text-sm font-medium leading-normal"
                 href="#"
               >
                 Orders
               </a>
               <a
-                className="text-[#ffffff] text-sm font-medium leading-normal"
+                className="text-[#000000] text-sm font-medium leading-normal"
                 href="#"
               >
                 Pricing
               </a>
               <a
-                className="text-[#ffffff] text-sm font-medium leading-normal"
+                className="text-[#000000] text-sm font-medium leading-normal"
                 href="#"
               >
                 Support
               </a>
             </div>
-            <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#000000] text-[#ffffff] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
+            <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#000000] text-[#000000] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
               <div
                 className="text-[#ffffff]"
                 data-icon="Bell"
@@ -74,7 +76,7 @@ export default function OrderLayout({
             <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"></div>
           </div>
         </header>
-        <main className="flex grow m-10 ">{children}</main>
+        <main className=" flex grow">{children}</main>
       </div>
     </div>
   );

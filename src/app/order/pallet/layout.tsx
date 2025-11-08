@@ -12,20 +12,20 @@ export default function OrderLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const steps = ["bulk", "address", "summary"];
+  const steps = ["", "address", "summary"];
   const [active, setActive] = useState(0);
-  const { bulkOrder, address } = useOrderStore();
+  const { palletOrder, address } = useOrderStore();
   const [notificationVisible, setNotificationVisible] = useState(false);
   const callOrderApi = async () => {
     try {
       const response = await createOrder(
         {
-          pallets: bulkOrder,
+          pallets: palletOrder,
           ...address,
           zoneId: 1,
           deliveryDate: `${address.date} ${address.time}`,
         },
-        "BULK"
+        "TWO_DIMENSIONAL"
       );
       console.log("Order created successfully:", response);
     } catch (error) {
@@ -36,10 +36,6 @@ export default function OrderLayout({
   const nextStep = () =>
     setActive((current) => {
       if (current === 2) {
-        // Aquí puedes manejar el envío final de los datos
-        console.log("bulkOrder", bulkOrder);
-        console.log("address", address);
-        callOrderApi();
         setNotificationVisible(true);
         setTimeout(() => {
           setNotificationVisible(false);
@@ -47,18 +43,18 @@ export default function OrderLayout({
         }, 3000);
         return current;
       }
-      return redirect(`/order/create/${steps[active + 1]}`);
+      return redirect(`/order/pallet/${steps[active + 1]}`);
     });
-  const prevStep = () => redirect(`/order/create/${steps[active - 1]}`);
+  const prevStep = () => redirect(`/order/pallet/${steps[active - 1]}`);
   useEffect(() => {
     const pathSegment = pathname.split("/").pop();
-    const stepIndex = steps.indexOf(pathSegment || "bulk");
+    const stepIndex = steps.indexOf(pathSegment || "create");
     setActive(stepIndex !== -1 ? stepIndex : 0);
   }, [pathname]);
 
   const redirectOnChange = (step: number) => {
     console.log("step", step);
-    redirect(`/order/${steps[step]}`);
+    redirect(`/order/pallet/${steps[step]}`);
   };
 
   return (
@@ -91,7 +87,7 @@ export default function OrderLayout({
           <Button variant="default" onClick={prevStep}>
             Anterior
           </Button>
-          <Button onClick={nextStep}>
+          <Button onClick={active == 2 ? callOrderApi : nextStep}>
             {active == 2 ? "Enviar" : "Siguiente"}
           </Button>
         </Group>

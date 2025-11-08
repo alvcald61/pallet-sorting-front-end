@@ -10,6 +10,7 @@ import { Box } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { DataTable } from "mantine-datatable";
 import { redirect } from "next/navigation";
+import { NavbarNested } from "./components/NavBar";
 
 const PAGE_SIZE = 15;
 
@@ -40,26 +41,28 @@ const Page = () => {
   }, [page]);
 
   return (
-    <div className="flex flex-col justify-start w-100 grow">
-      <Breadcrumbs className="mb-4">order</Breadcrumbs>
-      <div className="flex justify-between">
-        <Title order={2}>Tus Ordenes</Title>
-        <div>
-          <Menu width={200} position="bottom-start">
-            <Menu.Target>
-              <Button>Crear orden</Button>
-            </Menu.Target>
+    <>
+      <NavbarNested />
+      <div className="flex flex-col justify-start w-100 grow p-10">
+        <Breadcrumbs className="mb-4">order</Breadcrumbs>
+        <div className="flex justify-between">
+          <Title order={2}>Tus Ordenes</Title>
+          <div>
+            <Menu width={200} position="bottom-start">
+              <Menu.Target>
+                <Button>Crear orden</Button>
+              </Menu.Target>
 
-            <Menu.Dropdown>
-              <Menu.Item onClick={() => redirect("/order/bulk")}>
-                Por bultos
-              </Menu.Item>
-              <Menu.Item onClick={() => redirect("/order/pallet")}>
-                Por pallet
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-          {/* <Button
+              <Menu.Dropdown>
+                <Menu.Item onClick={() => redirect("/order/bulk")}>
+                  Por bultos
+                </Menu.Item>
+                <Menu.Item onClick={() => redirect("/order/pallet")}>
+                  Por pallet
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            {/* <Button
             className="mr-3"
             leftSection={icon}
             onClick={() => redirect("/order/bulk")}
@@ -69,58 +72,58 @@ const Page = () => {
           <Button leftSection={icon} onClick={() => redirect("/order/pallet")}>
             Crear orden por pallets
           </Button> */}
+          </div>
+        </div>
+        <div className="mt-8">
+          <DataTable
+            withTableBorder
+            borderRadius="sm"
+            withColumnBorders
+            striped
+            highlightOnHover
+            // provide data
+            records={records}
+            // define columns
+            columns={[
+              {
+                accessor: "id",
+                // this column has a custom title
+                // title: "#",
+                // right-align column
+                // textAlign: "right",
+              },
+              { accessor: "amount", title: "Monto" },
+              { accessor: "fromAddress", title: "Desde" },
+              { accessor: "toAddress", title: "Hacia" },
+              { accessor: "orderType", title: "Tipo de pedido" },
+              { accessor: "pickupDate", title: "Fecha de recojo" },
+              {
+                accessor: "projectedDeliveryDate",
+                title: "Fecha estimada de llegada",
+              },
+              { accessor: "realDeliveryDate", title: "Fecha real de llegada" },
+              { accessor: "orderStatus", title: "Estado del envio" },
+            ]}
+            // execute this callback when a row is clicked
+            onRowClick={({ record: { name, party, bornIn } }) =>
+              showNotification({
+                title: `Clicked on ${name}`,
+                message: `You clicked on ${name}, a ${party.toLowerCase()} president born in ${bornIn}`,
+                withBorder: true,
+              })
+            }
+            onPageChange={(p) => setPage(p)}
+            totalRecords={pageInfo.totalElements}
+            recordsPerPage={PAGE_SIZE}
+            loadingText="Loading..."
+            // 👇 uncomment the next line to display a custom text when no records were found
+            noRecordsText="No records found"
+            page={page}
+            fetching={fetching}
+          />
         </div>
       </div>
-      <div className="mt-8">
-        <DataTable
-          withTableBorder
-          borderRadius="sm"
-          withColumnBorders
-          striped
-          highlightOnHover
-          // provide data
-          records={records}
-          // define columns
-          columns={[
-            {
-              accessor: "id",
-              // this column has a custom title
-              // title: "#",
-              // right-align column
-              // textAlign: "right",
-            },
-            { accessor: "amount", title: "Monto" },
-            { accessor: "fromAddress", title: "Desde" },
-            { accessor: "toAddress", title: "Hacia" },
-            { accessor: "orderType", title: "Tipo de pedido" },
-            { accessor: "pickupDate", title: "Fecha de recojo" },
-            {
-              accessor: "projectedDeliveryDate",
-              title: "Fecha estimada de llegada",
-            },
-            { accessor: "realDeliveryDate", title: "Fecha real de llegada" },
-            { accessor: "orderStatus", title: "Estado del envio" },
-          ]}
-          // execute this callback when a row is clicked
-          onRowClick={({ record: { name, party, bornIn } }) =>
-            showNotification({
-              title: `Clicked on ${name}`,
-              message: `You clicked on ${name}, a ${party.toLowerCase()} president born in ${bornIn}`,
-              withBorder: true,
-            })
-          }
-          onPageChange={(p) => setPage(p)}
-          totalRecords={pageInfo.totalElements}
-          recordsPerPage={PAGE_SIZE}
-          loadingText="Loading..."
-          // 👇 uncomment the next line to display a custom text when no records were found
-          noRecordsText="No records found"
-          page={page}
-          fetching={fetching}
-          height={300}
-        />
-      </div>
-    </div>
+    </>
   );
 };
 
