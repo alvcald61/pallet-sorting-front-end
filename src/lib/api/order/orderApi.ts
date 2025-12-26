@@ -1,5 +1,4 @@
 "use server";
-import { CreateOrderRequest } from "@/lib/types/orderRequest";
 import { cookies } from "next/headers";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/order";
@@ -57,4 +56,46 @@ export const getOrdersByPage = async (
   });
   if (!res.ok) throw new Error("Failed to create order");
   return res.json();
+};
+
+export const getOrderById = async (id: string): Promise<any> => {
+  const token = await getTokenFromLocalStorage();
+  const res = await fetch(`${API_BASE_URL}/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error("Failed to create order");
+  const body = res.json();
+  return body;
+};
+
+export const getOrderStatus = async (id: string): Promise<any> => {
+  const token = await getTokenFromLocalStorage();
+  const res = await fetch(`${API_BASE_URL}/${id}/status`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error("Failed to create order");
+  const body = res.json();
+  return body;
+};
+
+export const getDistributionImg = async (id: string): Promise<any> => {
+  const token = await getTokenFromLocalStorage();
+  const res = await fetch(`${API_BASE_URL}/${id}/image`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error("Failed to create order");
+  const body = res.text();
+  return body;
+  
 };

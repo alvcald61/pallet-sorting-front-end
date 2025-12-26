@@ -10,6 +10,15 @@ import "./order.css";
 import { Bulk } from "@/lib/types/bulkType";
 import { BulkItem } from "../components/BulkItem";
 import { Breadcrumbs } from "@mantine/core";
+import { object, string, number, date, InferType } from "yup";
+import { Formik, Form, Field } from "formik";
+import { require, positive, integer } from "@/lib/const";
+
+let bulkSchema = object({
+  volume: number().required(require).positive(positive),
+  weight: number().required(require).positive(positive),
+  quantity: number().required(require).positive(positive).integer(integer),
+});
 
 const Page = () => {
   const [select, setSelect] = useState([]);
@@ -60,68 +69,94 @@ const Page = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col gap-6 border-b border-border-light dark:border-border-dark pb-8">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <label className="flex flex-col min-w-40 flex-1">
-                    <p className="text-base font-medium leading-normal pb-2">
-                      Volumen
-                    </p>
-                    <div className="relative flex items-center">
-                      <input
-                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
-                        placeholder="e.g., 20"
-                        value={form.volume}
-                        onChange={handleChange}
-                        name="volume"
-                      />
-                      <span className="absolute right-4 text-gray-500 dark:text-gray-400">
-                        m3
-                      </span>
+              <Formik
+                initialValues={{
+                  volume: 0,
+                  weight: 0,
+                  quantity: 0,
+                }}
+                validationSchema={bulkSchema}
+                onSubmit={(values) => {
+                  addBulk({ ...values, tempId: crypto.randomUUID() } as Bulk);
+                  console.log(values);
+                }}
+              >
+                {({ errors, touched }) => (
+                  <Form className="flex flex-col gap-6 border-b border-border-light dark:border-border-dark pb-8">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <label className="flex flex-col min-w-40 flex-1">
+                        <p className="text-base font-medium leading-normal pb-2">
+                          Volumen
+                        </p>
+                        <div className="relative flex items-center">
+                          <Field
+                            className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            placeholder="e.g., 20"
+                            // value={form.volume}
+                            // onChange={handleChange}
+                            name="volume"
+                            type="number"
+                          />
+
+                          <span className="absolute right-4 text-gray-500 dark:text-gray-400">
+                            m3
+                          </span>
+                        </div>
+                        {errors.volume && touched.volume ? (
+                          <div>{errors.volume}</div>
+                        ) : null}
+                      </label>
+                      <label className="flex flex-col min-w-40 flex-1">
+                        <p className="text-base font-medium leading-normal pb-2">
+                          Peso
+                        </p>
+                        <div className="relative flex items-center">
+                          <Field
+                            className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            placeholder="e.g., 5"
+                            // value={form.weight}
+                            // onChange={handleChange}
+                            type="number"
+                            name="weight"
+                          />
+                          <span className="absolute right-4 text-gray-500 dark:text-gray-400">
+                            kg
+                          </span>
+                        </div>
+                        {errors.weight && touched.weight ? (
+                          <div>{errors.weight}</div>
+                        ) : null}
+                      </label>
+                      <label className="flex flex-col min-w-40 flex-1">
+                        <p className="text-base font-medium leading-normal pb-2">
+                          Cantidad
+                        </p>
+                        <div className="relative flex items-center">
+                          <Field
+                            className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            placeholder="e.g., 1"
+                            // value={form.quantity}
+                            // onChange={handleChange}
+                            type="number"
+                            name="quantity"
+                          />
+                        </div>
+                        {errors.quantity && touched.quantity ? (
+                          <div>{errors.quantity}</div>
+                        ) : null}
+                      </label>
                     </div>
-                  </label>
-                  <label className="flex flex-col min-w-40 flex-1">
-                    <p className="text-base font-medium leading-normal pb-2">
-                      Peso
-                    </p>
-                    <div className="relative flex items-center">
-                      <input
-                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
-                        placeholder="e.g., 5"
-                        value={form.weight}
-                        onChange={handleChange}
-                        name="weight"
-                      />
-                      <span className="absolute right-4 text-gray-500 dark:text-gray-400">
-                        kg
-                      </span>
+                    <div className="flex justify-end pt-2">
+                      <button
+                        className="flex items-center justify-center gap-2 rounded-lg bg-blue-200 px-5 py-3 text-base font-semibold text-text-light dark:text-text-dark hover:bg-blue-300  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 dark:focus:ring-offset-background-dark"
+                        type="submit"
+                      >
+                        Añadir
+                      </button>
                     </div>
-                  </label>
-                  <label className="flex flex-col min-w-40 flex-1">
-                    <p className="text-base font-medium leading-normal pb-2">
-                      Cantidad
-                    </p>
-                    <div className="relative flex items-center">
-                      <input
-                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
-                        placeholder="e.g., 1"
-                        value={form.quantity}
-                        onChange={handleChange}
-                        name="quantity"
-                      />
-                    </div>
-                  </label>
-                </div>
-                <div className="flex justify-end pt-2">
-                  <button
-                    className="flex items-center justify-center gap-2 rounded-lg bg-blue-200 px-5 py-3 text-base font-semibold text-text-light dark:text-text-dark hover:bg-blue-300  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 dark:focus:ring-offset-background-dark"
-                    onClick={() => {
-                      addBulk({ ...form, tempId: crypto.randomUUID() } as Bulk);
-                    }}
-                  >
-                    <span>Añadir</span>
-                  </button>
-                </div>
-              </div>
+                  </Form>
+                )}
+              </Formik>
               <div className="flex flex-col gap-4 pt-8">
                 <h3 className="text-xl font-bold leading-7">Pallets</h3>
                 <div className="flex flex-col gap-4">

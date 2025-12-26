@@ -1,16 +1,27 @@
 export interface Pallet {
   id: string;
-  createdAt?: string;
-  updatedAt?: string;
-  createdBy?: string;
-  updatedBy?: string;
-  enabled?: boolean;
+  tempId: string;
   width: number;
-  height: number;
   length: number;
   weight: number;
   quantity: number;
-  tempId: string;
+  height: number;
+  enabled: boolean;
+  updatedAt?: string;
+  createdAt?: string;
+  createdBy?: string;
+  updatedBy?: string;
+}
+
+export interface CreatePalletRequest {
+  width: number;
+  length: number;
+  height: number;
+  enabled: boolean;
+}
+
+export interface UpdatePalletRequest extends CreatePalletRequest {
+  id: string;
 }
 
 export type AddressFormProps = {

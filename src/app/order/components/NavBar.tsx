@@ -1,51 +1,61 @@
 import {
-  IconAdjustments,
-  IconCalendarStats,
-  IconFileAnalytics,
-  IconGauge,
-  IconLock,
   IconNotes,
-  IconPresentationAnalytics,
+  IconTruck,
+  IconUser,
+  IconPalette,
 } from "@tabler/icons-react";
 import { Code, Group, ScrollArea } from "@mantine/core";
 import { LinksGroup } from "./NavbarLinksGroup";
-import { UserButton } from "./UserButton";
 import classes from "./NavbarNested.module.css";
 
 const mockdata = [
-  { label: "Dashboard", icon: IconGauge },
+  // { label: "Dashboard", icon: IconGauge },
   {
-    label: "Market news",
+    label: "Orden",
     icon: IconNotes,
-    initiallyOpened: true,
-    links: [
-      { label: "Overview", link: "/" },
-      { label: "Forecasts", link: "/" },
-      { label: "Outlook", link: "/" },
-      { label: "Real time", link: "/" },
-    ],
+    link: "/order",
   },
   {
-    label: "Releases",
-    icon: IconCalendarStats,
-    links: [
-      { label: "Upcoming releases", link: "/" },
-      { label: "Previous releases", link: "/" },
-      { label: "Releases schedule", link: "/" },
-    ],
+    label: "Camiones",
+    icon: IconTruck,
+    link: "/truck",
   },
-  { label: "Analytics", icon: IconPresentationAnalytics },
-  { label: "Contracts", icon: IconFileAnalytics },
-  { label: "Settings", icon: IconAdjustments },
   {
-    label: "Security",
-    icon: IconLock,
-    links: [
-      { label: "Enable 2FA", link: "/" },
-      { label: "Change password", link: "/" },
-      { label: "Recovery codes", link: "/" },
-    ],
+    label: "Clientes",
+    icon: IconUser,
+    link: "/client",
   },
+  {
+    label: "Pallets",
+    icon: IconPalette,
+    link: "/pallet",
+  },
+  {
+    label: "Almacenes",
+    icon: IconPalette,
+    link: "/almacen",
+  },
+  // {
+  //   label: "Releases",
+  //   icon: IconCalendarStats,
+  //   links: [
+  //     { label: "Upcoming releases", link: "/" },
+  //     { label: "Previous releases", link: "/" },
+  //     { label: "Releases schedule", link: "/" },
+  //   ],
+  // },
+  // { label: "Analytics", icon: IconPresentationAnalytics },
+  // { label: "Contracts", icon: IconFileAnalytics },
+  // { label: "Settings", icon: IconAdjustments },
+  // {
+  //   label: "Security",
+  //   icon: IconLock,
+  //   links: [
+  //     { label: "Enable 2FA", link: "/" },
+  //     { label: "Change password", link: "/" },
+  //     { label: "Recovery codes", link: "/" },
+  //   ],
+  // },
 ];
 
 export function NavbarNested() {

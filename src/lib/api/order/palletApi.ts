@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/pallets";
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/pallet";
 
 export const getAllPallets = async (): Promise<any> => {
   const token = await getTokenFromLocalStorage();

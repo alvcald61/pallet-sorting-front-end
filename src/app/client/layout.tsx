@@ -1,5 +1,5 @@
 "use client";
-import { NavbarNested } from "./components/NavBar";
+import { NavbarNested } from "../order/components/NavBar";
 
 export default function OrderLayout({
   children,

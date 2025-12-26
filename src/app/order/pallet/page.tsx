@@ -31,14 +31,18 @@ const Page = () => {
     const fetchPallets = async () => {
       const response = (await getAllPallets()) || [];
       setPallets(response.data);
-      setSelect(
-        response.data.map((pallet: any) => {
-          return {
-            value: pallet.id,
-            label: `${pallet.width}m x ${pallet.height}m x ${pallet.length}m`,
-          };
-        })
-      );
+      const selectData = response.data.map((pallet: any) => {
+        return {
+          value: pallet.id,
+          label: `${pallet.length}m x ${pallet.width}m x ${pallet.height}m`,
+        };
+      });
+      selectData.push({
+        value: "custom",
+        label: "Personalizado",
+      });
+
+      setSelect(selectData);
     };
     fetchPallets();
   }, []);
@@ -91,7 +95,7 @@ const Page = () => {
                     />
                   </label> */}
                   <Select
-                    label="Escoja un pallet"
+                    label="Escoja un pallet (ancho x alto x largo)"
                     placeholder="Escoja un pallet"
                     data={select}
                     searchable
@@ -100,6 +104,19 @@ const Page = () => {
                       input: "select-input",
                     }}
                     onChange={(value) => {
+                      setSelectedPallet(value || "");
+                      if (value === "custom") {
+                        setForm({
+                          id: "",
+                          width: 0,
+                          height: 0,
+                          length: 0,
+                          weight: 0,
+                          quantity: 0,
+                        });
+                        return;
+                      }
+
                       const pallet = pallets.find((p: any) => p.id === value);
                       if (pallet) {
                         setForm({
@@ -118,8 +135,8 @@ const Page = () => {
                     </p>
                     <div className="relative flex items-center">
                       <input
-                        disabled
-                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
+                        disabled={selectedPallet !== "custom"}
+                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal disabled:opacity-50"
                         placeholder="e.g., 20"
                         value={form.length}
                         onChange={handleChange}
@@ -136,8 +153,8 @@ const Page = () => {
                     </p>
                     <div className="relative flex items-center">
                       <input
-                        disabled
-                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
+                        disabled={selectedPallet !== "custom"}
+                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal disabled:opacity-50"
                         placeholder="e.g., 20"
                         value={form.width}
                         onChange={handleChange}
@@ -148,26 +165,23 @@ const Page = () => {
                       </span>
                     </div>
                   </label>
-                  {checked && (
-                    <label className="flex flex-col min-w-40 flex-1">
-                      <p className="text-base font-medium leading-normal pb-2">
-                        Altura
-                      </p>
-                      <div className="relative flex items-center">
-                        <input
-                          disabled
-                          className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
-                          placeholder="e.g., 20"
-                          value={form.height}
-                          onChange={handleChange}
-                          name="height"
-                        />
-                        <span className="absolute right-4 text-gray-500 dark:text-gray-400">
-                          cm
-                        </span>
-                      </div>
-                    </label>
-                  )}
+                  <label className="flex flex-col min-w-40 flex-1">
+                    <p className="text-base font-medium leading-normal pb-2">
+                      Altura
+                    </p>
+                    <div className="relative flex items-center">
+                      <input
+                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
+                        placeholder="e.g., 20"
+                        value={form.height}
+                        onChange={handleChange}
+                        name="height"
+                      />
+                      <span className="absolute right-4 text-gray-500 dark:text-gray-400">
+                        cm
+                      </span>
+                    </div>
+                  </label>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <label className="flex flex-col min-w-40 flex-1">
@@ -219,6 +233,7 @@ const Page = () => {
                     onClick={() => {
                       addPallet({
                         ...form,
+                        enabled: true,
                         tempId: crypto.randomUUID(),
                       } as Pallet);
                     }}

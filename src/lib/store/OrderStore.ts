@@ -7,6 +7,7 @@ type OrderStoreState = {
   bulkOrder: Bulk[];
   palletOrder: Pallet[];
   address: Address;
+  userId?: string;
 };
 type Address = {
   fromAddress: AddressFormProps;
@@ -20,6 +21,7 @@ type OrderStoreActions = {
   addPallet: (newElement: Pallet) => void;
   addAddress: (newElement: Address) => void;
   deleteItem: (id: string) => void;
+  addUserId?: (id: string) => void;
 };
 
 type OrderStore = OrderStoreState & OrderStoreActions;
@@ -27,7 +29,7 @@ type OrderStore = OrderStoreState & OrderStoreActions;
 const useOrderStore = create<OrderStore>((set) => ({
   bulkOrder: [],
   palletOrder: [],
-  address: {} as Address,
+  address: { fromAddress: {}, toAddress: {} } as Address,
   addBulk: (newElement) =>
     set((state) => ({
       bulkOrder: [...state.bulkOrder, newElement],
@@ -45,6 +47,11 @@ const useOrderStore = create<OrderStore>((set) => ({
     set((state) => ({
       bulkOrder: state.bulkOrder.filter((item) => item.tempId !== id),
       palletOrder: state.palletOrder.filter((item) => item.tempId !== id),
+    })),
+  addUserId: (id) =>
+    set((state) => ({
+      ...state,
+      userId: id,
     })),
 }));
 

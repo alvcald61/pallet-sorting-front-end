@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-
 import useOrderStore from "@/lib/store/OrderStore";
+import BulkSummaryTable from "../../components/BulkSummaryTable";
 
 const Page = () => {
   const { bulkOrder, address, palletOrder } = useOrderStore();
@@ -13,79 +13,83 @@ const Page = () => {
   }, [address, bulkOrder]);
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 flex flex-col gap-8">
-          <div className="flex flex-col items-stretch justify-start rounded-xl bg-white  shadow-sm overflow-hidden">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 ">
-              <p className="text-[#212529]  text-lg font-bold leading-tight tracking-[-0.015em]">
-                Shipping Details
-              </p>
-            </div>
-            <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
-              <div className="flex flex-col gap-1">
-                <p className="text-gray-500  text-sm font-normal leading-normal">
-                  Direccion de recojo
-                </p>
-                <p className="text-[#212529]  text-sm font-normal leading-normal">
-                  {`${address.fromAddress.address},  ${address.fromAddress.district}, ${address.fromAddress.city}, ${address.fromAddress.state}`}
-                </p>
+    <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+      <div className="layout-container flex h-full grow flex-col">
+        <div className="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-5">
+          <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <div className="flex flex-col gap-8 p-4">
+              <div className="lg:col-span-2 flex flex-col gap-8">
+                <div className="flex flex-col items-stretch justify-start rounded-xl bg-white  shadow-sm overflow-hidden">
+                  <div className="flex items-center justify-between p-6 border-b border-gray-200 ">
+                    <p className="text-[#212529]  text-lg font-bold leading-tight tracking-[-0.015em]">
+                      Shipping Details
+                    </p>
+                  </div>
+                  <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-gray-500  text-sm font-normal leading-normal">
+                        Direccion de recojo
+                      </p>
+                      <p className="text-[#212529]  text-sm font-normal leading-normal">
+                        {`${address.fromAddress.address},  ${address.fromAddress.district}, ${address.fromAddress.city}, ${address.fromAddress.state}`}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <p className="text-gray-500  text-sm font-normal leading-normal">
+                        Direccion de destino
+                      </p>
+                      <p className="text-[#212529]  text-sm font-normal leading-normal">
+                        {`${address.toAddress.address}, ${address.toAddress.city}, ${address.toAddress.city}, ${address.toAddress.state}`}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <p className="text-gray-500  text-sm font-normal leading-normal">
+                        Fecha de recojo
+                      </p>
+                      <p className="text-[#212529]  text-sm font-normal leading-normal">
+                        {address.date} {address.time}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-stretch justify-start rounded-xl bg-white  shadow-sm overflow-hidden">
+                  <div className="flex items-center justify-between p-6 border-b border-gray-200 ">
+                    <p className="text-[#212529]  text-lg font-bold leading-tight tracking-[-0.015em]">
+                      Detalle de carga
+                    </p>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <BulkSummaryTable bulk={bulkOrder} />
+                    {/* <table className="w-full text-sm text-left">
+                      <thead className="text-xs text-gray-500  uppercase bg-gray-50 ">
+                        <tr>
+                          <th className="px-6 py-3 text-center" scope="col">
+                            Size
+                          </th>
+                          <th className="px-6 py-3 text-center" scope="col">
+                            Weight
+                          </th>
+                          <th className="px-6 py-3 text-right" scope="col">
+                            Quantity
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {bulkOrder.map((item, index) => {
+                          return (
+                            <tr className="bg-white  border-b ">
+                              <td className="px-6 py-4 text-center">{`${item.volume} m3`}</td>
+                              <td className="px-6 py-4 text-center">{`${item.weight} kg`}</td>
+                              <td className="px-6 py-4 text-right">{`${item.quantity}`}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table> */}
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-gray-500  text-sm font-normal leading-normal">
-                  Direccion de destino
-                </p>
-                <p className="text-[#212529]  text-sm font-normal leading-normal">
-                  {`${address.toAddress.address}, ${address.toAddress.city}, ${address.toAddress.city}, ${address.toAddress.state}`}
-                </p>
-              </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-gray-500  text-sm font-normal leading-normal">
-                  Fecha de recojo
-                </p>
-                <p className="text-[#212529]  text-sm font-normal leading-normal">
-                  {address.date} {address.time}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col items-stretch justify-start rounded-xl bg-white  shadow-sm overflow-hidden">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 ">
-              <p className="text-[#212529]  text-lg font-bold leading-tight tracking-[-0.015em]">
-                Detalle de carga
-              </p>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead className="text-xs text-gray-500  uppercase bg-gray-50 ">
-                  <tr>
-                    <th className="px-6 py-3 text-center" scope="col">
-                      Size
-                    </th>
-                    <th className="px-6 py-3 text-center" scope="col">
-                      Weight
-                    </th>
-                    <th className="px-6 py-3 text-right" scope="col">
-                      Quantity
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bulkOrder.map((item, index) => {
-                    return (
-                      <tr className="bg-white  border-b ">
-                        <td className="px-6 py-4 text-center">{`${item.volume} m3`}</td>
-                        <td className="px-6 py-4 text-center">{`${item.weight} kg`}</td>
-                        <td className="px-6 py-4 text-right">{`${item.quantity}`}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        {/* <div className="lg:col-span-1">
+              {/* <div className="lg:col-span-1">
           <div className="sticky top-28 p-6 rounded-xl bg-white  shadow-sm flex flex-col gap-6">
             <h3 className="text-lg font-bold text-[#212529] ">Order Total</h3>
             <div className="flex flex-col gap-3 border-b border-gray-200  pb-4">
@@ -116,6 +120,9 @@ const Page = () => {
             </p>
           </div>
         </div> */}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

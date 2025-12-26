@@ -5,6 +5,7 @@ type Props = {
   address: AddressFormProps;
   setAddress: (address: AddressFormProps) => void;
   edit?: boolean;
+  disabled?: boolean;
 };
 
 export const AddressForm = ({

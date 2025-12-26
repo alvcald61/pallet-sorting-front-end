@@ -14,7 +14,7 @@ export default function OrderLayout({
 }) {
   const steps = ["", "address", "summary"];
   const [active, setActive] = useState(0);
-  const { palletOrder, address } = useOrderStore();
+  const { palletOrder, address, userId } = useOrderStore();
   const [notificationVisible, setNotificationVisible] = useState(false);
   const callOrderApi = async () => {
     try {
@@ -24,6 +24,7 @@ export default function OrderLayout({
           ...address,
           zoneId: 1,
           deliveryDate: `${address.date} ${address.time}`,
+        userId: userId || "",
         },
         "TWO_DIMENSIONAL"
       );

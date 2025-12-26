@@ -14,6 +14,7 @@ import classes from "./NavbarLinksGroup.module.css";
 interface LinksGroupProps {
   icon: React.FC<any>;
   label: string;
+  link?: string;
   initiallyOpened?: boolean;
   links?: { label: string; link: string }[];
 }
@@ -21,6 +22,7 @@ interface LinksGroupProps {
 export function LinksGroup({
   icon: Icon,
   label,
+  link,
   initiallyOpened,
   links,
 }: LinksGroupProps) {
@@ -49,7 +51,26 @@ export function LinksGroup({
             <ThemeIcon variant="light" size={30}>
               <Icon size={18} />
             </ThemeIcon>
-            <Box ml="md">{label}</Box>
+            {!link ? (
+              <Box ml="md">{label}</Box>
+            ) : (
+              <Box ml="md">
+                <Text<"a">
+                  component="a"
+                  style={{
+                    fontWeight: 500,
+                    display: "block",
+                    textDecoration: "none",
+                    fontSize: "var(--mantine-font-size-sm)",
+                  }}
+                  href={link}
+                  key={label}
+                  // onClick={(event) => event.preventDefault()}
+                >
+                  {label}
+                </Text>
+              </Box>
+            )}
           </Box>
           {hasLinks && (
             <IconChevronRight
@@ -66,20 +87,20 @@ export function LinksGroup({
   );
 }
 
-const mockdata = {
-  label: "Releases",
-  icon: IconCalendarStats,
-  links: [
-    { label: "Upcoming releases", link: "/" },
-    { label: "Previous releases", link: "/" },
-    { label: "Releases schedule", link: "/" },
-  ],
-};
+// const mockdata = {
+//   label: "Releases",
+//   icon: IconCalendarStats,
+//   links: [
+//     { label: "Upcoming releases", link: "/" },
+//     { label: "Previous releases", link: "/" },
+//     { label: "Releases schedule", link: "/" },
+//   ],
+// };
 
-export function NavbarLinksGroup() {
-  return (
-    <Box mih={220} p="md">
-      <LinksGroup {...mockdata} />
-    </Box>
-  );
-}
+// export function NavbarLinksGroup() {
+//   return (
+//     <Box mih={220} p="md">
+//       <LinksGroup {...mockdata} />
+//     </Box>
+//   );
+// }

@@ -11,12 +11,15 @@ import { DatePickerInput } from "@mantine/dates";
 // @ts-ignore: allow importing CSS without a module declaration
 import "./style.css";
 import useOrderStore from "@/lib/store/OrderStore";
+import { getWarehouses } from "@/lib/api/warehouse/warehouseApi";
+import { Warehouse } from "@/lib/types/warehouseType";
 
 const Page = () => {
   const { addAddress, address } = useOrderStore();
   const [date, setDate] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
   const [hours, setHours] = useState<string[] | null>(null);
+  const [warehouse, setWarehouse] = useState<Warehouse[] | null>(null);
   const [fromAddress, setFromAddress] = useState<AddressFormProps>({
     address: "",
     district: "",
@@ -49,7 +52,13 @@ const Page = () => {
         setHours(slots);
       }
     };
-    fetchSlots();
+
+    const fetchWarehouses = async () => {
+      const warehouses = await getWarehouses();
+      console.log("Warehouses:", warehouses);
+      setWarehouse(warehouses.data);
+    };
+    Promise.all([fetchSlots(), fetchWarehouses()]);
   }, [date]);
 
   return (
@@ -66,6 +75,32 @@ const Page = () => {
                   </p>
                 </div>
               </div>
+              <Select
+                label="Escoja un pallet (ancho x alto x largo)"
+                placeholder="Escoja un pallet"
+                data={
+                  warehouse?.map((wh) => ({
+                    value: wh.id,
+                    label: wh.name,
+                  })) || []
+                }
+                searchable
+                classNames={{
+                  label: "select-label",
+                  input: "select-input",
+                }}
+                onChange={(value) => {
+                  const selectedWarehouse = warehouse?.find(
+                    (wh) => wh.id === value
+                  );
+                  setFromAddress({
+                    address: selectedWarehouse?.address || "",
+                    district: selectedWarehouse?.district || "",
+                    city: selectedWarehouse?.city || "",
+                    state: selectedWarehouse?.state || "",
+                  } as AddressFormProps);
+                }}
+              />
               <AddressForm
                 title="Desde"
                 address={fromAddress}

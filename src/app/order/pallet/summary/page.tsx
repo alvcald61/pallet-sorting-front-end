@@ -8,6 +8,7 @@ import useOrderStore from "@/lib/store/OrderStore";
 import { Card, TextInput, Text, Badge, Button, Group } from "@mantine/core";
 import { FaBox } from "react-icons/fa";
 import { PalletForm } from "../../components/palletForm";
+import PalletSummaryTable from "../../components/PalletSummaryTable";
 
 const Page = () => {
   const { bulkOrder, address, palletOrder } = useOrderStore();
@@ -49,7 +50,15 @@ const Page = () => {
                   Fecha de recojo
                 </p>
                 <p className="text-[#212529]  text-sm font-normal leading-normal">
-                  {address.date} {address.time}
+                  {address.date}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="text-gray-500  text-sm font-normal leading-normal">
+                  Hora de recojo
+                </p>
+                <p className="text-[#212529]  text-sm font-normal leading-normal">
+                  {address.time}
                 </p>
               </div>
             </div>
@@ -61,7 +70,8 @@ const Page = () => {
               </p>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
+              <PalletSummaryTable pallets={palletOrder} />
+              {/* <table className="w-full text-sm text-left">
                 <thead className="text-xs text-gray-500  uppercase bg-gray-50 ">
                   <tr>
                     <th className="px-6 py-3 text-center" scope="col">
@@ -86,7 +96,7 @@ const Page = () => {
                     );
                   })}
                 </tbody>
-              </table>
+              </table> */}
             </div>
           </div>
         </div>

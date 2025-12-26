@@ -113,7 +113,7 @@ export const PalletForm = () => {
                     />
                   </label> */}
                   <Select
-                    label="Escoja un pallet"
+                    label="Escoja un pallet (ancho x alto x largo)"
                     placeholder="Pick value"
                     data={select}
                     searchable
