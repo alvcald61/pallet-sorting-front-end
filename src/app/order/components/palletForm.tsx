@@ -22,7 +22,7 @@ export const PalletForm = () => {
   const { addPallet, palletOrder, deleteItem } = useOrderStore();
 
   const [form, setForm] = useState({
-    palletId: "",
+    id: "",
     width: 0,
     height: 0,
     length: 0,
@@ -129,7 +129,7 @@ export const PalletForm = () => {
                           width: pallet.width,
                           height: pallet.height,
                           length: pallet.length,
-                          palletId: pallet.palletId,
+                          id: pallet.id,
                         });
                       }
                     }}

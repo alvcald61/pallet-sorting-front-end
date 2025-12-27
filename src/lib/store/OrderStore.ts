@@ -21,7 +21,7 @@ type OrderStoreActions = {
   addPallet: (newElement: Pallet) => void;
   addAddress: (newElement: Address) => void;
   deleteItem: (id: string) => void;
-  addUserId?: (id: string) => void;
+  addUserId: (id: string) => void;
 };
 
 type OrderStore = OrderStoreState & OrderStoreActions;

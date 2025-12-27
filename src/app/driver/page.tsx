@@ -118,28 +118,19 @@ export default function DriverPage() {
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <div style={{ marginBottom: "2rem" }}>
-        <Breadcrumbs>
-          <Anchor href="/truck">Home</Anchor>
-          <span>Drivers</span>
-        </Breadcrumbs>
-      </div>
+    <div className="flex flex-col justify-start w-100 grow p-10">
+      <Breadcrumbs className="mb-4">
+        <Anchor href="/truck">Home</Anchor>
+        <span>Choferes</span>
+      </Breadcrumbs>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "2rem",
-        }}
-      >
-        <Title order={1}>Drivers Management</Title>
+      <div className="flex justify-between">
+        <Title order={2}>Tus Choferes</Title>
         <Button
           leftSection={<IconPlus size={16} />}
           onClick={handleCreateClick}
         >
-          New Driver
+          Crear Chofer
         </Button>
       </div>
 
@@ -156,7 +147,7 @@ export default function DriverPage() {
             title: "DNI",
           },
           {
-            accessor: "firstName",
+            accessor: "name",
             title: "Nombre",
           },
           {

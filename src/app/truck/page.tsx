@@ -259,6 +259,8 @@ export default function TruckPage() {
           idAccessor="id"
           page={page}
           onPageChange={setPage}
+          totalRecords={trucks.length}
+          recordsPerPage={PAGE_SIZE}
           fetching={loading}
           height={500}
         />

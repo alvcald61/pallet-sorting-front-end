@@ -29,13 +29,15 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const [fetching, setFetching] = useState(false);
   const [to, setTo] = useState("");
-  const [clients, setClients] = useState([]);
+  const [clients, setClients] = useState<{ value: string; label: string }[]>(
+    []
+  );
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
   const [records, setRecords] = useState([
     { id: 1, name: "Joe Biden", bornIn: 1942, party: "Democratic" },
   ]);
 
-  const {addUserId} = useOrderStore();
+  const { addUserId } = useOrderStore();
 
   const [pageInfo, setPageInfo] = useState({ totalElements: 0, totalPages: 0 });
 
@@ -156,8 +158,7 @@ const Page = () => {
               { accessor: "orderStatus", title: "Estado del envio" },
             ]}
             // execute this callback when a row is clicked
-            onRowClick={
-              ({ record: { name, party, bornIn } }) =>
+            onRowClick={({ record: { name, party, bornIn } }) =>
               showNotification({
                 title: `Clicked on ${name}`,
                 message: `You clicked on ${name}, a ${party.toLowerCase()} president born in ${bornIn}`,

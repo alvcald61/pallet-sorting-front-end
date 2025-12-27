@@ -69,7 +69,7 @@ export default function WarehousePage() {
     try {
       setIsFormLoading(true);
       if (selectedWarehouse) {
-        await updateWarehouse(selectedWarehouse.id, data);
+        await updateWarehouse(selectedWarehouse.warehouseId + "", data);
         notifications.show({
           color: "green",
           title: "Éxito",
@@ -106,7 +106,7 @@ export default function WarehousePage() {
     ) {
       try {
         setLoading(true);
-        await deleteWarehouse(warehouse.id);
+        await deleteWarehouse(warehouse.warehouseId + "");
         notifications.show({
           color: "green",
           title: "Éxito",
@@ -210,6 +210,8 @@ export default function WarehousePage() {
           page={page}
           onPageChange={setPage}
           fetching={loading}
+          totalRecords={warehouses.length}
+          recordsPerPage={PAGE_SIZE}
           height={500}
         />
       </div>

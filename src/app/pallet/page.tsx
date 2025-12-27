@@ -231,6 +231,8 @@ export default function PalletPage() {
           idAccessor="id"
           page={page}
           onPageChange={setPage}
+          totalRecords={pallets.length}
+          recordsPerPage={PAGE_SIZE}
           fetching={loading}
           height={500}
         />
