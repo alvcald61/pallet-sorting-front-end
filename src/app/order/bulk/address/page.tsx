@@ -80,7 +80,7 @@ const Page = () => {
                 placeholder="Escoja un pallet"
                 data={
                   warehouse?.map((wh) => ({
-                    value: wh.id,
+                    value: String(wh.warehouseId),
                     label: wh.name,
                   })) || []
                 }
@@ -91,13 +91,13 @@ const Page = () => {
                 }}
                 onChange={(value) => {
                   const selectedWarehouse = warehouse?.find(
-                    (wh) => wh.id === value
+                    (wh) => String(wh.warehouseId) === value
                   );
                   setFromAddress({
-                    address: selectedWarehouse?.address || "",
-                    district: selectedWarehouse?.district || "",
-                    city: selectedWarehouse?.city || "",
-                    state: selectedWarehouse?.state || "",
+                    address: selectedWarehouse?.address.address || "",
+                    district: selectedWarehouse?.address.district || "",
+                    city: selectedWarehouse?.address.city || "",
+                    state: selectedWarehouse?.address.state || "",
                   } as AddressFormProps);
                 }}
               />

@@ -29,4 +29,5 @@ export type AddressFormProps = {
   district: string;
   city: string;
   state: string;
+  warehouseId?: string;
 };

@@ -3,6 +3,7 @@ import {
   IconTruck,
   IconUser,
   IconPalette,
+  IconSteeringWheel,
 } from "@tabler/icons-react";
 import { Code, Group, ScrollArea } from "@mantine/core";
 import { LinksGroup } from "./NavbarLinksGroup";
@@ -19,6 +20,11 @@ const mockdata = [
     label: "Camiones",
     icon: IconTruck,
     link: "/truck",
+  },
+  {
+    label: "Choferes",
+    icon: IconSteeringWheel,
+    link: "/driver",
   },
   {
     label: "Clientes",

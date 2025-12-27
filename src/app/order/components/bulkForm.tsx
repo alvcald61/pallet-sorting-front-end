@@ -76,6 +76,7 @@ export const BulkForm = () => {
             className="w-full"
             onClick={() => {
               addBulk({
+                tempId: Date.now().toString(),
                 volume: volume,
                 quantity: quantity,
                 weight: weight, // set a default or calculated value for weight

@@ -221,6 +221,8 @@ export default function ClientPage() {
           idAccessor="id"
           page={page}
           onPageChange={setPage}
+          totalRecords={clients.length}
+          recordsPerPage={PAGE_SIZE}
           fetching={loading}
           height={500}
         />

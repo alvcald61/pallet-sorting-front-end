@@ -16,22 +16,22 @@ import { Warehouse } from "@/lib/types/warehouseType";
 
 const Page = () => {
   const { addAddress, address } = useOrderStore();
-  const [date, setDate] = useState<string | null>(null);
-  const [time, setTime] = useState<string | null>(null);
+  const [date, setDate] = useState<string | null>(address?.date || null);
+  const [time, setTime] = useState<string | null>(address?.time || null);
   const [hours, setHours] = useState<string[] | null>(null);
   const [warehouse, setWarehouse] = useState<Warehouse[] | null>(null);
   const [fromAddress, setFromAddress] = useState<AddressFormProps>({
-    address: "",
-    district: "",
-    city: "",
-    state: "",
+    address: address?.fromAddress?.address || "",
+    district: address?.fromAddress?.district || "",
+    city: address?.fromAddress?.city || "",
+    state: address?.fromAddress?.state || "",
   });
 
   const [toAddress, setToAddress] = useState<AddressFormProps>({
-    address: "",
-    district: "",
-    city: "",
-    state: "",
+    address: address?.toAddress?.address || "",
+    district: address?.toAddress?.district || "",
+    city: address?.toAddress?.city || "",
+    state: address?.toAddress?.state || "",
   });
 
   useEffect(() => {
@@ -99,6 +99,7 @@ const Page = () => {
                         district: selectedWarehouse?.district || "",
                         city: selectedWarehouse?.city || "",
                         state: selectedWarehouse?.state || "",
+                        warehouseId: selectedWarehouse?.warehouseId + "",
                       } as AddressFormProps);
                     }}
                   />

@@ -31,7 +31,7 @@ export const PackageItem = ({
         <p className="text-base font-medium">{`${name} ${id} (x${quantity})`}</p>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {is3D
-            ? `${width}m x ${length}m x ${height}m, ${weight}Kg`
+            ? `${length}m x ${width}m x ${height}m, ${weight}Kg`
             : `${width}m x ${length}m, ${weight}Kg`}
         </p>
       </div>

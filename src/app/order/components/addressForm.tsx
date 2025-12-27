@@ -8,8 +8,8 @@ import useOrderStore from "@/lib/store/OrderStore";
 
 export const AddressForm = () => {
   const { addAddress, address } = useOrderStore();
-  const [from, setFrom] = useState(address?.fromAddress || "");
-  const [to, setTo] = useState(address?.toAddress || "");
+  const [from, setFrom] = useState(address?.fromAddress?.address || "");
+  const [to, setTo] = useState(address?.toAddress?.address || "");
   const [date, setDate] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
   const [hours, setHours] = useState<string[] | null>(null);
@@ -75,15 +75,15 @@ export const AddressForm = () => {
   }, [date]);
 
   const registerDate = (value: string | null) => {
-    const address = {
-      fromAddress: from,
-      toAddress: to,
+    const addressData = {
+      fromAddress: { address: from, district: "", city: "", state: "" },
+      toAddress: { address: to, district: "", city: "", state: "" },
       date: date,
       time: value,
     };
     setTime(value);
-    addAddress(address);
-    console.log("Registered address:", address);
+    addAddress(addressData);
+    console.log("Registered address:", addressData);
   };
 
   return (
