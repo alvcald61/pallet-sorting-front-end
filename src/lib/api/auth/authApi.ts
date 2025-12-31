@@ -1,4 +1,4 @@
-// import { LoginResponse } from "@/lib/types/authTypes";
+import { LoginResponse } from "@/lib/types/authTypes";
 
 export const getAuthToken = async (
   email: string,

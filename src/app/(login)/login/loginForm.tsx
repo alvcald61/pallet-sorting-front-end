@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useActionState, useState } from "react";
+import React, { useActionState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,57 +8,108 @@ import {
   CardHeader,
   CardContent,
   CardFooter,
+  CardDescription,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { getAuthToken } from "@/lib/api/auth/authApi";
 import { login } from "./action";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
+import Link from "next/link";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
-export default function LoginFormV2() {
-  //falta manejar el error de login en state
-  const [state, setActionState] = useActionState(login, undefined);
+export default function LoginForm() {
+  const [state, formAction] = useActionState(login, undefined);
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+
+  const emailError = email && !isValidEmail(email);
 
   return (
-    <div className="flex min-h-screen items-center justify-center ">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <h2 className="text-2xl font-bold text-center ">Iniciar sesión</h2>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <Card className="w-full max-w-md shadow-xl border-0">
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
+          <h1 className="text-3xl font-bold">TUPACK</h1>
+          <CardDescription className="text-blue-100">
+            Sistema de Gestión de Camiones
+          </CardDescription>
+          <h2 className="text-xl font-semibold mt-4">Iniciar sesión</h2>
         </CardHeader>
-        <form action={setActionState}>
-          <CardContent className="flex flex-col gap-4 mb-3">
-            <div>
-              <Label className="mb-3" htmlFor="email">
+
+        <form action={formAction} className="w-full">
+          <CardContent className="flex flex-col gap-5 py-6">
+            {/* Error Alert */}
+            {state?.error && (
+              <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700">{state.error}</p>
+              </div>
+            )}
+
+            {/* Email Field */}
+            <div className="space-y-2">
+              <Label htmlFor="email" className="font-semibold text-gray-700">
                 Correo electrónico
               </Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
+                placeholder="ejemplo@empresa.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoFocus
+                className={`h-10 ${emailError ? "border-red-500" : ""}`}
               />
+              {emailError && (
+                <p className="text-xs text-red-500">Ingresa un correo válido</p>
+              )}
             </div>
-            <div>
-              <Label htmlFor="password">Contraseña</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+
+            {/* Password Field */}
+            <div className="space-y-2">
+              <Label htmlFor="password" className="font-semibold text-gray-700">
+                Contraseña
+              </Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="h-10 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
-            {error && <div className="text-red-500 text-sm">{error}</div>}
           </CardContent>
-          <CardFooter>
-            <SubmitButton loading={loading} />
+
+          <CardFooter className="flex flex-col gap-3">
+            <SubmitButton />
+            <div className="w-full text-center text-sm text-gray-600">
+              ¿No tienes cuenta?{" "}
+              <Link
+                href="/sign-up"
+                className="text-indigo-600 hover:text-indigo-700 font-semibold transition-colors"
+              >
+                Regístrate aquí
+              </Link>
+            </div>
           </CardFooter>
         </form>
       </Card>
@@ -66,11 +117,26 @@ export default function LoginFormV2() {
   );
 }
 
-const SubmitButton = ({ loading }) => {
+const SubmitButton = () => {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" className="w-full" disabled={pending}>
-      {loading ? "Ingresando..." : "Ingresar"}
+    <Button
+      type="submit"
+      className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold"
+      disabled={pending}
+    >
+      {pending ? (
+        <span className="flex items-center gap-2">
+          <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          Ingresando...
+        </span>
+      ) : (
+        "Ingresar"
+      )}
     </Button>
   );
 };
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
