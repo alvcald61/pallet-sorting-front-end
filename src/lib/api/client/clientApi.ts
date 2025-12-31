@@ -60,6 +60,7 @@ export async function updateClient(
   id: string,
   data: UpdateClientRequest
 ): Promise<{ data: Client }> {
+  console.log("Updating client with data:", data);
   const response = await fetch(`${BASE_URL}/api/client/${id}`, {
     method: "PUT",
     headers: {

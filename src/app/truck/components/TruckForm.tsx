@@ -1,6 +1,7 @@
 "use client";
 
 import { CreateTruckRequest, Truck, TruckStatus } from "@/lib/types/truckType";
+import { getDrivers } from "@/lib/api/driver/driverApi";
 import {
   Button,
   NumberInput,
@@ -12,7 +13,8 @@ import {
   Checkbox,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Driver } from "@/lib/types/driverType";
 
 interface TruckFormProps {
   opened: boolean;
@@ -29,6 +31,10 @@ export const TruckForm: React.FC<TruckFormProps> = ({
   truck,
   isLoading = false,
 }) => {
+  const [drivers, setDrivers] = useState<{ value: string; label: string }[]>(
+    []
+  );
+
   const form = useForm({
     initialValues: {
       licensePlate: "",
@@ -41,6 +47,7 @@ export const TruckForm: React.FC<TruckFormProps> = ({
       multiplayer: 1,
       status: "AVAILABLE" as TruckStatus,
       enabled: true,
+      driverId: "",
     },
     validate: {
       licensePlate: (value) =>
@@ -57,6 +64,12 @@ export const TruckForm: React.FC<TruckFormProps> = ({
   });
 
   useEffect(() => {
+    if (opened) {
+      fetchDrivers();
+    }
+  }, [opened]);
+
+  useEffect(() => {
     if (truck) {
       form.setValues({
         licensePlate: truck.licensePlate,
@@ -69,11 +82,25 @@ export const TruckForm: React.FC<TruckFormProps> = ({
         multiplayer: truck.multiplayer,
         status: truck.status,
         enabled: truck.enabled,
+        driverId: truck.driverId || "",
       });
     } else {
       form.reset();
     }
   }, [truck, opened]);
+
+  const fetchDrivers = async () => {
+    try {
+      const response = await getDrivers();
+      const driverList = response.data.map((driver: Driver) => ({
+        value: driver.driverId + "",
+        label: `${driver.dni} - ${driver.firstName} ${driver.lastName}`,
+      }));
+      setDrivers(driverList);
+    } catch (error) {
+      console.error("Error fetching drivers:", error);
+    }
+  };
 
   const handleSubmit = async (values: CreateTruckRequest) => {
     try {
@@ -168,6 +195,15 @@ export const TruckForm: React.FC<TruckFormProps> = ({
               { value: "MAINTENANCE", label: "Mantenimiento" },
             ]}
             {...form.getInputProps("status")}
+            disabled={isLoading}
+          />
+          <Select
+            label="Chofer"
+            placeholder="Seleccionar chofer (opcional)"
+            data={drivers}
+            searchable
+            clearable
+            {...form.getInputProps("driverId")}
             disabled={isLoading}
           />
           <Checkbox

@@ -12,15 +12,14 @@ import {
   Select,
 } from "@mantine/core";
 import { BsPlusCircle } from "react-icons/bs";
-import { PalletForm } from "./components/palletForm";
-import { createOrder, getOrdersByPage } from "@/lib/api/order/orderApi";
+import { getOrdersByPage } from "@/lib/api/order/orderApi";
 import { getClients } from "@/lib/api/client/clientApi";
 import { Box } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { DataTable } from "mantine-datatable";
 import { redirect } from "next/navigation";
-import { NavbarNested } from "./components/NavBar";
 import { useDisclosure } from "@mantine/hooks";
+import { Order } from "@/lib/types/orderRequest";
 
 const PAGE_SIZE = 15;
 
@@ -33,9 +32,7 @@ const Page = () => {
     []
   );
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
-  const [records, setRecords] = useState([
-    { id: 1, name: "Joe Biden", bornIn: 1942, party: "Democratic" },
-  ]);
+  const [records, setRecords] = useState<Order[] | undefined>([]);
 
   const { addUserId } = useOrderStore();
 
@@ -145,7 +142,13 @@ const Page = () => {
                 // right-align column
                 // textAlign: "right",
               },
-              { accessor: "amount", title: "Monto" },
+              {
+                accessor: "amount",
+                title: "Monto",
+                render: (order) => (
+                  <span>{!order.amount ? "Pendiente" : order.amount}</span>
+                ),
+              },
               { accessor: "fromAddress", title: "Desde" },
               { accessor: "toAddress", title: "Hacia" },
               { accessor: "orderType", title: "Tipo de pedido" },
@@ -158,13 +161,7 @@ const Page = () => {
               { accessor: "orderStatus", title: "Estado del envio" },
             ]}
             // execute this callback when a row is clicked
-            onRowClick={({ record: { name, party, bornIn } }) =>
-              showNotification({
-                title: `Clicked on ${name}`,
-                message: `You clicked on ${name}, a ${party.toLowerCase()} president born in ${bornIn}`,
-                withBorder: true,
-              })
-            }
+            onRowClick={({ record }) => redirect(`/order/${record.id}`)}
             onPageChange={(p) => setPage(p)}
             totalRecords={pageInfo.totalElements}
             recordsPerPage={PAGE_SIZE}

@@ -81,7 +81,7 @@ export default async ({ params }: PageParams) => {
                 <div className="overflow-x-auto">
                   <Image
                     style={{ borderColor: "black", borderWidth: "1px" }}
-                    src={`data:image/png;base64,${image}`}
+                    src={image ? `data:image/png;base64,${image}` : ""}
                     h={300}
                     w="auto"
                     fit="contain"
@@ -89,6 +89,89 @@ export default async ({ params }: PageParams) => {
                 </div>
               </div>
             ) : null}
+            <div className="bg-white  p-6 rounded-lg shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900  mb-4">
+                Camión y Chofer
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <p className="text-sm font-semibold text-gray-700  mb-3">
+                    Información del Camión
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm bg-gray-50  p-4 rounded">
+                    <div>
+                      <p className="text-gray-500 ">Placa</p>
+                      <p className="font-medium text-gray-800 ">
+                        {order.data.truck.licensePlate}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 ">Estado</p>
+                      <p className="font-medium text-gray-800 ">
+                        {order.data.truck.status}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 ">Volumen (m³)</p>
+                      <p className="font-medium text-gray-800 ">
+                        {order.data.truck.volume}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 ">Peso (kg)</p>
+                      <p className="font-medium text-gray-800 ">
+                        {order.data.truck.weight}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 ">Área (m²)</p>
+                      <p className="font-medium text-gray-800 ">
+                        {order.data.truck.area}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 ">Dimensiones</p>
+                      <p className="font-medium text-gray-800 ">
+                        {order.data.truck.length}m × {order.data.truck.width}m ×{" "}
+                        {order.data.truck.height}m
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-700  mb-3">
+                    Información del Chofer
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm bg-gray-50  p-4 rounded">
+                    <div>
+                      <p className="text-gray-500 ">Nombre Completo</p>
+                      <p className="font-medium text-gray-800 ">
+                        {order.data.driver.firstName}{" "}
+                        {order.data.driver.lastName}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 ">DNI</p>
+                      <p className="font-medium text-gray-800 ">
+                        {order.data.driver.dni}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 ">Teléfono</p>
+                      <p className="font-medium text-gray-800 ">
+                        {order.data.driver.phone}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 ">Email</p>
+                      <p className="font-medium text-gray-800 ">
+                        {order.data.driver.email}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="bg-white  p-6 rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900  mb-4">
                 Paquetes

@@ -94,8 +94,8 @@ export const getDistributionImg = async (id: string): Promise<any> => {
       Authorization: `Bearer ${token}`,
     },
   });
-  if (!res.ok) throw new Error("Failed to create order");
+  // if (!res.ok) throw new Error("Failed to create order");
+  if (!res.ok) return null;
   const body = res.text();
   return body;
-  
 };

@@ -12,6 +12,7 @@ export interface Truck {
   area: number;
   enabled: boolean;
   multiplayer: number;
+  driverId?: string;
 }
 
 export interface CreateTruckRequest {
@@ -25,6 +26,7 @@ export interface CreateTruckRequest {
   area: number;
   enabled: boolean;
   multiplayer: number;
+  driverId?: string;
 }
 
 export interface UpdateTruckRequest extends CreateTruckRequest {

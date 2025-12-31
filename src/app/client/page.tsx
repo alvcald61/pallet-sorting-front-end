@@ -179,6 +179,11 @@ export default function ClientPage() {
               title: "Dirección",
             },
             {
+              accessor: "trust",
+              title: "Confianza",
+              render: (client) => <span>{client.trust ? "Sí" : "No"}</span>,
+            },
+            {
               accessor: "roles",
               title: "Roles",
               render: (client) => (

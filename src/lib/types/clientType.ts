@@ -16,6 +16,7 @@ export interface Client {
   trust: boolean;
   roles: Role[];
   enabled?: boolean;
+  trusted?: boolean;
 }
 
 export interface CreateClientRequest {

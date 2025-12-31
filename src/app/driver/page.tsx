@@ -67,7 +67,7 @@ export default function DriverPage() {
     try {
       setIsFormLoading(true);
       if (selectedDriver) {
-        await updateDriver(selectedDriver.id, data);
+        await updateDriver(selectedDriver.driverId + "", data);
         notifications.show({
           color: "green",
           title: "Success",
@@ -99,7 +99,7 @@ export default function DriverPage() {
   const handleDelete = async (driver: Driver) => {
     if (confirm(`Are you sure you want to delete ${driver.firstName}?`)) {
       try {
-        await deleteDriver(driver.id);
+        await deleteDriver(driver.driverId + "");
         notifications.show({
           color: "green",
           title: "Success",
@@ -147,7 +147,7 @@ export default function DriverPage() {
             title: "DNI",
           },
           {
-            accessor: "name",
+            accessor: "firstName",
             title: "Nombre",
           },
           {

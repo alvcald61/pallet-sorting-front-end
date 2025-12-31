@@ -1,12 +1,14 @@
 "use client";
 
 import { Truck } from "@/lib/types/truckType";
+import { Driver } from "@/lib/types/driverType";
 import {
   createTruck,
   deleteTruck,
   getTrucks,
   updateTruck,
 } from "@/lib/api/truck/truckApi";
+import { getDrivers } from "@/lib/api/driver/driverApi";
 import {
   Button,
   Group,
@@ -26,15 +28,17 @@ const PAGE_SIZE = 15;
 
 export default function TruckPage() {
   const [trucks, setTrucks] = useState<Truck[]>([]);
+  const [drivers, setDrivers] = useState<Driver[]>([]);
   const [loading, setLoading] = useState(false);
   const [formOpened, setFormOpened] = useState(false);
   const [selectedTruck, setSelectedTruck] = useState<Truck | null>(null);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const [page, setPage] = useState(1);
 
-  // Fetch trucks on mount
+  // Fetch trucks and drivers on mount
   useEffect(() => {
     fetchTrucks();
+    fetchDrivers();
   }, [page]);
 
   const fetchTrucks = async () => {
@@ -52,6 +56,21 @@ export default function TruckPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchDrivers = async () => {
+    try {
+      const response = await getDrivers();
+      setDrivers(response.data || []);
+    } catch (error) {
+      console.error("Error fetching drivers:", error);
+    }
+  };
+
+  const getDriverName = (driverId?: string) => {
+    if (!driverId) return "Sin asignar";
+    const driver = drivers.find((d) => d.driverId === driverId);
+    return driver ? `${driver.firstName} ${driver.lastName}` : "No encontrado";
   };
 
   const handleCreateClick = () => {
@@ -175,6 +194,11 @@ export default function TruckPage() {
             {
               accessor: "licensePlate",
               title: "Placa",
+            },
+            {
+              accessor: "driverId",
+              title: "Chofer",
+              render: (truck) => <span>{getDriverName(truck.driverId)}</span>,
             },
             {
               accessor: "width",

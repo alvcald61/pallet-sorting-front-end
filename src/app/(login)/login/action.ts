@@ -16,6 +16,7 @@ export async function login(prevState: any, formData: FormData) {
   (await cookies()).set("session", authResponse.accessToken, {
     httpOnly: true,
     secure: true,
+    expires: new Date(Date.now() + 3600 * 1000),
   });
 
   redirect("/order");
