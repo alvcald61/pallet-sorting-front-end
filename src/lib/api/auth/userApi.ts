@@ -1,10 +1,12 @@
 import { User } from "@/lib/types/authTypes";
+import { getTokenFromLocalStorage } from "@/lib/utils/sessionUtils";
 
 /**
  * Obtiene la información del usuario autenticado, incluyendo roles y permisos
  * Este endpoint debe ser llamado después del login para obtener datos completos
  */
-export const getCurrentUser = async (token: string): Promise<User> => {
+export const getCurrentUser = async (): Promise<User> => {
+  const token = await getTokenFromLocalStorage();
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_HOST}/api/auth/me`,
     {

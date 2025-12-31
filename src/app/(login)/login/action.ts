@@ -25,14 +25,15 @@ export async function login(prevState: any, formData: FormData) {
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 horas
     });
 
-    // Obtener información del usuario con roles y permisos
-    try {
-      await getCurrentUser(authResponse.accessToken);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      // El usuario se pudo autenticar, permitimos continuar
-      // El RBACProvider manejará los datos del usuario
-    }
+    // // Obtener información del usuario con roles y permisos
+    // try {
+    //   const user = await getCurrentUser();
+      
+    // } catch (error) {
+    //   console.error("Error fetching user data:", error);
+    //   // El usuario se pudo autenticar, permitimos continuar
+    //   // El RBACProvider manejará los datos del usuario
+    // }
 
     redirect("/order");
   } catch (error) {

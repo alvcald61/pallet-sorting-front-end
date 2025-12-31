@@ -23,16 +23,16 @@ export async function RouteGuard({
   // En producción, la validación principal debe estar en middleware.ts
   
   try {
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/auth/session", {
-      method: "GET",
-      headers: {
-        Cookie: `session=${process.env.SESSION_TOKEN || ""}`,
-      },
-    });
+    // const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/auth/session", {
+    //   method: "GET",
+    //   headers: {
+    //     Cookie: `session=${process.env.SESSION_TOKEN || ""}`,
+    //   },
+    // });
 
-    if (!response.ok) {
+    // if (!response.ok) {
       redirect("/login");
-    }
+    // }
 
     // Aquí puedes validar roles y permisos contra allowedRoles y requiredPermissions
     // Por ahora, si la sesión es válida, permitimos el acceso

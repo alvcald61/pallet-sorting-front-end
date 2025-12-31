@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, RBACContextType } from "@/lib/types/authTypes";
 import { getCurrentUser } from "@/lib/api/auth/userApi";
 import { useRouter } from "next/navigation";
+import useUserStore from "@/lib/store/userStore";
 
 const RBACContext = createContext<RBACContextType | undefined>(undefined);
 
@@ -14,24 +15,25 @@ export const RBACProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
+  const { setCurrentUser, currentUser } = useUserStore();
   useEffect(() => {
     const fetchUser = async () => {
       try {
         // Obtener token de la cookie (será enviada automáticamente por el navegador)
-        const response = await fetch("/api/auth/session", {
-          method: "GET",
-          // credentials: "include",
-        });
+        // const response = await fetch("/api/auth/session", {
+        //   method: "GET",
+        //   credentials: "include",
+        // });
 
-        if (!response.ok) {
-          setUser(null);
-          router.push("/login");
-          return;
-        }
+        // if (!response.ok) {
+        //   setUser(null);
+        //   router.push("/login");
+        //   return;
+        // }
 
-        const sessionData = await response.json();
-        const userData = await getCurrentUser(sessionData.token);
+        // const sessionData = await response.json();
+        const userData = await getCurrentUser();
+        setCurrentUser(userData);
         setUser(userData);
         setError(null);
       } catch (err) {
@@ -46,15 +48,14 @@ export const RBACProvider: React.FC<{ children: React.ReactNode }> = ({
         setLoading(false);
       }
     };
-
-    fetchUser();
+    if (!currentUser) fetchUser();
   }, [router]);
 
   const hasRole = (roleNames: string | string[]): boolean => {
     if (!user) return false;
     const roles = Array.isArray(roleNames) ? roleNames : [roleNames];
     return roles.some((roleName) =>
-      user.roles.some((r) => r.name.toLowerCase() === roleName.toLowerCase())
+      user.roles.some((r) => r.toLowerCase() === roleName.toLowerCase())
     );
   };
 

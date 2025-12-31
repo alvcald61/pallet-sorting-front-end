@@ -12,7 +12,7 @@ export const BaseLayout = ({ children }: BaseLayoutProps) => {
       <div className="layout-container flex h-full grow flex-col">
         {/* Layout UI */}
         {/* Place children where you want to render a page or nested layout */}
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#000000] px-10 py-3">
+        {/* <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#000000] px-10 py-3">
           <div className="flex items-center gap-4 text-[#000000]">
             <div className="size-4">
               <svg
@@ -77,7 +77,7 @@ export const BaseLayout = ({ children }: BaseLayoutProps) => {
             </button>
             <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"></div>
           </div>
-        </header>
+        </header> */}
         <main className=" flex grow">
           <NavbarNested />
           {children}

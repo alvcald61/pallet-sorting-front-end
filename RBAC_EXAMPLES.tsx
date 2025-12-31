@@ -56,7 +56,7 @@ export function NavBarRBACExample() {
             {user?.firstName} {user?.lastName}
           </span>
           <p className="user-role">
-            {user?.roles.map((r) => r.name).join(", ")}
+            {user?.roles.map((r) => r).join(", ")}
           </p>
         </div>
       </div>

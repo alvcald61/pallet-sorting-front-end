@@ -21,7 +21,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  roles: Role[];
+  roles: string[];
   permissions: Permission[];
 }
 
@@ -33,7 +33,7 @@ export interface SessionData {
 
 export interface RBACContextType {
   user: User | null;
-  roles: Role[];
+  roles: string[];
   permissions: Permission[];
   hasRole: (roleNames: string | string[]) => boolean;
   hasPermission: (resource: string, action: string) => boolean;

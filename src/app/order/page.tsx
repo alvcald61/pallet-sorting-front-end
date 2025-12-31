@@ -17,13 +17,14 @@ import { getClients } from "@/lib/api/client/clientApi";
 import { Box } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { DataTable } from "mantine-datatable";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import { Order } from "@/lib/types/orderRequest";
 
 const PAGE_SIZE = 15;
 
 const Page = () => {
+  const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
   const [page, setPage] = useState(1);
   const [fetching, setFetching] = useState(false);
@@ -161,7 +162,7 @@ const Page = () => {
               { accessor: "orderStatus", title: "Estado del envio" },
             ]}
             // execute this callback when a row is clicked
-            onRowClick={({ record }) => redirect(`/order/${record.id}`)}
+            onRowClick={({ record }) => router.push(`/order/${record.id}`)}
             onPageChange={(p) => setPage(p)}
             totalRecords={pageInfo.totalElements}
             recordsPerPage={PAGE_SIZE}
