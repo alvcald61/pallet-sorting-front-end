@@ -63,7 +63,7 @@ export async function register(prevState: any, formData: FormData) {
         ruc,
         phone,
         address,
-        roles: ["CLIENT"], // Rol por defecto para nuevos clientes
+        roles: ["2"], // Rol por defecto para nuevos clientes
       });
 
       // Intentar autenticar automáticamente
