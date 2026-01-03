@@ -6,7 +6,7 @@ import { Button, Group, Stepper } from "@mantine/core";
 import useOrderStore from "@/lib/store/OrderStore";
 import { createOrder } from "@/lib/api/order/orderApi";
 import { FaCheckCircle } from "react-icons/fa";
-
+import { useRouter } from "next/navigation"; 
 interface OrderLayoutWrapperProps {
   children: React.ReactNode;
   orderType: "BULK" | "TWO_DIMENSIONAL";
@@ -29,6 +29,7 @@ export default function OrderLayoutWrapper({
   const [notificationVisible, setNotificationVisible] = useState(false);
 
   const orderData = orderType === "BULK" ? bulkOrder : palletOrder;
+  const router = useRouter();
 
   const callOrderApi = async () => {
     try {
@@ -42,6 +43,11 @@ export default function OrderLayoutWrapper({
         },
         orderType
       );
+      setNotificationVisible(true);
+      setTimeout(() => {
+        setNotificationVisible(false);
+      }, 3000);
+      router.push(`/order`);
       console.log("Order created successfully:", response);
     } catch (error) {
       console.error("Error creating order:", error);

@@ -1,9 +1,3 @@
-import { Bulk } from "./bulkType";
-
-export interface CreateOrderRequest {
-  bulks: Bulk[];
-}
-
 export interface Order {
   id: string;
   createdAt: string;
@@ -24,6 +18,8 @@ export interface Order {
   solution: string;
   orderStatus: string;
   packages: Package[];
+  truck: Truck;
+  driver: Driver;
 }
 
 export interface Package {
@@ -35,4 +31,34 @@ export interface Package {
   width: number;
   height: number;
   quantity: number;
+}
+
+export interface Truck {
+  id: string;
+  width: number;
+  length: number;
+  height: number;
+  status: string;
+  licensePlate: string;
+  volume: number;
+  weight: number;
+  area: number;
+  enabled: boolean;
+  multiplayer: number;
+  driverId: number;
+  driverName: string;
+}
+
+export interface Driver {
+  driverId: number;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
+  enabled: boolean;
+  dni: string;
+  phone: string;
+  email: string;
+  firstName: string;
+  lastName: string;
 }

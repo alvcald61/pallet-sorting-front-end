@@ -130,6 +130,7 @@ const Page = () => {
                             placeholder="Elija una fecha"
                             value={date}
                             onChange={setDate}
+                            minDate={new Date().toDateString()}
                           />
                         </div>
                         <div>

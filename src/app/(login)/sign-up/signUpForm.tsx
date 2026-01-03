@@ -44,8 +44,7 @@ export default function SignUpForm() {
     formData.confirmPassword &&
     formData.password === formData.confirmPassword;
 
-  const passwordsVisible =
-    formData.password && formData.confirmPassword;
+  const passwordsVisible = formData.password && formData.confirmPassword;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -55,9 +54,7 @@ export default function SignUpForm() {
           <CardDescription className="text-blue-100">
             Sistema de Gestión de Paletas
           </CardDescription>
-          <h2 className="text-xl font-semibold mt-4">
-            Crear nueva cuenta
-          </h2>
+          <h2 className="text-xl font-semibold mt-4">Crear nueva cuenta</h2>
           <p className="text-blue-100 text-sm mt-1">
             Regístrate para comenzar a gestionar tus pedidos
           </p>
@@ -76,7 +73,10 @@ export default function SignUpForm() {
             <div className="grid grid-cols-2 gap-4">
               {/* First Name */}
               <div className="space-y-2">
-                <Label htmlFor="firstName" className="font-semibold text-gray-700">
+                <Label
+                  htmlFor="firstName"
+                  className="font-semibold text-gray-700"
+                >
                   Nombre
                 </Label>
                 <Input
@@ -93,7 +93,10 @@ export default function SignUpForm() {
 
               {/* Last Name */}
               <div className="space-y-2">
-                <Label htmlFor="lastName" className="font-semibold text-gray-700">
+                <Label
+                  htmlFor="lastName"
+                  className="font-semibold text-gray-700"
+                >
                   Apellido
                 </Label>
                 <Input
@@ -228,9 +231,7 @@ export default function SignUpForm() {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-gray-500">
-                Mínimo 6 caracteres
-              </p>
+              <p className="text-xs text-gray-500">Mínimo 6 caracteres</p>
             </div>
 
             {/* Confirm Password */}
@@ -251,16 +252,12 @@ export default function SignUpForm() {
                   onChange={handleChange}
                   required
                   className={`h-10 pr-10 ${
-                    passwordsVisible &&
-                    !passwordsMatch &&
-                    "border-red-500"
+                    passwordsVisible && !passwordsMatch && "border-red-500"
                   }`}
                 />
                 <button
                   type="button"
-                  onClick={() =>
-                    setShowConfirmPassword(!showConfirmPassword)
-                  }
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   tabIndex={-1}
                 >
@@ -287,9 +284,7 @@ export default function SignUpForm() {
 
           <CardFooter className="flex flex-col gap-3">
             <SubmitButton
-              disabled={Boolean(
-                passwordsVisible && !passwordsMatch
-              )}
+              disabled={Boolean(passwordsVisible && !passwordsMatch)}
             />
             <div className="w-full text-center text-sm text-gray-600">
               ¿Ya tienes cuenta?{" "}

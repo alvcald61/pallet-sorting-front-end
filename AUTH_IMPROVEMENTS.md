@@ -3,6 +3,7 @@
 ## Resumen de Cambios
 
 Se ha realizado una mejora completa del sistema de autenticación, incluyendo:
+
 1. **Mejora visual y funcional del login**
 2. **Creación de una nueva página de registro**
 3. **Validaciones mejoradas en ambos formularios**
@@ -17,6 +18,7 @@ Se ha realizado una mejora completa del sistema de autenticación, incluyendo:
 **Archivo:** `src/app/(login)/login/loginForm.tsx`
 
 #### Mejoras Visuales:
+
 - **Diseño moderno con gradientes**: Fondo azul a índigo degradado
 - **Encabezado personalizado**: Muestra el logo y nombre de la aplicación
 - **Validación visual en tiempo real**: Indica si el email es válido
@@ -25,6 +27,7 @@ Se ha realizado una mejora completa del sistema de autenticación, incluyendo:
 - **Alertas mejoradas**: Mensajes de error con iconos claros
 
 #### Mejoras Funcionales:
+
 - Validación de email en tiempo real
 - Mostrar/ocultar contraseña con botón toggle
 - Animaciones suaves en botones y transiciones
@@ -36,6 +39,7 @@ Se ha realizado una mejora completa del sistema de autenticación, incluyendo:
 **Archivo:** `src/app/(login)/login/action.ts`
 
 #### Mejoras:
+
 - Validaciones más robustas
 - Mensajes de error específicos y claros
 - Validación de longitud de contraseña (mínimo 6 caracteres)
@@ -53,11 +57,13 @@ Se ha realizado una mejora completa del sistema de autenticación, incluyendo:
 ### 3. Nueva Página de Registro
 
 **Archivos:**
+
 - `src/app/(login)/sign-up/signUpForm.tsx` - Formulario de registro
 - `src/app/(login)/sign-up/action.ts` - Acción de servidor para registro
 - `src/app/(login)/sign-up/page.tsx` - Página de registro
 
 #### Campos del Registro:
+
 ```
 Información Personal:
 - Nombre
@@ -76,13 +82,16 @@ Seguridad:
 ```
 
 #### Características:
-- **Validación en tiempo real**: 
+
+- **Validación en tiempo real**:
+
   - Coincidencia de contraseñas con indicadores visuales
   - Formato de email válido
   - Teléfono con formato válido (7+ caracteres)
   - RUC con mínimo 10 caracteres
 
 - **UX Mejorada**:
+
   - Indicador visual cuando las contraseñas coinciden (✓ verde)
   - Indicador de error cuando no coinciden (✗ rojo)
   - Toggle para mostrar/ocultar ambas contraseñas
@@ -113,7 +122,7 @@ Validaciones implementadas:
 
 ### 5. Navegación Integrada
 
-- **Desde Login**: Enlace "¿No tienes cuenta? Regístrate aquí" 
+- **Desde Login**: Enlace "¿No tienes cuenta? Regístrate aquí"
 - **Desde Registro**: Enlace "¿Ya tienes cuenta? Inicia sesión"
 - Ambos enlaces con estilos consistentes y hover effects
 
@@ -122,6 +131,7 @@ Validaciones implementadas:
 ## 🎨 Mejoras Visuales
 
 ### Paleta de Colores:
+
 - **Primario**: Azul (#3B82F6) a Índigo (#4F46E5) degradado
 - **Fondo**: Gradiente azul claro a índigo (from-blue-50 to-indigo-100)
 - **Texto**: Gris oscuro para mejor contraste
@@ -129,6 +139,7 @@ Validaciones implementadas:
 - **Éxito**: Verde (#22C55E)
 
 ### Componentes:
+
 - **Tarjetas (Cards)**: Sin bordes, sombra suave, esquinas redondeadas
 - **Botones**: Gradiente, hover effects, transiciones suaves
 - **Inputs**: Altura uniforme (40px), bordes sutiles, placeholders descriptivos
@@ -140,7 +151,7 @@ Validaciones implementadas:
 
 1. **Validación en Cliente**: Validación de formato y requerimientos
 2. **Validación en Servidor**: Verificación rigurosa de todos los datos
-3. **Cookies Seguras**: 
+3. **Cookies Seguras**:
    - httpOnly: true (no accesible desde JavaScript)
    - sameSite: strict (previene CSRF)
    - secure: true (solo en HTTPS en producción)
@@ -200,16 +211,19 @@ Validaciones implementadas:
 ## 🔧 Cómo Usar
 
 ### Acceder al Login:
+
 ```
 http://localhost:3001/login
 ```
 
 ### Acceder al Registro:
+
 ```
 http://localhost:3001/sign-up
 ```
 
 ### Flujo de Registro:
+
 1. Hacer clic en "Regístrate aquí" desde el login
 2. Completar todos los campos requeridos
 3. Validar que las contraseñas coincidan
@@ -219,6 +233,7 @@ http://localhost:3001/sign-up
 7. Si falla → Redirige a `/login` con mensaje
 
 ### Flujo de Login:
+
 1. Ingresar email y contraseña
 2. Hacer clic en "Ingresar"
 3. Sistema valida credenciales

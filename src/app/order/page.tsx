@@ -17,13 +17,20 @@ import { getClients } from "@/lib/api/client/clientApi";
 import { Box } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { DataTable } from "mantine-datatable";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import { Order } from "@/lib/types/orderRequest";
+import { useCanAccess } from "@/lib/utils/rbacUtils";
+import { PERMISSIONS } from "@/lib/const/rbac";
 
 const PAGE_SIZE = 15;
 
 const Page = () => {
+  const isAdmin = useCanAccess(
+    ["ADMIN"]
+    // [PERMISSIONS.ORDER.CREATE],
+    // false // requireAll = false (tiene almenos uno)
+  );
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
   const [page, setPage] = useState(1);
@@ -46,7 +53,7 @@ const Page = () => {
     // const to = from + PAGE_SIZE;
     const fetchData = async () => {
       setFetching(true);
-      const result = await getOrdersByPage(page, PAGE_SIZE);
+      const result = await getOrdersByPage(page, PAGE_SIZE, isAdmin);
       setPageInfo(result.pageInfo);
       setRecords(result.data);
       setFetching(false);
@@ -58,20 +65,23 @@ const Page = () => {
   }, [page]);
 
   const openModal = (value: string) => {
-    setTo(value);
-
-    const fetchClients = async () => {
-      // Fetch clients from API
-      const clientsData = await getClients();
-      setClients(
-        clientsData.data.map((client: any) => ({
-          value: `${client.id}`,
-          label: `${client.businessName} - ${client.ruc}`,
-        }))
-      );
-    };
-    fetchClients();
-    open();
+    if (isAdmin) {
+      setTo(value);
+      const fetchClients = async () => {
+        // Fetch clients from API
+        const clientsData = await getClients();
+        setClients(
+          clientsData.data.map((client: any) => ({
+            value: `${client.id}`,
+            label: `${client.businessName} - ${client.ruc}`,
+          }))
+        );
+      };
+      fetchClients();
+      open();
+    } else {
+      router.push(value);
+    }
   };
 
   return (
@@ -87,7 +97,7 @@ const Page = () => {
             onClick={() => {
               close();
               addUserId(selectedClient || "");
-              redirect(to);
+              router.push(to);
             }}
           >
             Continuar

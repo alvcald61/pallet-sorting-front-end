@@ -32,8 +32,6 @@ export async function login(prevState: any, formData: FormData) {
       sameSite: "strict",
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 horas
     });
-
-    redirect("/order");
   } catch (error) {
     console.error("Login error:", error);
     return {
@@ -43,6 +41,7 @@ export async function login(prevState: any, formData: FormData) {
           : "Error al iniciar sesión. Por favor, intenta más tarde",
     };
   }
+  redirect("/order");
 }
 
 export async function logout() {

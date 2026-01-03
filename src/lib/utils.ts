@@ -6,3 +6,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
+export interface Wrapper<T> {
+  data: T;
+  message: string;
+  statusCode: number;
+}

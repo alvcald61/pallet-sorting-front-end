@@ -1,4 +1,6 @@
 "use server";
+import { Order } from "@/lib/types/orderTypes";
+import { Wrapper } from "@/lib/utils";
 import { cookies } from "next/headers";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/order";
@@ -44,21 +46,28 @@ export async function getTokenFromLocalStorage(): Promise<string | null> {
 
 export const getOrdersByPage = async (
   page: number,
-  pageSize: number
+  pageSize: number,
+  isAdmin: boolean
 ): Promise<any> => {
   const token = await getTokenFromLocalStorage();
-  const res = await fetch(`${API_BASE_URL}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  console.log(
+    `${API_BASE_URL}?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`
+  );
+  const res = await fetch(
+    `${API_BASE_URL}?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   if (!res.ok) throw new Error("Failed to create order");
   return res.json();
 };
 
-export const getOrderById = async (id: string): Promise<any> => {
+export const getOrderById = async (id: string): Promise<Wrapper<Order>> => {
   const token = await getTokenFromLocalStorage();
   const res = await fetch(`${API_BASE_URL}/${id}`, {
     method: "GET",
@@ -98,4 +107,20 @@ export const getDistributionImg = async (id: string): Promise<any> => {
   if (!res.ok) return null;
   const body = res.text();
   return body;
+};
+
+export const updateOrderStatus = async (
+  orderId: string,
+  status: string
+): Promise<any> => {
+  const token = await getTokenFromLocalStorage();
+  const res = await fetch(`${API_BASE_URL}/${orderId}/status/${status}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error("Failed to update order status");
+  return res.json();
 };

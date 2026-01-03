@@ -34,6 +34,7 @@
 ```
 
 ### Características del Login:
+
 - ✅ Fondo con gradiente azul-índigo
 - ✅ Tarjeta blanca con sombra suave
 - ✅ Encabezado con logo y descripción
@@ -106,6 +107,7 @@
 ```
 
 ### Características del Registro:
+
 - ✅ Layout en grid 2 columnas (responsive)
 - ✅ 9 campos para información completa
 - ✅ Validación en tiempo real
@@ -333,6 +335,7 @@
 ## 📱 Responsividad
 
 ### Desktop (1024px+)
+
 ```
 ┌─────────────────────────────────────────────┐
 │                                              │
@@ -361,6 +364,7 @@ Registro en GRID 2 COLUMNAS:
 ```
 
 ### Mobile (< 640px)
+
 ```
 ┌──────────────┐
 │              │

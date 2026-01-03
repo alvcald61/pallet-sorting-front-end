@@ -20,8 +20,8 @@ import { useState } from "react";
 export default function LoginForm() {
   const [state, formAction] = useActionState(login, undefined);
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("alvarocalderom@gmail.com");
+  const [password, setPassword] = useState("12345678");
 
   const emailError = email && !isValidEmail(email);
 
