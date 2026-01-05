@@ -1,3 +1,5 @@
+import { OrderStatus } from "../utils/enums";
+
 export interface Order {
   id: string;
   createdAt: string;
@@ -16,10 +18,13 @@ export interface Order {
   amount: number;
   solutionImageUrl: string;
   solution: string;
-  orderStatus: string;
+  orderStatus: OrderStatus;
   packages: Package[];
   truck: Truck;
   driver: Driver;
+  gpsLink: string;
+  fromAddressLink: string;
+  toAddressLink: string;
 }
 
 export interface Package {

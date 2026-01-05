@@ -52,7 +52,7 @@ const useOrderStore = create<OrderStore>((set) => ({
     set((state) => ({
       ...state,
       userId: id,
-    })),
+    }))
 }));
 
 export default useOrderStore;

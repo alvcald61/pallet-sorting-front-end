@@ -3,6 +3,7 @@ export interface Address {
   district: string;
   city: string;
   state: string;
+  addressLink: string;
 }
 
 export interface Warehouse {

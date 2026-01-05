@@ -25,6 +25,7 @@ const Page = () => {
     district: "",
     city: "",
     state: "",
+    addressLink: "",
   });
 
   const [toAddress, setToAddress] = useState<AddressFormProps>({
@@ -32,6 +33,8 @@ const Page = () => {
     district: "",
     city: "",
     state: "",
+    addressLink: "",
+    
   });
 
   useEffect(() => {
@@ -98,6 +101,9 @@ const Page = () => {
                     district: selectedWarehouse?.address.district || "",
                     city: selectedWarehouse?.address.city || "",
                     state: selectedWarehouse?.address.state || "",
+                    warehouseId: selectedWarehouse?.warehouseId,
+                    addressLink:
+                      selectedWarehouse?.address.addressLink || "",
                   } as AddressFormProps);
                 }}
               />

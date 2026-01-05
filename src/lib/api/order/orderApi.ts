@@ -36,7 +36,6 @@ export const getAvailableSlots = async (date: string): Promise<string[]> => {
 
 export async function getTokenFromLocalStorage(): Promise<string | null> {
   const token = (await cookies()).get("session")?.value;
-  console.log("token", token);
   return token || null;
   // if (typeof window !== "undefined") {
   //   return localStorage.getItem("jwt");
@@ -50,9 +49,7 @@ export const getOrdersByPage = async (
   isAdmin: boolean
 ): Promise<any> => {
   const token = await getTokenFromLocalStorage();
-  console.log(
-    `${API_BASE_URL}?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`
-  );
+
   const res = await fetch(
     `${API_BASE_URL}?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`,
     {
@@ -109,18 +106,22 @@ export const getDistributionImg = async (id: string): Promise<any> => {
   return body;
 };
 
-export const updateOrderStatus = async (
+export const continueOrder = async (
   orderId: string,
-  status: string
+  amount: number | string | undefined,
+  deny: boolean
 ): Promise<any> => {
   const token = await getTokenFromLocalStorage();
-  const res = await fetch(`${API_BASE_URL}/${orderId}/status/${status}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await fetch(
+    `${API_BASE_URL}/${orderId}/continue?amount=${amount ?? ""}&denied=${deny}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   if (!res.ok) throw new Error("Failed to update order status");
   return res.json();
 };

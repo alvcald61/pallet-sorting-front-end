@@ -53,7 +53,7 @@ const Page = () => {
     // const to = from + PAGE_SIZE;
     const fetchData = async () => {
       setFetching(true);
-      const result = await getOrdersByPage(page, PAGE_SIZE, isAdmin);
+      const result = await getOrdersByPage(page - 1, PAGE_SIZE, isAdmin);
       setPageInfo(result.pageInfo);
       setRecords(result.data);
       setFetching(false);

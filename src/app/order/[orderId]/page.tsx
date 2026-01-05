@@ -9,6 +9,7 @@ import BulkSummaryTable from "../components/BulkSummaryTable";
 import PalletSummaryTable from "../components/PalletSummaryTable";
 import OrderHeaderActions from "../components/OrderHeaderActions";
 import { Image, NumberInput, TextInput } from "@mantine/core";
+import { OrderStatus } from "@/lib/utils/enums";
 
 type PageParams = {
   params: Promise<{ orderId: string }>;
@@ -18,6 +19,7 @@ export default async ({ params }: PageParams) => {
   const { orderId } = await params;
   // const [amount, setAmount] = useState<string | number>(0);
   const order = (await getOrderById(orderId)).data;
+  console.log("order", order);
   const status = await getOrderStatus(orderId);
   const image = await getDistributionImg(orderId);
   console.log(status);
@@ -31,6 +33,7 @@ export default async ({ params }: PageParams) => {
               orderId={orderId}
               initialAmount={order.amount}
               orderStatus={order.orderStatus}
+              gpsLink={order.gpsLink}
             />
           </div>
         </div>
@@ -76,6 +79,24 @@ export default async ({ params }: PageParams) => {
                   <p className="text-gray-500 ">Volumen total</p>
                   <p className="font-medium text-green-600 ">
                     {order.totalVolume}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-500 ">Link de ubicacion</p>
+                  <p className="font-medium text-green-600 ">
+                    {order.gpsLink ?? "No disponible"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-500 ">Link de mapa de recojo</p>
+                  <p className="font-medium text-green-600 ">
+                    {order.fromAddressLink ?? "No disponible"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-500 ">Link de mapa de entrega</p>
+                  <p className="font-medium text-green-600 ">
+                    {order.toAddressLink ?? "No disponible"}
                   </p>
                 </div>
               </div>
@@ -223,7 +244,7 @@ export default async ({ params }: PageParams) => {
               </div>
             </div>
           </div>
-          {order.orderStatus === "REVIEW" && (
+          {order.orderStatus === OrderStatus.REVIEW && (
             <div className="lg:col-span-1">
               <div className="bg-white  p-6 rounded-lg shadow-sm">
                 <h3 className="text-lg font-semibold text-gray-900  mb-6">

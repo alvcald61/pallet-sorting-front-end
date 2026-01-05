@@ -41,6 +41,17 @@ export default function RootLayout({
           defer
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
         /> */}
+        <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+        <script>
+          window.OneSignalDeferred = window.OneSignalDeferred || [];
+          OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.init({
+              appId: "cc79af88-2135-4f63-a116-8587053ed0a9",
+              allowLocalhostAsSecureOrigin: true,
+
+            });
+          });
+        </script>
       </head>
       <body className="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
         <MantineProvider

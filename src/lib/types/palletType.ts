@@ -1,3 +1,4 @@
+import { Address } from './warehouseType';
 export interface Pallet {
   id: string;
   tempId: string;
@@ -30,4 +31,5 @@ export type AddressFormProps = {
   city: string;
   state: string;
   warehouseId?: string;
+  addressLink?: string;
 };
