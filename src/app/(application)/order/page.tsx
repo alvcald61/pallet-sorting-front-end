@@ -22,10 +22,33 @@ import { useDisclosure } from "@mantine/hooks";
 import { Order } from "@/lib/types/orderRequest";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
 import { PERMISSIONS } from "@/lib/const/rbac";
+import OneSignal from "react-onesignal";
 
 const PAGE_SIZE = 15;
 
 const Page = () => {
+  useEffect(() => {
+    // Ensure this code runs only on the client side
+    if (typeof window !== "undefined") {
+      console.log(
+        "Initializing OneSignal",
+        process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID
+      );
+
+      OneSignal.init({
+        appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
+        allowLocalhostAsSecureOrigin: true,
+        // You can add other initialization options here
+        notifyButton: {
+          enable: true,
+        },
+      });
+      
+      
+      console.log("OneSignal initialized successfully");
+    }
+  }, []);
+
   const isAdmin = useCanAccess(
     ["ADMIN"]
     // [PERMISSIONS.ORDER.CREATE],

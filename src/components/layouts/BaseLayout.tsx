@@ -1,5 +1,5 @@
 "use client";
-import { NavbarNested } from "@/app/order/components/NavBar";
+import { NavbarNested } from "@/app/(application)/order/components/NavBar";
 import { ReactNode } from "react";
 
 interface BaseLayoutProps {

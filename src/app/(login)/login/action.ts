@@ -3,6 +3,8 @@
 import { getAuthToken } from "@/lib/api/auth/authApi";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import OneSignal from "react-onesignal";
+import { getCurrentUser } from "@/lib/api/auth/userApi";
 
 export async function login(prevState: any, formData: FormData) {
   try {
@@ -32,6 +34,15 @@ export async function login(prevState: any, formData: FormData) {
       sameSite: "strict",
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 horas
     });
+
+    // Obtener información del usuario con roles y permisos
+    try {
+      const user = await getCurrentUser();
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      // El usuario se pudo autenticar, permitimos continuar
+      // El RBACProvider manejará los datos del usuario
+    }
   } catch (error) {
     console.error("Login error:", error);
     return {

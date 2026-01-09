@@ -47,7 +47,7 @@ const mockdata = [
   {
     label: "Almacenes",
     icon: IconPalette,
-    link: "/almacen",
+    link: "/warehouse",
     roles: [ROLES.ADMIN],
   },
   {
@@ -84,8 +84,8 @@ export function NavbarNested() {
     <ProtectedElement
       requiredRoles={item.roles}
       key={item.label}
-      requireAll={false} 
-      
+      requireAll={false}
+
       // fallback={<p>No tienes permisos</p>}
     >
       <LinksGroup {...item} key={item.label} />
