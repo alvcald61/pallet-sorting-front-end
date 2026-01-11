@@ -109,11 +109,12 @@ export const getDistributionImg = async (id: string): Promise<any> => {
 export const continueOrder = async (
   orderId: string,
   amount: number | string | undefined,
+  gpsLink: number | string | undefined,
   deny: boolean
 ): Promise<any> => {
   const token = await getTokenFromLocalStorage();
   const res = await fetch(
-    `${API_BASE_URL}/${orderId}/continue?amount=${amount ?? ""}&denied=${deny}`,
+    `${API_BASE_URL}/${orderId}/continue?amount=${amount ?? ""}&gpsLink=${gpsLink ?? ""}&denied=${deny}`,
     {
       method: "PUT",
       headers: {

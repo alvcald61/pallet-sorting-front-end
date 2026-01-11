@@ -11,7 +11,7 @@ interface OrderHeaderActionsProps {
   orderId: string;
   initialAmount: number | null;
   orderStatus: OrderStatus;
-  gpsLink?: string;
+  orderGpsLink?: string;
 }
 
 type ActionType = null | "confirm" | "cancel";
@@ -20,12 +20,15 @@ export default function OrderHeaderActions({
   orderId,
   initialAmount,
   orderStatus,
-  gpsLink,
+  orderGpsLink,
 }: OrderHeaderActionsProps) {
   const isAdmin = useCanAccess(["ADMIN"]);
   const router = useRouter();
 
   const [amount, setAmount] = useState<number | string | undefined>(undefined);
+  const [gpsLink, setGpsLink] = useState<number | string | undefined>(
+    orderGpsLink
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [action, setAction] = useState<ActionType>(null);
   const [showModal, setShowModal] = useState(false);
@@ -33,16 +36,19 @@ export default function OrderHeaderActions({
   const canModifyOrder = [
     OrderStatus.PRE_APPROVED,
     OrderStatus.REVIEW,
+    OrderStatus.IN_PROGRESS,
   ].includes(orderStatus);
 
   const canConfirmProposal =
     isAdmin && orderStatus === OrderStatus.REVIEW && !initialAmount;
   const canConfirmOrder = !isAdmin && orderStatus === OrderStatus.PRE_APPROVED;
   const showAmountInput = !initialAmount && canConfirmProposal;
-
+  const showGpsLinkInput = !gpsLink && isAdmin && orderStatus === OrderStatus.IN_PROGRESS;
+  
   const handleOpenModal = (actionType: ActionType) => {
     if (actionType === "cancel") {
       setAmount(undefined);
+      setGpsLink(undefined);
     }
     setAction(actionType);
     setShowModal(true);
@@ -51,7 +57,7 @@ export default function OrderHeaderActions({
   const handleConfirmAction = async () => {
     try {
       setIsLoading(true);
-      await continueOrder(orderId, amount, action === "cancel");
+      await continueOrder(orderId, amount, gpsLink, action === "cancel");
       setShowModal(false);
       setAction(null);
       router.refresh();
@@ -64,6 +70,9 @@ export default function OrderHeaderActions({
   };
 
   const getConfirmButtonLabel = () => {
+    if (orderStatus === OrderStatus.IN_PROGRESS) {
+      return "Agregar link GPS";
+    }
     if (isAdmin && orderStatus === OrderStatus.REVIEW) {
       return initialAmount ? "Confirmar Orden" : "Enviar propuesta";
     }
@@ -74,7 +83,7 @@ export default function OrderHeaderActions({
     if (action === "cancel") {
       return "¿Estás seguro de que deseas cancelar esta orden?";
     }
-    return "¿Estás seguro de que deseas confirmar esta orden?";
+    return "¿Estás seguro de que deseas confirmar?";
   };
 
   return (
@@ -87,16 +96,29 @@ export default function OrderHeaderActions({
 
         {canModifyOrder && (
           <Group>
-            <Button
-              onClick={() => handleOpenModal("cancel")}
-              loading={isLoading}
-              size="md"
-              variant="filled"
-              color="red"
-            >
-              Cancelar Orden
-            </Button>
+            {((isAdmin && orderStatus === OrderStatus.REVIEW) ||
+              orderStatus === OrderStatus.PRE_APPROVED) && (
+              <Button
+                onClick={() => handleOpenModal("cancel")}
+                loading={isLoading}
+                size="md"
+                variant="filled"
+                color="red"
+              >
+                Cancelar Orden
+              </Button>
+            )}
 
+            {isAdmin && !gpsLink && orderStatus === OrderStatus.IN_PROGRESS && (
+              <Button
+                onClick={() => handleOpenModal("confirm")}
+                loading={isLoading}
+                size="md"
+                variant="filled"
+              >
+                {getConfirmButtonLabel()}
+              </Button>
+            )}
             {isAdmin && orderStatus === OrderStatus.REVIEW && (
               <Button
                 onClick={() => handleOpenModal("confirm")}
@@ -145,7 +167,7 @@ export default function OrderHeaderActions({
           setShowModal(false);
           setAction(null);
         }}
-        title={action === "cancel" ? "Cancelar Orden" : "Confirmar Orden"}
+        title={action === "cancel" ? "Cancelar Orden" : "Confirmar"}
         centered
       >
         <div className="space-y-4">
@@ -153,6 +175,11 @@ export default function OrderHeaderActions({
           {showAmountInput && amount && (
             <p className="text-sm text-gray-600">
               Monto de la orden: <strong>${amount}</strong>
+            </p>
+          )}
+          {showGpsLinkInput && gpsLink && (
+            <p className="text-sm text-gray-600">
+              Link GPS: <strong>${gpsLink}</strong>
             </p>
           )}
           <Group justify="flex-end" mt="lg">

@@ -3,7 +3,6 @@
 import { getAuthToken } from "@/lib/api/auth/authApi";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import OneSignal from "react-onesignal";
 import { getCurrentUser } from "@/lib/api/auth/userApi";
 
 export async function login(prevState: any, formData: FormData) {
@@ -43,6 +42,9 @@ export async function login(prevState: any, formData: FormData) {
       // El usuario se pudo autenticar, permitimos continuar
       // El RBACProvider manejará los datos del usuario
     }
+
+    // Retornar success para que el cliente maneje OneSignal.login()
+    return { success: true };
   } catch (error) {
     console.error("Login error:", error);
     return {
@@ -52,7 +54,6 @@ export async function login(prevState: any, formData: FormData) {
           : "Error al iniciar sesión. Por favor, intenta más tarde",
     };
   }
-  redirect("/order");
 }
 
 export async function logout() {

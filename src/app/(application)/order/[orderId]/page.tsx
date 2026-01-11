@@ -87,12 +87,12 @@ export default async ({ params }: PageParams) => {
                     {order.gpsLink ?? "No disponible"}
                   </p>
                 </div>
-                <div>
+                {/* <div>
                   <p className="text-gray-500 ">Link de mapa de recojo</p>
                   <p className="font-medium text-green-600 ">
                     {order.fromAddressLink ?? "No disponible"}
                   </p>
-                </div>
+                </div> */}
                 <div>
                   <p className="text-gray-500 ">Link de mapa de entrega</p>
                   <p className="font-medium text-green-600 ">

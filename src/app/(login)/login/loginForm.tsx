@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,16 +14,61 @@ import { Label } from "@/components/ui/label";
 import { login } from "./action";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, Router } from "lucide-react";
 import { useState } from "react";
+import { getCurrentUser } from "@/lib/api/auth/userApi";
+import OneSignal from "react-onesignal";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [state, formAction] = useActionState(login, undefined);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("alvarocalderom@gmail.com");
   const [password, setPassword] = useState("12345678");
 
   const emailError = email && !isValidEmail(email);
+
+  // Inicializar OneSignal una sola vez
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      console.log(
+        "Initializing OneSignal",
+        process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID
+      );
+
+      OneSignal.init({
+        appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
+        allowLocalhostAsSecureOrigin: true,
+        notifyButton: {
+          enable: true,
+        },
+      });
+      console.log("OneSignal initialized successfully");
+    }
+  }, []);
+
+  useEffect(() => {
+    const registerWithOneSignal = async () => {
+      // Si el estado tiene success, significa que el login fue exitoso
+      if (state?.success) {
+        try {
+          const user = await getCurrentUser();
+          if (user?.id) {
+            await OneSignal.login(user.id);
+            console.log(`OneSignal login successful for userId: ${user.id}`);
+          }
+        } catch (error) {
+          console.error("Error registering with OneSignal:", error);
+        } finally {
+          // Navegar después de intentar registrarse en OneSignal
+          router.push("/order");
+        }
+      }
+    };
+
+    registerWithOneSignal();
+  }, [state, router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
