@@ -6,7 +6,8 @@ export default async function roleValidation(req: NextRequest) {
   const token = (await cookies()).get("session")?.value;
 
   if (path === "/login" && token) {
-    return NextResponse.redirect(new URL("/order", req.url));
+    console.log("Redirecting to /order since user is already authenticated");
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();

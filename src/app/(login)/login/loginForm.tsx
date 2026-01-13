@@ -62,7 +62,7 @@ export default function LoginForm() {
           console.error("Error registering with OneSignal:", error);
         } finally {
           // Navegar después de intentar registrarse en OneSignal
-          router.push("/order");
+          router.push("/");
         }
       }
     };

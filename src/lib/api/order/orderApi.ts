@@ -60,7 +60,7 @@ export const getOrdersByPage = async (
       },
     }
   );
-  if (!res.ok) throw new Error("Failed to create order");
+  if (!res.ok) throw new Error("Failed to list order");
   return res.json();
 };
 
@@ -114,7 +114,9 @@ export const continueOrder = async (
 ): Promise<any> => {
   const token = await getTokenFromLocalStorage();
   const res = await fetch(
-    `${API_BASE_URL}/${orderId}/continue?amount=${amount ?? ""}&gpsLink=${gpsLink ?? ""}&denied=${deny}`,
+    `${API_BASE_URL}/${orderId}/continue?amount=${amount ?? ""}&gpsLink=${
+      gpsLink ?? ""
+    }&denied=${deny}`,
     {
       method: "PUT",
       headers: {

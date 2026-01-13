@@ -15,6 +15,12 @@ import { ProtectedElement } from "@/lib/utils/rbacUtils";
 const mockdata = [
   // { label: "Dashboard", icon: IconGauge },
   {
+    label: "Dashboard",
+    icon: IconDashboard,
+    link: "/",
+    roles: [ROLES.ADMIN, ROLES.CLIENT, ROLES.DRIVER],
+  },
+  {
     label: "Orden",
     icon: IconNotes,
     link: "/order",
@@ -50,12 +56,7 @@ const mockdata = [
     link: "/warehouse",
     roles: [ROLES.ADMIN],
   },
-  {
-    label: "Dashboard",
-    icon: IconDashboard,
-    link: "/",
-    roles: [ROLES.ADMIN, ROLES.CLIENT, ROLES.DRIVER],
-  },
+
   // {
   //   label: "Releases",
   //   icon: IconCalendarStats,
