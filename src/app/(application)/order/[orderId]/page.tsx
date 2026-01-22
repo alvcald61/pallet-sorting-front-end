@@ -8,6 +8,7 @@ import {
 import BulkSummaryTable from "../components/BulkSummaryTable";
 import PalletSummaryTable from "../components/PalletSummaryTable";
 import OrderHeaderActions from "../components/OrderHeaderActions";
+import DocumentUploadZone from "../components/DocumentUploadZone";
 import { Image, NumberInput, TextInput } from "@mantine/core";
 import { OrderStatus } from "@/lib/utils/enums";
 
@@ -33,7 +34,7 @@ export default async ({ params }: PageParams) => {
               orderId={orderId}
               initialAmount={order.amount}
               orderStatus={order.orderStatus}
-              gpsLink={order.gpsLink}
+              orderGpsLink={order.gpsLink}
             />
           </div>
         </div>
@@ -87,12 +88,12 @@ export default async ({ params }: PageParams) => {
                     {order.gpsLink ?? "No disponible"}
                   </p>
                 </div>
-                {/* <div>
+                <div>
                   <p className="text-gray-500 ">Link de mapa de recojo</p>
                   <p className="font-medium text-green-600 ">
                     {order.fromAddressLink ?? "No disponible"}
                   </p>
-                </div> */}
+                </div>
                 <div>
                   <p className="text-gray-500 ">Link de mapa de entrega</p>
                   <p className="font-medium text-green-600 ">
@@ -209,40 +210,23 @@ export default async ({ params }: PageParams) => {
                 ) : (
                   <PalletSummaryTable pallets={order.packages} />
                 )}
-
-                {/* <table className="w-full text-sm">
-                  <thead className="text-left text-gray-500 ">
-                    <tr>
-                      <th className="p-3 font-medium">Item</th>
-                      <th className="p-3 font-medium text-center">Quantity</th>
-                      <th className="p-3 font-medium text-right">Price</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 ">
-                    {order.items.map((item) => {
-                      return (
-                        <tr>
-                          <td className="p-3 font-medium text-gray-800 ">
-                            Running Shoes
-                          </td>
-                          <td className="p-3 text-center text-gray-600 ">1</td>
-                          <td className="p-3 text-right text-gray-600 ">
-                            $80.00
-                          </td>
-                        </tr>
-                      );
-                    })}
-                    <tr>
-                      <td className="p-3 font-medium text-gray-800 ">
-                        Sports Socks
-                      </td>
-                      <td className="p-3 text-center text-gray-600 ">2</td>
-                      <td className="p-3 text-right text-gray-600 ">$22.50</td>
-                    </tr>
-                  </tbody>
-                </table> */}
               </div>
             </div>
+
+            {order.orderStatus === OrderStatus.APPROVED &&
+              order.documents &&
+              order.documents.length > 0 && (
+                <div className="bg-white  p-6 rounded-lg shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900  mb-4">
+                    Documentos Requeridos
+                  </h3>
+                  <DocumentUploadZone
+                    orderId={order.id}
+                    documents={order.documents}
+                    requiredDocuments={["Factura", "Comprobante de entrega"]}
+                  />
+                </div>
+              )}
           </div>
           {order.orderStatus === OrderStatus.REVIEW && (
             <div className="lg:col-span-1">

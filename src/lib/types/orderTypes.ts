@@ -25,6 +25,14 @@ export interface Order {
   gpsLink: string;
   fromAddressLink: string;
   toAddressLink: string;
+  documents: Document[];
+}
+
+export interface Document {
+  documentId: number;
+  documentName: string;
+  link: string;
+  required: boolean;
 }
 
 export interface Package {

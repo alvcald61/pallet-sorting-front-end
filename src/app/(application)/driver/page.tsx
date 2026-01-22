@@ -118,13 +118,13 @@ export default function DriverPage() {
   };
 
   return (
-    <div className="flex flex-col justify-start w-100 grow p-10">
+    <div className="flex flex-col justify-start w-full grow p-10">
       <Breadcrumbs className="mb-4">
         <Anchor href="/truck">Home</Anchor>
         <span>Choferes</span>
       </Breadcrumbs>
 
-      <div className="flex justify-between">
+      <div className="flex justify-between mb-4">
         <Title order={2}>Tus Choferes</Title>
         <Button
           leftSection={<IconPlus size={16} />}

@@ -78,9 +78,9 @@ export const BaseLayout = ({ children }: BaseLayoutProps) => {
             <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"></div>
           </div>
         </header> */}
-        <main className=" flex grow">
+        <main className="flex grow ml-[300px]">
           <NavbarNested />
-          {children}
+          <div className="flex-1 overflow-y-auto">{children}</div>
         </main>
       </div>
     </div>

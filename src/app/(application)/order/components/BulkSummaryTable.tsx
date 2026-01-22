@@ -19,7 +19,7 @@ const BulkSummaryTable = ({ bulk }) => {
       <tbody>
         {bulk.map((item, index) => {
           return (
-            <tr className="bg-white  border-b ">
+            <tr className="bg-white  border-b " key={index}>
               <td className="px-6 py-4 text-center">{`${item.volume} m3`}</td>
               <td className="px-6 py-4 text-center">{`${item.weight} kg`}</td>
               <td className="px-6 py-4 text-right">{`${item.quantity}`}</td>

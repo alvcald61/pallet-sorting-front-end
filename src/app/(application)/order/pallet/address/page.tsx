@@ -81,7 +81,7 @@ const Page = () => {
                     placeholder="Escoja un almacén"
                     data={
                       warehouse?.map((wh) => ({
-                        value: wh.warehouseId + "",
+                        value: String(wh.warehouseId),
                         label: wh.name,
                       })) || []
                     }
@@ -92,14 +92,16 @@ const Page = () => {
                     }}
                     onChange={(value) => {
                       const selectedWarehouse = warehouse?.find(
-                        (wh) => wh.warehouseId + "" === value
+                        (wh) => String(wh.warehouseId) === value
                       );
+                      console.log("Selected warehouse:", selectedWarehouse);
                       setFromAddress({
                         address: selectedWarehouse?.address || "",
                         district: selectedWarehouse?.district || "",
                         city: selectedWarehouse?.city || "",
                         state: selectedWarehouse?.state || "",
-                        warehouseId: selectedWarehouse?.warehouseId + "",
+                        warehouseId: selectedWarehouse?.warehouseId,
+                        addressLink: selectedWarehouse?.addressLink || "",
                       } as AddressFormProps);
                     }}
                   />

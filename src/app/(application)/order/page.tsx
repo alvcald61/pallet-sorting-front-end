@@ -43,8 +43,7 @@ const Page = () => {
           enable: true,
         },
       });
-      
-      
+
       console.log("OneSignal initialized successfully");
     }
   }, []);
@@ -127,7 +126,7 @@ const Page = () => {
           </Button>
         </Box>
       </Modal>
-      <div className="flex flex-col justify-start w-100 grow p-10">
+      <div className="flex flex-col justify-start w-full grow p-10">
         <Breadcrumbs className="mb-4">order</Breadcrumbs>
         <div className="flex justify-between">
           <Title order={2}>Tus Ordenes</Title>

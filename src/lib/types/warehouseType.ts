@@ -9,11 +9,12 @@ export interface Address {
 export interface Warehouse {
   warehouseId: number;
   name: string;
-  address: Address;
-  district: Address;
-  city: Address;
-  state: Address;
+  address: string;
+  district: string;
+  city: string;
+  state: string;
   phone: string;
+  addressLink: string;
   enabled?: boolean;
   createdAt?: string;
   updatedAt?: string;

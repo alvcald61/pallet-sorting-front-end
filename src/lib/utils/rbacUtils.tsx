@@ -1,4 +1,5 @@
 import { useRBAC } from "@/lib/contexts/RBACContext";
+import { Skeleton } from "@mantine/core";
 import { ReactNode } from "react";
 
 interface ProtectedElementProps {
@@ -27,7 +28,9 @@ export function ProtectedElement({
   const { hasRole, hasAnyPermission, loading } = useRBAC();
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return (
+      <Skeleton animate={false} height={8} mt={6} width="70%" radius="xl" />
+    );
   }
 
   let hasAccess = true;

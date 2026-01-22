@@ -134,9 +134,16 @@ export function NavbarNested() {
                   size="lg"
                 />
                 <Stack gap={0} style={{ flex: 1 }}>
-                  <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                    {user.firstName} {user.lastName}
-                  </div>
+                  <Group gap="xs" align="center">
+                    <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                      {user.firstName} {user.lastName}
+                    </div>
+                    {user.roles && user.roles.length > 0 && (
+                      <Badge size="sm" variant="light" color="blue">
+                        {user.roles[0].charAt(0).toUpperCase() + user.roles[0].slice(1).toLowerCase()}
+                      </Badge>
+                    )}
+                  </Group>
                   <div
                     style={{
                       fontSize: "12px",

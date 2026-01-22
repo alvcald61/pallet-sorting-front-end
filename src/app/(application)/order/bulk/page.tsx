@@ -16,6 +16,7 @@ let bulkSchema = object({
   volume: number().required(require).positive(positive),
   weight: number().required(require).positive(positive),
   quantity: number().required(require).positive(positive).integer(integer),
+  height: number().required(require).positive(positive),
 });
 
 const Page = () => {
@@ -36,6 +37,7 @@ const Page = () => {
         volume: 0,
         weight: 0,
         quantity: 0,
+        height: 0,
       }}
       validationSchema={bulkSchema}
       onSubmit={(values) => {
@@ -96,6 +98,22 @@ const Page = () => {
               </div>
               {errors.quantity && touched.quantity ? (
                 <div>{errors.quantity}</div>
+              ) : null}
+            </label>
+            <label className="flex flex-col min-w-40 flex-1">
+              <p className="text-base font-medium leading-normal pb-2">
+                Altura
+              </p>
+              <div className="relative flex items-center">
+                <Field
+                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  placeholder="e.g., 1"
+                  type="number"
+                  name="height"
+                />
+              </div>
+              {errors.height && touched.height ? (
+                <div>{errors.height}</div>
               ) : null}
             </label>
           </div>

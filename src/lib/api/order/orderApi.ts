@@ -7,7 +7,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/order";
 
 export const createOrder = async (
   orderData: any,
-  type: string
+  type: string,
 ): Promise<any> => {
   const token = await getTokenFromLocalStorage();
   const res = await fetch(`${API_BASE_URL}/solve/${type}`, {
@@ -46,7 +46,7 @@ export async function getTokenFromLocalStorage(): Promise<string | null> {
 export const getOrdersByPage = async (
   page: number,
   pageSize: number,
-  isAdmin: boolean
+  isAdmin: boolean,
 ): Promise<any> => {
   const token = await getTokenFromLocalStorage();
 
@@ -58,7 +58,7 @@ export const getOrdersByPage = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   if (!res.ok) throw new Error("Failed to list order");
   return res.json();
@@ -110,7 +110,7 @@ export const continueOrder = async (
   orderId: string,
   amount: number | string | undefined,
   gpsLink: number | string | undefined,
-  deny: boolean
+  deny: boolean,
 ): Promise<any> => {
   const token = await getTokenFromLocalStorage();
   const res = await fetch(
@@ -123,8 +123,31 @@ export const continueOrder = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   if (!res.ok) throw new Error("Failed to update order status");
+  return res.json();
+};
+
+export const uploadOrderDocument = async (
+  orderId: string,
+  documentId: number,
+  file: File,
+): Promise<any> => {
+  const token = await getTokenFromLocalStorage();
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(
+    `${API_BASE_URL}/${orderId}/documents/${documentId}/upload`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    },
+  );
+  if (!res.ok) throw new Error("Failed to upload document");
   return res.json();
 };

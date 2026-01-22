@@ -127,7 +127,7 @@ export default function WarehousePage() {
   };
 
   return (
-    <div className="flex flex-col justify-start w-100 grow p-10">
+    <div className="flex flex-col justify-start w-full grow p-10">
       <Breadcrumbs className="mb-4">
         <Anchor href="/">Dashboard</Anchor>
         <span>Almacenes</span>

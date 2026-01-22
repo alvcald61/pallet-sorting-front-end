@@ -6,7 +6,7 @@ import { Button, Group, Stepper } from "@mantine/core";
 import useOrderStore from "@/lib/store/OrderStore";
 import { createOrder } from "@/lib/api/order/orderApi";
 import { FaCheckCircle } from "react-icons/fa";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 interface OrderLayoutWrapperProps {
   children: React.ReactNode;
   orderType: "BULK" | "TWO_DIMENSIONAL";
@@ -94,7 +94,7 @@ export default function OrderLayoutWrapper({
   const displaySteps = stepsConfig || defaultSteps;
 
   return (
-    <div className="relative flex grow  flex-col group/design-root overflow-x-hidden">
+    <div className="relative flex grow  flex-col group/design-root overflow-x-hidden mt-20">
       <main className="flex flex-col justify-center items-center p-4 w-full">
         <Stepper
           className="flex"

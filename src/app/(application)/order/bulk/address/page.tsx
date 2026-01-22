@@ -34,7 +34,6 @@ const Page = () => {
     city: "",
     state: "",
     addressLink: "",
-    
   });
 
   useEffect(() => {
@@ -97,13 +96,12 @@ const Page = () => {
                     (wh) => String(wh.warehouseId) === value
                   );
                   setFromAddress({
-                    address: selectedWarehouse?.address.address || "",
-                    district: selectedWarehouse?.address.district || "",
-                    city: selectedWarehouse?.address.city || "",
-                    state: selectedWarehouse?.address.state || "",
+                    address: selectedWarehouse?.address || "",
+                    district: selectedWarehouse?.district || "",
+                    city: selectedWarehouse?.city || "",
+                    state: selectedWarehouse?.state || "",
                     warehouseId: selectedWarehouse?.warehouseId,
-                    addressLink:
-                      selectedWarehouse?.address.addressLink || "",
+                    addressLink: selectedWarehouse?.addressLink || "",
                   } as AddressFormProps);
                 }}
               />
