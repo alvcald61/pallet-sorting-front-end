@@ -140,7 +140,8 @@ export function NavbarNested() {
                     </div>
                     {user.roles && user.roles.length > 0 && (
                       <Badge size="sm" variant="light" color="blue">
-                        {user.roles[0].charAt(0).toUpperCase() + user.roles[0].slice(1).toLowerCase()}
+                        {user.roles[0].charAt(0).toUpperCase() +
+                          user.roles[0].slice(1).toLowerCase()}
                       </Badge>
                     )}
                   </Group>
