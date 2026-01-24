@@ -137,6 +137,8 @@ export const uploadOrderDocument = async (
   const token = await getTokenFromLocalStorage();
   const formData = new FormData();
   formData.append("file", file);
+  console.log("Uploading file:", file.name);
+  console.log("File size:", file.size);
 
   const res = await fetch(
     `${API_BASE_URL}/${orderId}/documents/${documentId}/upload`,

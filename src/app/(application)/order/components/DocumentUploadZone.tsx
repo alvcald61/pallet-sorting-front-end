@@ -33,8 +33,12 @@ export default function DocumentUploadZone({
   const [uploadedFiles, setUploadedFiles] = useState<{ [key: number]: File }>(
     {},
   );
+  const [documentLinks, setDocumentLinks] = useState<{ [key: number]: string }>(
+    {},
+  );
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [isSending, setIsSending] = useState(false);
 
   const handleDrop = async (files: File[], documentId: number) => {
     setError(null);
@@ -50,6 +54,11 @@ export default function DocumentUploadZone({
       setUploadProgress((prev) => ({ ...prev, [documentId]: 30 }));
 
       const result = await uploadOrderDocument(orderId, documentId, file);
+
+      // Capturar el link del response (viene en el campo mensaje)
+      if (result && result.mensaje) {
+        setDocumentLinks((prev) => ({ ...prev, [documentId]: result.mensaje }));
+      }
 
       setUploadProgress((prev) => ({ ...prev, [documentId]: 100 }));
       setUploadedFiles((prev) => ({ ...prev, [documentId]: file }));
@@ -72,6 +81,53 @@ export default function DocumentUploadZone({
         const { [documentId]: _, ...rest } = prev;
         return rest;
       });
+    }
+  };
+
+  const handleSendDocuments = async () => {
+    if (Object.keys(uploadedFiles).length === 0) {
+      setError("Por favor, carga al menos un documento antes de enviar");
+      return;
+    }
+
+    setIsSending(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      // Enviar todos los documentos al servidor
+      const uploadPromises = Object.entries(uploadedFiles).map(
+        async ([documentId, file]) => {
+          const result = await uploadOrderDocument(
+            orderId,
+            parseInt(documentId),
+            file,
+          );
+          // Capturar el link del response
+          if (result && result.mensaje) {
+            setDocumentLinks((prev) => ({
+              ...prev,
+              [parseInt(documentId)]: result.mensaje,
+            }));
+          }
+          return result;
+        },
+      );
+
+      await Promise.all(uploadPromises);
+
+      setSuccess("¡Todos los documentos han sido guardados exitosamente!");
+
+      setTimeout(() => {
+        setSuccess(null);
+        onUploadComplete?.();
+      }, 2000);
+    } catch (err) {
+      setError(
+        `Error al guardar documentos: ${err instanceof Error ? err.message : "Error desconocido"}`,
+      );
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -136,7 +192,43 @@ export default function DocumentUploadZone({
               </div>
             )}
 
-            {uploadedFiles[doc.documentId] ? (
+            {documentLinks[doc.documentId] || doc.link ? (
+              <div className="bg-white p-3 rounded border border-green-200">
+                <Group justify="space-between">
+                  <div>
+                    <Text size="sm" fw={500} c="green">
+                      ✓ Archivo guardado
+                    </Text>
+                    <Text size="xs" c="blue" className="truncate">
+                      <a
+                        href={documentLinks[doc.documentId] || doc.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-blue-700"
+                      >
+                        {documentLinks[doc.documentId] || doc.link}
+                      </a>
+                    </Text>
+                  </div>
+                  {/* <Button
+                    size="xs"
+                    variant="subtle"
+                    onClick={() => {
+                      setDocumentLinks((prev) => {
+                        const { [doc.documentId]: _, ...rest } = prev;
+                        return rest;
+                      });
+                      setUploadedFiles((prev) => {
+                        const { [doc.documentId]: _, ...rest } = prev;
+                        return rest;
+                      });
+                    }}
+                  >
+                    Cambiar
+                  </Button> */}
+                </Group>
+              </div>
+            ) : uploadedFiles[doc.documentId] ? (
               <div className="bg-white p-3 rounded border border-green-200">
                 <Group justify="space-between">
                   <div>
@@ -193,6 +285,18 @@ export default function DocumentUploadZone({
             )}
           </div>
         ))}
+      </div>
+
+      <div className="flex justify-end gap-2 mt-6">
+        <Button
+          onClick={handleSendDocuments}
+          loading={isSending}
+          disabled={Object.keys(uploadedFiles).length === 0}
+          size="md"
+          color="green"
+        >
+          Enviar Documentos
+        </Button>
       </div>
     </Stack>
   );
