@@ -162,22 +162,22 @@ export default function WarehousePage() {
             {
               accessor: "address",
               title: "Dirección",
-              render: (warehouse) => <span>{warehouse.address.address}</span>,
+              render: (warehouse) => <span>{warehouse.address}</span>,
             },
             {
               accessor: "district",
               title: "Distrito",
-              render: (warehouse) => <span>{warehouse.address.district}</span>,
+              render: (warehouse) => <span>{warehouse.district}</span>,
             },
             {
               accessor: "city",
               title: "Ciudad",
-              render: (warehouse) => <span>{warehouse.address.city}</span>,
+              render: (warehouse) => <span>{warehouse.city}</span>,
             },
             {
               accessor: "state",
               title: "Región",
-              render: (warehouse) => <span>{warehouse.address.state}</span>,
+              render: (warehouse) => <span>{warehouse.state}</span>,
             },
             {
               accessor: "actions",

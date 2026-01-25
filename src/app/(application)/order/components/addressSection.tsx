@@ -93,9 +93,9 @@ export const AddressForm = ({
               <input
                 className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111418]  focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbe0e6]  bg-white  focus:border-primary h-14 placeholder:text-[#617589] p-[15px] text-base font-normal leading-normal"
                 placeholder="Ingresar el enlace de la direccion"
-                value={address.addressLink || ""}
+                value={address.locationLink || ""}
                 onChange={(e) => {
-                  setAddress({ ...address, addressLink: e.target.value });
+                  setAddress({ ...address, locationLink: e.target.value });
                 }}
                 disabled={!edit}
               />

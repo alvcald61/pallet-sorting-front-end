@@ -9,6 +9,7 @@ import BulkSummaryTable from "../components/BulkSummaryTable";
 import PalletSummaryTable from "../components/PalletSummaryTable";
 import OrderHeaderActions from "../components/OrderHeaderActions";
 import DocumentUploadZone from "../components/DocumentUploadZone";
+import InitiateRouteButton from "../components/InitiateRouteButton";
 import { Image, NumberInput, TextInput } from "@mantine/core";
 import { OrderStatus } from "@/lib/utils/enums";
 
@@ -84,15 +85,15 @@ export default async ({ params }: PageParams) => {
                 </div>
                 <div>
                   <p className="text-gray-500 ">Link de ubicacion</p>
-                  <p className="font-medium text-green-600 ">
+                  <a className="font-medium text-green-600 ">
                     {order.gpsLink ?? "No disponible"}
-                  </p>
+                  </a>
                 </div>
                 <div>
                   <p className="text-gray-500 ">Link de mapa de recojo</p>
-                  <p className="font-medium text-green-600 ">
+                  <a className="font-medium text-green-600 ">
                     {order.fromAddressLink ?? "No disponible"}
-                  </p>
+                  </a>
                 </div>
                 <div>
                   <p className="text-gray-500 ">Link de mapa de entrega</p>
@@ -225,6 +226,14 @@ export default async ({ params }: PageParams) => {
                     documents={order.documents}
                     requiredDocuments={["Factura", "Comprobante de entrega"]}
                   />
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <InitiateRouteButton
+                      orderId={order.id}
+                      orderStatus={order.orderStatus}
+                      isDocumentPending={order.isDocumentPending}
+                      documents={order.documents}
+                    />
+                  </div>
                 </div>
               )}
           </div>

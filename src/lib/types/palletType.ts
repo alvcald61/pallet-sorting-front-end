@@ -31,5 +31,5 @@ export type AddressFormProps = {
   city: string;
   state: string;
   warehouseId?: string;
-  addressLink?: string;
+  locationLink?: string;
 };

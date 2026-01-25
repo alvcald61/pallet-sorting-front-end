@@ -8,7 +8,7 @@ import React, { useEffect } from "react";
 interface WarehouseFormProps {
   opened: boolean;
   onClose: () => void;
-  onSubmit: (data: CreateWarehouseRequest) => Promise<void>;
+  onSubmit: (data: Warehouse) => Promise<void>;
   warehouse?: Warehouse | null;
   isLoading?: boolean;
 }
@@ -28,6 +28,7 @@ export const WarehouseForm: React.FC<WarehouseFormProps> = ({
       district: "",
       city: "",
       state: "",
+      locationLink: "",
     },
     validate: {
       name: (value) =>
@@ -50,10 +51,11 @@ export const WarehouseForm: React.FC<WarehouseFormProps> = ({
       form.setValues({
         name: warehouse.name,
         phone: warehouse.phone,
-        address: warehouse.address.address,
-        district: warehouse.address.district,
-        city: warehouse.address.city,
-        state: warehouse.address.state,
+        address: warehouse.address,
+        district: warehouse.district,
+        city: warehouse.city,
+        state: warehouse.state,
+        locationLink: warehouse.locationLink || "",
       });
     } else {
       form.reset();
@@ -62,15 +64,15 @@ export const WarehouseForm: React.FC<WarehouseFormProps> = ({
 
   const handleSubmit = async (values: any) => {
     try {
-      const submitData: CreateWarehouseRequest = {
+      const submitData: Warehouse = {
+        warehouseId: warehouse ? warehouse.warehouseId : 0,
         name: values.name,
         phone: values.phone,
-        address: {
-          address: values.address,
-          district: values.district,
-          city: values.city,
-          state: values.state,
-        },
+        address: values.address,
+        district: values.district,
+        city: values.city,
+        state: values.state,
+        locationLink: values.locationLink,
       };
       await onSubmit(submitData);
       form.reset();
@@ -124,6 +126,12 @@ export const WarehouseForm: React.FC<WarehouseFormProps> = ({
             label="Región/Estado"
             placeholder="Lima"
             {...form.getInputProps("state")}
+            disabled={isLoading}
+          />
+          <TextInput
+            label="Enlace de Ubicación"
+            placeholder="https://maps.google.com/..."
+            {...form.getInputProps("locationLink")}
             disabled={isLoading}
           />
           <Group justify="flex-end" mt="md">

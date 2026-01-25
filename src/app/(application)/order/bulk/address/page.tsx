@@ -25,7 +25,7 @@ const Page = () => {
     district: "",
     city: "",
     state: "",
-    addressLink: "",
+    locationLink: "",
   });
 
   const [toAddress, setToAddress] = useState<AddressFormProps>({
@@ -33,7 +33,7 @@ const Page = () => {
     district: "",
     city: "",
     state: "",
-    addressLink: "",
+    locationLink: "",
   });
 
   useEffect(() => {
@@ -93,7 +93,7 @@ const Page = () => {
                 }}
                 onChange={(value) => {
                   const selectedWarehouse = warehouse?.find(
-                    (wh) => String(wh.warehouseId) === value
+                    (wh) => String(wh.warehouseId) === value,
                   );
                   setFromAddress({
                     address: selectedWarehouse?.address || "",
@@ -101,7 +101,7 @@ const Page = () => {
                     city: selectedWarehouse?.city || "",
                     state: selectedWarehouse?.state || "",
                     warehouseId: selectedWarehouse?.warehouseId,
-                    addressLink: selectedWarehouse?.addressLink || "",
+                    locationLink: selectedWarehouse?.locationLink || "",
                   } as AddressFormProps);
                 }}
               />
@@ -109,6 +109,7 @@ const Page = () => {
                 title="Desde"
                 address={fromAddress}
                 setAddress={setFromAddress}
+                edit={false}
               />
               <AddressForm
                 title="Hacia"
@@ -131,6 +132,7 @@ const Page = () => {
                         placeholder="Elija una fecha"
                         value={date}
                         onChange={setDate}
+                        minDate={new Date().toDateString()}
                       />
                     </div>
                     <div>

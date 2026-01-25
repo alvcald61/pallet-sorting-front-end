@@ -47,7 +47,15 @@ const Page = () => {
                         Fecha de recojo
                       </p>
                       <p className="text-[#212529]  text-sm font-normal leading-normal">
-                        {address.date} {address.time}
+                        {address.date} 
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <p className="text-gray-500  text-sm font-normal leading-normal">
+                        Hora de recojo
+                      </p>
+                      <p className="text-[#212529]  text-sm font-normal leading-normal">
+                        {address.time} 
                       </p>
                     </div>
                   </div>

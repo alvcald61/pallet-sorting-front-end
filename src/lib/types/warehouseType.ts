@@ -14,7 +14,7 @@ export interface Warehouse {
   city: string;
   state: string;
   phone: string;
-  addressLink: string;
+  locationLink: string;
   enabled?: boolean;
   createdAt?: string;
   updatedAt?: string;
