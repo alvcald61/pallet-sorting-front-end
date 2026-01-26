@@ -16,105 +16,40 @@ import {
   Anchor,
 } from "@mantine/core";
 import { DataTable } from "mantine-datatable";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { DriverForm } from "./components/DriverForm";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
-import { notifications } from "@mantine/notifications";
+import { useCRUD } from "@/lib/hooks/useCRUD";
+import { useFormModal } from "@/lib/hooks/useFormModal";
+import { useDataTable } from "@/lib/hooks/useDataTable";
 
 const PAGE_SIZE = 15;
 
 export default function DriverPage() {
-  const [drivers, setDrivers] = useState<Driver[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [formOpened, setFormOpened] = useState(false);
-  const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
-  const [isFormLoading, setIsFormLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  // Use CRUD hook for data management
+  const drivers = useCRUD({
+    fetchFn: getDrivers,
+    createFn: createDriver,
+    updateFn: (id, data) => updateDriver(String(id), data),
+    deleteFn: (id) => deleteDriver(String(id)),
+    entityName: "Chofer",
+    getItemId: (driver) => driver.driverId,
+    getItemDisplayName: (driver) => `${driver.firstName} ${driver.lastName}`,
+  });
 
-  // Fetch drivers on mount
-  useEffect(() => {
-    fetchDrivers();
-  }, [page]);
+  // Use form modal hook for modal state
+  const formModal = useFormModal<Driver>();
 
-  const fetchDrivers = async () => {
-    try {
-      setLoading(true);
-      const response = await getDrivers();
-      setDrivers(response.data || []);
-    } catch (error) {
-      notifications.show({
-        color: "red",
-        title: "Error",
-        message: "Failed to load drivers",
-      });
-      console.error("Error fetching drivers:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreateClick = () => {
-    setSelectedDriver(null);
-    setFormOpened(true);
-  };
-
-  const handleEditClick = (driver: Driver) => {
-    setSelectedDriver(driver);
-    setFormOpened(true);
-  };
+  // Use data table hook for pagination
+  const table = useDataTable(drivers.items, { pageSize: PAGE_SIZE });
 
   const handleFormSubmit = async (data: any) => {
-    try {
-      setIsFormLoading(true);
-      if (selectedDriver) {
-        await updateDriver(selectedDriver.driverId + "", data);
-        notifications.show({
-          color: "green",
-          title: "Success",
-          message: "Driver updated successfully",
-        });
-      } else {
-        await createDriver(data);
-        notifications.show({
-          color: "green",
-          title: "Success",
-          message: "Driver created successfully",
-        });
-      }
-      await fetchDrivers();
-    } catch (error) {
-      notifications.show({
-        color: "red",
-        title: "Error",
-        message: selectedDriver
-          ? "Failed to update driver"
-          : "Failed to create driver",
-      });
-      console.error("Error:", error);
-    } finally {
-      setIsFormLoading(false);
+    if (formModal.selected) {
+      await drivers.update(formModal.selected.driverId, data);
+    } else {
+      await drivers.create(data);
     }
-  };
-
-  const handleDelete = async (driver: Driver) => {
-    if (confirm(`Are you sure you want to delete ${driver.firstName}?`)) {
-      try {
-        await deleteDriver(driver.driverId + "");
-        notifications.show({
-          color: "green",
-          title: "Success",
-          message: "Driver deleted successfully",
-        });
-        await fetchDrivers();
-      } catch (error) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: "Failed to delete driver",
-        });
-        console.error("Error:", error);
-      }
-    }
+    formModal.close();
   };
 
   return (
@@ -128,7 +63,7 @@ export default function DriverPage() {
         <Title order={2}>Tus Choferes</Title>
         <Button
           leftSection={<IconPlus size={16} />}
-          onClick={handleCreateClick}
+          onClick={formModal.openCreate}
         >
           Crear Chofer
         </Button>
@@ -140,7 +75,7 @@ export default function DriverPage() {
         withColumnBorders
         striped
         highlightOnHover
-        records={drivers}
+        records={table.paginatedData}
         columns={[
           {
             accessor: "dni",
@@ -171,8 +106,8 @@ export default function DriverPage() {
                   size="sm"
                   variant="subtle"
                   color="blue"
-                  onClick={() => handleEditClick(driver as Driver)}
-                  disabled={loading}
+                  onClick={() => formModal.openEdit(driver as Driver)}
+                  disabled={drivers.loading}
                 >
                   <IconEdit size={16} />
                 </ActionIcon>
@@ -180,8 +115,8 @@ export default function DriverPage() {
                   size="sm"
                   variant="subtle"
                   color="red"
-                  onClick={() => handleDelete(driver as Driver)}
-                  disabled={loading}
+                  onClick={() => drivers.remove(driver as Driver)}
+                  disabled={drivers.loading}
                 >
                   <IconTrash size={16} />
                 </ActionIcon>
@@ -190,24 +125,22 @@ export default function DriverPage() {
           },
         ]}
         idAccessor="id"
-        page={page}
-        onPageChange={setPage}
-        totalRecords={drivers.length}
-        recordsPerPage={PAGE_SIZE}
-        fetching={loading}
+        page={table.page}
+        onPageChange={table.setPage}
+        totalRecords={table.totalRecords}
+        recordsPerPage={table.pageSize}
+        fetching={drivers.loading}
         height={500}
       />
 
       <DriverForm
-        opened={formOpened}
-        onClose={() => {
-          setFormOpened(false);
-          setSelectedDriver(null);
-        }}
+        opened={formModal.opened}
+        onClose={formModal.close}
         onSubmit={handleFormSubmit}
-        driver={selectedDriver}
-        isLoading={isFormLoading}
+        driver={formModal.selected}
+        isLoading={drivers.loading}
       />
     </div>
   );
 }
+
