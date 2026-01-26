@@ -101,7 +101,7 @@ const Page = () => {
                         city: selectedWarehouse?.city || "",
                         state: selectedWarehouse?.state || "",
                         warehouseId: selectedWarehouse?.warehouseId,
-                        addressLink: selectedWarehouse?.addressLink || "",
+                        addressLink: selectedWarehouse?.locationLink || "",
                       } as AddressFormProps);
                     }}
                   />

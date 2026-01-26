@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import { Document } from "@/lib/types/orderTypes";
 import { uploadOrderDocument } from "@/lib/api/order/orderApi";
+import { useCanAccess } from "@/lib/utils/rbacUtils";
 
 interface DocumentUploadZoneProps {
   orderId: string;
@@ -27,6 +28,11 @@ export default function DocumentUploadZone({
   requiredDocuments = [],
   onUploadComplete,
 }: DocumentUploadZoneProps) {
+  const isClient = useCanAccess(
+      ["CLIENT"]
+      // [PERMISSIONS.ORDER.CREATE],
+      // false // requireAll = false (tiene almenos uno)
+    );
   const [uploadProgress, setUploadProgress] = useState<{
     [key: number]: number;
   }>({});
@@ -132,7 +138,7 @@ export default function DocumentUploadZone({
   };
 
   return (
-    <Stack gap="lg">
+    isClient && (<Stack gap="lg">
       {error && (
         <Alert color="red" title="Error">
           {error}
@@ -298,6 +304,6 @@ export default function DocumentUploadZone({
           Enviar Documentos
         </Button>
       </div>
-    </Stack>
+    </Stack>)
   );
 }

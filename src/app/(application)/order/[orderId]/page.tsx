@@ -4,13 +4,13 @@ import {
   getOrderStatus,
   getDistributionImg,
 } from "@/lib/api/order/orderApi";
-// import React, { useState } from "react";
-import BulkSummaryTable from "../components/BulkSummaryTable";
-import PalletSummaryTable from "../components/PalletSummaryTable";
 import OrderHeaderActions from "../components/OrderHeaderActions";
 import DocumentUploadZone from "../components/DocumentUploadZone";
 import InitiateRouteButton from "../components/InitiateRouteButton";
-import { Image, NumberInput, TextInput } from "@mantine/core";
+import OrderInformationCard from "../components/OrderInformationCard";
+import TruckAndDriverCard from "../components/TruckAndDriverCard";
+import PackagesCard from "../components/PackagesCard";
+import { Image } from "@mantine/core";
 import { OrderStatus } from "@/lib/utils/enums";
 
 type PageParams = {
@@ -42,67 +42,17 @@ export default async ({ params }: PageParams) => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white  p-6 rounded-lg shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900  mb-4">
-                Order Information
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
-                <div>
-                  <p className="text-gray-500 ">Order Date</p>
-                  <p className="font-medium text-gray-800 ">
-                    {order.createdAt}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-500 ">Total Amount</p>
-                  <p className="font-medium text-gray-800 ">
-                    {order.amount ? order.amount : "Pending"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-500 ">Source Address</p>
-                  <p className="font-medium text-gray-800 ">
-                    {order.fromAddress}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-500 ">Destiny Address</p>
-                  <p className="font-medium text-gray-800 ">
-                    {order.toAddress}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-500 ">Peso total</p>
-                  <p className="font-medium text-gray-800 ">
-                    {order.totalWeight}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-500 ">Volumen total</p>
-                  <p className="font-medium text-green-600 ">
-                    {order.totalVolume}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-500 ">Link de ubicacion</p>
-                  <a className="font-medium text-green-600 ">
-                    {order.gpsLink ?? "No disponible"}
-                  </a>
-                </div>
-                <div>
-                  <p className="text-gray-500 ">Link de mapa de recojo</p>
-                  <a className="font-medium text-green-600 ">
-                    {order.fromAddressLink ?? "No disponible"}
-                  </a>
-                </div>
-                <div>
-                  <p className="text-gray-500 ">Link de mapa de entrega</p>
-                  <p className="font-medium text-green-600 ">
-                    {order.toAddressLink ?? "No disponible"}
-                  </p>
-                </div>
-              </div>
-            </div>
+            <OrderInformationCard
+              createdAt={order.createdAt}
+              amount={order.amount}
+              fromAddress={order.fromAddress}
+              toAddress={order.toAddress}
+              totalWeight={order.totalWeight}
+              totalVolume={order.totalVolume}
+              gpsLink={order.gpsLink}
+              fromAddressLink={order.fromAddressLink}
+              toAddressLink={order.toAddressLink}
+            />
             {order.orderType !== "BULK" ? (
               <div className="bg-white  p-6 rounded-lg shadow-sm">
                 <h3 className="text-lg font-semibold text-gray-900  mb-4">
@@ -119,104 +69,17 @@ export default async ({ params }: PageParams) => {
                 </div>
               </div>
             ) : null}
-            <div className="bg-white  p-6 rounded-lg shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900  mb-4">
-                Camión y Chofer
-              </h3>
-              <div className="space-y-6">
-                <div>
-                  <p className="text-sm font-semibold text-gray-700  mb-3">
-                    Información del Camión
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm bg-gray-50  p-4 rounded">
-                    <div>
-                      <p className="text-gray-500 ">Placa</p>
-                      <p className="font-medium text-gray-800 ">
-                        {order.truck.licensePlate}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 ">Estado</p>
-                      <p className="font-medium text-gray-800 ">
-                        {order.truck.status}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 ">Volumen (m³)</p>
-                      <p className="font-medium text-gray-800 ">
-                        {order.truck.volume}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 ">Peso (kg)</p>
-                      <p className="font-medium text-gray-800 ">
-                        {order.truck.weight}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 ">Área (m²)</p>
-                      <p className="font-medium text-gray-800 ">
-                        {order.truck.area}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 ">Dimensiones</p>
-                      <p className="font-medium text-gray-800 ">
-                        {order.truck.length}m × {order.truck.width}m ×{" "}
-                        {order.truck.height}m
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-700  mb-3">
-                    Información del Chofer
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm bg-gray-50  p-4 rounded">
-                    <div>
-                      <p className="text-gray-500 ">Nombre Completo</p>
-                      <p className="font-medium text-gray-800 ">
-                        {order.driver.firstName} {order.driver.lastName}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 ">DNI</p>
-                      <p className="font-medium text-gray-800 ">
-                        {order.driver.dni}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 ">Teléfono</p>
-                      <p className="font-medium text-gray-800 ">
-                        {order.driver.phone}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 ">Email</p>
-                      <p className="font-medium text-gray-800 ">
-                        {order.driver.email}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white  p-6 rounded-lg shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900  mb-4">
-                Paquetes
-              </h3>
-              <div className="overflow-x-auto">
-                {order.orderType === "BULK" ? (
-                  <BulkSummaryTable bulk={order.packages} />
-                ) : (
-                  <PalletSummaryTable pallets={order.packages} />
-                )}
-              </div>
-            </div>
+            <TruckAndDriverCard truck={order.truck} driver={order.driver} />
+            <PackagesCard
+              orderType={order.orderType}
+              packages={order.packages}
+            />
 
             {order.orderStatus === OrderStatus.APPROVED &&
               order.documents &&
-              order.documents.length > 0 && (
+              order.documents.length > 0 &&
+              order.isDocumentPending &&
+              (
                 <div className="bg-white  p-6 rounded-lg shadow-sm">
                   <h3 className="text-lg font-semibold text-gray-900  mb-4">
                     Documentos Requeridos
