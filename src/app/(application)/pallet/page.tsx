@@ -17,112 +17,40 @@ import {
   Anchor,
 } from "@mantine/core";
 import { DataTable } from "mantine-datatable";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { PalletForm } from "./components/PalletForm";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
-import { notifications } from "@mantine/notifications";
+import { useCRUD } from "@/lib/hooks/useCRUD";
+import { useFormModal } from "@/lib/hooks/useFormModal";
+import { useDataTable } from "@/lib/hooks/useDataTable";
 
 const PAGE_SIZE = 15;
 
 export default function PalletPage() {
-  const [pallets, setPallets] = useState<Pallet[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [formOpened, setFormOpened] = useState(false);
-  const [selectedPallet, setSelectedPallet] = useState<Pallet | null>(null);
-  const [isFormLoading, setIsFormLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  // Use CRUD hook for data management
+  const pallets = useCRUD({
+    fetchFn: getPallets,
+    createFn: createPallet,
+    updateFn: (id, data) => updatePallet(String(id), data),
+    deleteFn: (id) => deletePallet(String(id)),
+    entityName: "Pallet",
+    getItemId: (pallet) => pallet.id,
+    getItemDisplayName: (pallet) => `Pallet #${pallet.id}`,
+  });
 
-  // Fetch pallets on mount
-  useEffect(() => {
-    fetchPallets();
-  }, [page]);
+  // Use form modal hook for modal state
+  const formModal = useFormModal<Pallet>();
 
-  const fetchPallets = async () => {
-    try {
-      setLoading(true);
-      const response = await getPallets();
-      setPallets(response.data || []);
-    } catch (error) {
-      notifications.show({
-        color: "red",
-        title: "Error",
-        message: "Error al cargar pallets",
-      });
-      console.error("Error fetching pallets:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreateClick = () => {
-    setSelectedPallet(null);
-    setFormOpened(true);
-  };
-
-  const handleEditClick = (pallet: Pallet) => {
-    setSelectedPallet(pallet);
-    setFormOpened(true);
-  };
+  // Use data table hook for pagination
+  const table = useDataTable(pallets.items, { pageSize: PAGE_SIZE });
 
   const handleFormSubmit = async (data: any) => {
-    try {
-      setIsFormLoading(true);
-      if (selectedPallet) {
-        await updatePallet(selectedPallet.id, data);
-        notifications.show({
-          color: "green",
-          title: "Éxito",
-          message: "Pallet actualizado correctamente",
-        });
-      } else {
-        await createPallet(data);
-        notifications.show({
-          color: "green",
-          title: "Éxito",
-          message: "Pallet creado correctamente",
-        });
-      }
-      await fetchPallets();
-    } catch (error) {
-      notifications.show({
-        color: "red",
-        title: "Error",
-        message: selectedPallet
-          ? "Error al actualizar pallet"
-          : "Error al crear pallet",
-      });
-      console.error("Error:", error);
-    } finally {
-      setIsFormLoading(false);
+    if (formModal.selected) {
+      await pallets.update(formModal.selected.id, data);
+    } else {
+      await pallets.create(data);
     }
-  };
-
-  const handleDelete = async (pallet: Pallet) => {
-    if (
-      window.confirm(
-        `¿Estás seguro de que deseas eliminar el pallet ${pallet.id}?`
-      )
-    ) {
-      try {
-        setLoading(true);
-        await deletePallet(pallet.id);
-        notifications.show({
-          color: "green",
-          title: "Éxito",
-          message: "Pallet eliminado correctamente",
-        });
-        await fetchPallets();
-      } catch (error) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: "Error al eliminar pallet",
-        });
-        console.error("Error deleting pallet:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
+    formModal.close();
   };
 
   const formatDate = (date?: string) => {
@@ -140,7 +68,7 @@ export default function PalletPage() {
         <Title order={2}>Configuración de Pallets</Title>
         <Button
           leftSection={<IconPlus size={16} />}
-          onClick={handleCreateClick}
+          onClick={formModal.openCreate}
         >
           Crear Pallet
         </Button>
@@ -153,7 +81,7 @@ export default function PalletPage() {
           withColumnBorders
           striped
           highlightOnHover
-          records={pallets}
+          records={table.paginatedData}
           columns={[
             {
               accessor: "id",
@@ -210,8 +138,8 @@ export default function PalletPage() {
                     size="sm"
                     variant="subtle"
                     color="blue"
-                    onClick={() => handleEditClick(pallet)}
-                    disabled={loading}
+                    onClick={() => formModal.openEdit(pallet)}
+                    disabled={pallets.loading}
                   >
                     <IconEdit size={16} />
                   </ActionIcon>
@@ -219,8 +147,8 @@ export default function PalletPage() {
                     size="sm"
                     variant="subtle"
                     color="red"
-                    onClick={() => handleDelete(pallet)}
-                    disabled={loading}
+                    onClick={() => pallets.remove(pallet)}
+                    disabled={pallets.loading}
                   >
                     <IconTrash size={16} />
                   </ActionIcon>
@@ -229,24 +157,21 @@ export default function PalletPage() {
             },
           ]}
           idAccessor="id"
-          page={page}
-          onPageChange={setPage}
-          totalRecords={pallets.length}
-          recordsPerPage={PAGE_SIZE}
-          fetching={loading}
+          page={table.page}
+          onPageChange={table.setPage}
+          totalRecords={table.totalRecords}
+          recordsPerPage={table.pageSize}
+          fetching={pallets.loading}
           height={500}
         />
       </div>
 
       <PalletForm
-        opened={formOpened}
-        onClose={() => {
-          setFormOpened(false);
-          setSelectedPallet(null);
-        }}
+        opened={formModal.opened}
+        onClose={formModal.close}
         onSubmit={handleFormSubmit}
-        pallet={selectedPallet}
-        isLoading={isFormLoading}
+        pallet={formModal.selected}
+        isLoading={pallets.loading}
       />
     </div>
   );
