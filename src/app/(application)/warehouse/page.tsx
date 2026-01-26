@@ -19,15 +19,16 @@ import { DataTable } from "mantine-datatable";
 import React from "react";
 import { WarehouseForm } from "./components/WarehouseForm";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
-import { useCRUD } from "@/lib/hooks/useCRUD";
+import { useCRUDWithQuery } from "@/lib/hooks/useCRUDWithQuery";
 import { useFormModal } from "@/lib/hooks/useFormModal";
 import { useDataTable } from "@/lib/hooks/useDataTable";
 
 const PAGE_SIZE = 15;
 
 export default function WarehousePage() {
-  // Use CRUD hook for data management
-  const warehouses = useCRUD({
+  // Use CRUD hook with React Query
+  const warehouses = useCRUDWithQuery({
+    queryKey: ["warehouses"],
     fetchFn: getWarehouses,
     createFn: createWarehouse,
     updateFn: (id, data) => updateWarehouse(String(id), data),
@@ -63,6 +64,7 @@ export default function WarehousePage() {
         <Button
           leftSection={<IconPlus size={16} />}
           onClick={formModal.openCreate}
+          disabled={warehouses.isCreating}
         >
           Crear Almacén
         </Button>
@@ -115,7 +117,7 @@ export default function WarehousePage() {
                     variant="subtle"
                     color="blue"
                     onClick={() => formModal.openEdit(warehouse)}
-                    disabled={warehouses.loading}
+                    disabled={warehouses.loading || warehouses.isUpdating}
                   >
                     <IconEdit size={16} />
                   </ActionIcon>
@@ -124,7 +126,7 @@ export default function WarehousePage() {
                     variant="subtle"
                     color="red"
                     onClick={() => warehouses.remove(warehouse)}
-                    disabled={warehouses.loading}
+                    disabled={warehouses.loading || warehouses.isDeleting}
                   >
                     <IconTrash size={16} />
                   </ActionIcon>
@@ -147,7 +149,7 @@ export default function WarehousePage() {
         onClose={formModal.close}
         onSubmit={handleFormSubmit}
         warehouse={formModal.selected}
-        isLoading={warehouses.loading}
+        isLoading={warehouses.isCreating || warehouses.isUpdating}
       />
     </div>
   );

@@ -19,15 +19,16 @@ import { DataTable } from "mantine-datatable";
 import React from "react";
 import { DriverForm } from "./components/DriverForm";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
-import { useCRUD } from "@/lib/hooks/useCRUD";
+import { useCRUDWithQuery } from "@/lib/hooks/useCRUDWithQuery";
 import { useFormModal } from "@/lib/hooks/useFormModal";
 import { useDataTable } from "@/lib/hooks/useDataTable";
 
 const PAGE_SIZE = 15;
 
 export default function DriverPage() {
-  // Use CRUD hook for data management
-  const drivers = useCRUD({
+  // Use CRUD hook with React Query
+  const drivers = useCRUDWithQuery({
+    queryKey: ["drivers"],
     fetchFn: getDrivers,
     createFn: createDriver,
     updateFn: (id, data) => updateDriver(String(id), data),
@@ -64,6 +65,7 @@ export default function DriverPage() {
         <Button
           leftSection={<IconPlus size={16} />}
           onClick={formModal.openCreate}
+          disabled={drivers.isCreating}
         >
           Crear Chofer
         </Button>
@@ -107,7 +109,7 @@ export default function DriverPage() {
                   variant="subtle"
                   color="blue"
                   onClick={() => formModal.openEdit(driver as Driver)}
-                  disabled={drivers.loading}
+                  disabled={drivers.loading || drivers.isUpdating}
                 >
                   <IconEdit size={16} />
                 </ActionIcon>
@@ -116,7 +118,7 @@ export default function DriverPage() {
                   variant="subtle"
                   color="red"
                   onClick={() => drivers.remove(driver as Driver)}
-                  disabled={drivers.loading}
+                  disabled={drivers.loading || drivers.isDeleting}
                 >
                   <IconTrash size={16} />
                 </ActionIcon>
@@ -138,9 +140,8 @@ export default function DriverPage() {
         onClose={formModal.close}
         onSubmit={handleFormSubmit}
         driver={formModal.selected}
-        isLoading={drivers.loading}
+        isLoading={drivers.isCreating || drivers.isUpdating}
       />
     </div>
   );
 }
-

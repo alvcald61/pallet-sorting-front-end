@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-
 import useOrderStore from "@/lib/store/OrderStore";
 import {
   Breadcrumbs,
@@ -12,17 +11,14 @@ import {
   Select,
   Box,
 } from "@mantine/core";
-import { BsPlusCircle } from "react-icons/bs";
-import { getOrdersByPage } from "@/lib/api/order/orderApi";
-import { getClients } from "@/lib/api/client/clientApi";
-import { showNotification } from "@mantine/notifications";
 import { DataTable } from "mantine-datatable";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
-import { Order } from "@/lib/types/orderRequest";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
-import { PERMISSIONS } from "@/lib/const/rbac";
 import OneSignal from "react-onesignal";
+import { useQuery } from "@tanstack/react-query";
+import { getClients } from "@/lib/api/client/clientApi";
+import { useOrders } from "@/lib/hooks/useOrder";
 
 const PAGE_SIZE = 15;
 
@@ -30,12 +26,8 @@ const Page = () => {
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
   const [page, setPage] = useState(1);
-  const [fetching, setFetching] = useState(false);
   const [to, setTo] = useState("");
-  const [clients, setClients] = useState<{ value: string; label: string }[]>([]);
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
-  const [records, setRecords] = useState<Order[]>([]);
-  const [pageInfo, setPageInfo] = useState({ totalElements: 0, totalPages: 0 });
 
   const { addUserId } = useOrderStore();
   const isAdmin = useCanAccess(["ADMIN"]);
@@ -53,38 +45,33 @@ const Page = () => {
     }
   }, []);
 
-  // Fetch orders on page change
-  useEffect(() => {
-    const fetchData = async () => {
-      setFetching(true);
-      try {
-        const result = await getOrdersByPage(page - 1, PAGE_SIZE, isAdmin);
-        setPageInfo(result.pageInfo);
-        setRecords(result.data || []);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        setFetching(false);
-      }
-    };
-    fetchData();
-  }, [page, isAdmin]);
+  // Fetch orders with React Query using custom hook
+  const { data: ordersData, isLoading: isFetchingOrders } = useOrders(
+    page - 1,
+    PAGE_SIZE,
+    isAdmin
+  );
+
+  const records = ordersData?.data || [];
+  const pageInfo = ordersData?.pageInfo || { totalElements: 0, totalPages: 0 };
+
+  // Fetch clients with React Query (only when needed)
+  const { data: clientsData, isLoading: isFetchingClients } = useQuery({
+    queryKey: ["clients"],
+    queryFn: getClients,
+    enabled: isAdmin && opened, // Only fetch when modal is open and user is admin
+  });
+
+  const clients =
+    clientsData?.data.map((client: any) => ({
+      value: `${client.id}`,
+      label: `${client.businessName} - ${client.ruc}`,
+    })) || [];
 
   const openModal = async (value: string) => {
     if (isAdmin) {
       setTo(value);
-      try {
-        const clientsData = await getClients();
-        setClients(
-          clientsData.data.map((client: any) => ({
-            value: `${client.id}`,
-            label: `${client.businessName} - ${client.ruc}`,
-          }))
-        );
-        open();
-      } catch (error) {
-        console.error("Error fetching clients:", error);
-      }
+      open();
     } else {
       router.push(value);
     }
@@ -104,6 +91,7 @@ const Page = () => {
           value={selectedClient}
           onChange={setSelectedClient}
           placeholder="Seleccionar cliente"
+          disabled={isFetchingClients}
         />
         <Box className="flex justify-end mt-4">
           <Button onClick={handleContinue}>Continuar</Button>
@@ -167,7 +155,7 @@ const Page = () => {
             totalRecords={pageInfo.totalElements}
             recordsPerPage={PAGE_SIZE}
             page={page}
-            fetching={fetching}
+            fetching={isFetchingOrders}
             loadingText="Cargando..."
             noRecordsText="No se encontraron órdenes"
             height={500}

@@ -20,15 +20,16 @@ import { DataTable } from "mantine-datatable";
 import React from "react";
 import { ClientForm } from "./components/ClientForm";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
-import { useCRUD } from "@/lib/hooks/useCRUD";
+import { useCRUDWithQuery } from "@/lib/hooks/useCRUDWithQuery";
 import { useFormModal } from "@/lib/hooks/useFormModal";
 import { useDataTable } from "@/lib/hooks/useDataTable";
 
 const PAGE_SIZE = 15;
 
 export default function ClientPage() {
-  // Use CRUD hook for data management
-  const clients = useCRUD({
+  // Use CRUD hook with React Query for automatic caching
+  const clients = useCRUDWithQuery({
+    queryKey: ["clients"],
     fetchFn: getClients,
     createFn: createClient,
     updateFn: (id, data) => updateClient(String(id), data),
@@ -64,6 +65,7 @@ export default function ClientPage() {
         <Button
           leftSection={<IconPlus size={16} />}
           onClick={formModal.openCreate}
+          disabled={clients.isCreating}
         >
           Crear Cliente
         </Button>
@@ -134,7 +136,7 @@ export default function ClientPage() {
                     variant="subtle"
                     color="blue"
                     onClick={() => formModal.openEdit(client)}
-                    disabled={clients.loading}
+                    disabled={clients.loading || clients.isUpdating}
                   >
                     <IconEdit size={16} />
                   </ActionIcon>
@@ -143,7 +145,7 @@ export default function ClientPage() {
                     variant="subtle"
                     color="red"
                     onClick={() => clients.remove(client)}
-                    disabled={clients.loading}
+                    disabled={clients.loading || clients.isDeleting}
                   >
                     <IconTrash size={16} />
                   </ActionIcon>
@@ -166,9 +168,8 @@ export default function ClientPage() {
         onClose={formModal.close}
         onSubmit={handleFormSubmit}
         client={formModal.selected}
-        isLoading={clients.loading}
+        isLoading={clients.isCreating || clients.isUpdating}
       />
     </div>
   );
 }
-

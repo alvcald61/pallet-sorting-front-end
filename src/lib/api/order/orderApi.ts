@@ -1,155 +1,117 @@
-"use server";
+import { apiClient } from "../apiClient";
 import { Order } from "@/lib/types/orderTypes";
 import { Wrapper } from "@/lib/utils";
-import { cookies } from "next/headers";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/order";
-
-export const createOrder = async (
-  orderData: any,
-  type: string,
-): Promise<any> => {
-  const token = await getTokenFromLocalStorage();
-  const res = await fetch(`${API_BASE_URL}/solve/${type}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(orderData),
-  });
-  if (!res.ok) throw new Error("Failed to create order");
-  return res.json();
-};
-
-export const getOrders = async (): Promise<any[]> => {
-  const res = await fetch(API_BASE_URL);
-  if (!res.ok) throw new Error("Failed to fetch orders");
-  return res.json();
-};
-
-export const getAvailableSlots = async (date: string): Promise<string[]> => {
-  const res = await fetch(`${API_BASE_URL}/available-slots?date=${date}`);
-  if (!res.ok) throw new Error("Failed to fetch available slots");
-  return res.json();
-};
-
-export async function getTokenFromLocalStorage(): Promise<string | null> {
-  const token = (await cookies()).get("session")?.value;
-  return token || null;
-  // if (typeof window !== "undefined") {
-  //   return localStorage.getItem("jwt");
-  // }
-  // return null;
+interface OrdersByPageParams {
+  page: number;
+  pageSize: number;
+  isAdmin: boolean;
 }
 
-export const getOrdersByPage = async (
-  page: number,
-  pageSize: number,
-  isAdmin: boolean,
-): Promise<any> => {
-  const token = await getTokenFromLocalStorage();
+interface CreateOrderParams {
+  orderData: any;
+  type: string;
+}
 
-  const res = await fetch(
-    `${API_BASE_URL}?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
+interface ContinueOrderParams {
+  orderId: string;
+  amount?: number | string;
+  gpsLink?: number | string;
+  deny: boolean;
+}
+
+interface UploadDocumentParams {
+  orderId: string;
+  documentId: number;
+  file: File;
+}
+
+/**
+ * Order API - Refactored to use apiClient
+ */
+
+export const createOrder = async ({ orderData, type }: CreateOrderParams) => {
+  return apiClient.post<any>(`/order/solve/${type}`, orderData);
+};
+
+export const getOrders = async () => {
+  return apiClient.get<any[]>("/order");
+};
+
+export const getAvailableSlots = async (date: string) => {
+  return apiClient.get<string[]>(`/order/available-slots?date=${date}`);
+};
+
+export const getOrdersByPage = async ({
+  page,
+  pageSize,
+  isAdmin,
+}: OrdersByPageParams) => {
+  return apiClient.get<any>(
+    `/order?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`
   );
-  if (!res.ok) throw new Error("Failed to list order");
-  return res.json();
 };
 
-export const getOrderById = async (id: string): Promise<Wrapper<Order>> => {
-  const token = await getTokenFromLocalStorage();
-  const res = await fetch(`${API_BASE_URL}/${id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) throw new Error("Failed to create order");
-  const body = res.json();
-  return body;
+export const getOrderById = async (id: string) => {
+  return apiClient.get<Wrapper<Order>>(`/order/${id}`);
 };
 
-export const getOrderStatus = async (id: string): Promise<any> => {
-  const token = await getTokenFromLocalStorage();
-  const res = await fetch(`${API_BASE_URL}/${id}/status`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) throw new Error("Failed to create order");
-  const body = res.json();
-  return body;
+export const getOrderStatus = async (id: string) => {
+  return apiClient.get<any>(`/order/${id}/status`);
 };
 
-export const getDistributionImg = async (id: string): Promise<any> => {
-  const token = await getTokenFromLocalStorage();
-  const res = await fetch(`${API_BASE_URL}/${id}/image`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  // if (!res.ok) throw new Error("Failed to create order");
-  if (!res.ok) return null;
-  const body = res.text();
-  return body;
+export const getDistributionImg = async (id: string) => {
+  try {
+    // For image/text response, use fetch directly
+    const response = await apiClient.get<any>(`/order/${id}/image`);
+    return response;
+  } catch (error) {
+    console.error("Error fetching distribution image:", error);
+    return null;
+  }
 };
 
-export const continueOrder = async (
-  orderId: string,
-  amount: number | string | undefined,
-  gpsLink: number | string | undefined,
-  deny: boolean,
-): Promise<any> => {
-  const token = await getTokenFromLocalStorage();
-  const res = await fetch(
-    `${API_BASE_URL}/${orderId}/continue?amount=${amount ?? ""}&gpsLink=${
-      gpsLink ?? ""
-    }&denied=${deny}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
-  if (!res.ok) throw new Error("Failed to update order status");
-  return res.json();
+export const continueOrder = async ({
+  orderId,
+  amount,
+  gpsLink,
+  deny,
+}: ContinueOrderParams) => {
+  const params = new URLSearchParams();
+  if (amount !== undefined) params.append("amount", String(amount));
+  if (gpsLink !== undefined) params.append("gpsLink", String(gpsLink));
+  params.append("denied", String(deny));
+
+  return apiClient.put<any>(`/order/${orderId}/continue?${params.toString()}`);
 };
 
-export const uploadOrderDocument = async (
-  orderId: string,
-  documentId: number,
-  file: File,
-): Promise<any> => {
-  const token = await getTokenFromLocalStorage();
+export const uploadOrderDocument = async ({
+  orderId,
+  documentId,
+  file,
+}: UploadDocumentParams) => {
   const formData = new FormData();
   formData.append("file", file);
-  console.log("Uploading file:", file.name);
-  console.log("File size:", file.size);
 
-  const res = await fetch(
-    `${API_BASE_URL}/${orderId}/documents/${documentId}/upload`,
+  // apiClient doesn't handle FormData well, so we'll use fetch directly
+  // but with proper error handling
+  const token = localStorage.getItem("jwt");
+  const baseURL = process.env.NEXT_PUBLIC_BACKEND_HOST;
+
+  const response = await fetch(
+    `${baseURL}/api/order/${orderId}/documents/${documentId}/upload`,
     {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
       body: formData,
-    },
+    }
   );
-  if (!res.ok) throw new Error("Failed to upload document");
-  return res.json();
+
+  if (!response.ok) {
+    throw new Error("Failed to upload document");
+  }
+
+  return response.json();
 };

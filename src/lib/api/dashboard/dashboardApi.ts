@@ -1,107 +1,33 @@
-"use server";
-import { cookies } from "next/headers";
+import { apiClient } from "../apiClient";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/dashboard";
+/**
+ * Dashboard API - Refactored to use apiClient
+ */
 
-async function getTokenFromCookies(): Promise<string | null> {
-  const token = (await cookies()).get("session")?.value;
-  return token || null;
-}
-
-// Obtener estadísticas generales del dashboard
-export const getDashboardStats = async (): Promise<any> => {
-  const token = await getTokenFromCookies();
-  const res = await fetch(`${API_BASE_URL}/stats`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) throw new Error("Failed to fetch dashboard stats");
-  return res.json();
+export const getDashboardStats = async () => {
+  return apiClient.get<any>("/dashboard/stats");
 };
 
-// Obtener órdenes pendientes
-export const getPendingOrders = async (limit: number = 10): Promise<any> => {
-  const token = await getTokenFromCookies();
-  const res = await fetch(`${API_BASE_URL}/pending-orders?limit=${limit}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) throw new Error("Failed to fetch pending orders");
-  return res.json();
+export const getPendingOrders = async (limit: number = 10) => {
+  return apiClient.get<any>(`/dashboard/pending-orders?limit=${limit}`);
 };
 
-// Obtener órdenes por cliente
-export const getOrdersByClient = async (): Promise<any> => {
-  const token = await getTokenFromCookies();
-  const res = await fetch(`${API_BASE_URL}/orders-by-client`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) throw new Error("Failed to fetch orders by client");
-  return res.json();
+export const getOrdersByClient = async () => {
+  return apiClient.get<any>("/dashboard/orders-by-client");
 };
 
-// Obtener órdenes por chofer
-export const getOrdersByDriver = async (): Promise<any> => {
-  const token = await getTokenFromCookies();
-  const res = await fetch(`${API_BASE_URL}/orders-by-driver`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) throw new Error("Failed to fetch orders by driver");
-  return res.json();
+export const getOrdersByDriver = async () => {
+  return apiClient.get<any>("/dashboard/orders-by-driver");
 };
 
-// Obtener órdenes por camión
-export const getOrdersByTruck = async (): Promise<any> => {
-  const token = await getTokenFromCookies();
-  const res = await fetch(`${API_BASE_URL}/orders-by-truck`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) throw new Error("Failed to fetch orders by truck");
-  return res.json();
+export const getOrdersByTruck = async () => {
+  return apiClient.get<any>("/dashboard/orders-by-truck");
 };
 
-// Obtener órdenes por estado
-export const getOrdersByStatus = async (): Promise<any> => {
-  const token = await getTokenFromCookies();
-  const res = await fetch(`${API_BASE_URL}/orders-by-status`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) throw new Error("Failed to fetch orders by status");
-  return res.json();
+export const getOrdersByStatus = async () => {
+  return apiClient.get<any>("/dashboard/orders-by-status");
 };
 
-// Obtener datos de rendimiento (volumen, peso total, etc)
-export const getPerformanceMetrics = async (): Promise<any> => {
-  const token = await getTokenFromCookies();
-  const res = await fetch(`${API_BASE_URL}/performance-metrics`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) throw new Error("Failed to fetch performance metrics");
-  return res.json();
+export const getPerformanceMetrics = async () => {
+  return apiClient.get<any>("/dashboard/performance-metrics");
 };

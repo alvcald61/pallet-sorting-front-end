@@ -26,7 +26,7 @@ export interface Order {
   fromAddressLink: string;
   toAddressLink: string;
   documents: Document[];
-  isDocumentPending: boolean;
+  documentPending: boolean;
 }
 
 export interface Document {

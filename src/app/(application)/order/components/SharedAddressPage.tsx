@@ -6,8 +6,9 @@ import { AddressForm } from "../components/addressSection";
 import { AddressFormProps } from "@/lib/types/palletType";
 import { getAvailableSlots } from "@/lib/api/order/orderApi";
 import useOrderStore from "@/lib/store/OrderStore";
-import { getWarehouses } from "@/lib/api/warehouse/warehouseApi";
 import { Warehouse } from "@/lib/types/warehouseType";
+import { useQuery } from "@tanstack/react-query";
+import { getWarehouses } from "@/lib/api/warehouse/warehouseApi";
 
 interface SharedAddressPageProps {
   title?: string;
@@ -15,7 +16,7 @@ interface SharedAddressPageProps {
 }
 
 /**
- * Shared Address Page Component
+ * Shared Address Page Component (with React Query)
  * Used by both bulk and pallet order flows
  */
 export const SharedAddressPage: React.FC<SharedAddressPageProps> = ({
@@ -28,7 +29,6 @@ export const SharedAddressPage: React.FC<SharedAddressPageProps> = ({
   const [date, setDate] = useState<string | null>(address?.date || null);
   const [time, setTime] = useState<string | null>(address?.time || null);
   const [hours, setHours] = useState<string[] | null>(null);
-  const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   
   const [fromAddress, setFromAddress] = useState<AddressFormProps>({
     address: address?.fromAddress?.address || "",
@@ -46,6 +46,13 @@ export const SharedAddressPage: React.FC<SharedAddressPageProps> = ({
     locationLink: address?.toAddress?.locationLink || "",
   });
 
+  // Fetch warehouses with React Query
+  const { data: warehousesData } = useQuery({
+    queryKey: ["warehouses"],
+    queryFn: getWarehouses,
+  });
+  const warehouses = warehousesData?.data || [];
+
   // Update store when addresses change
   useEffect(() => {
     addAddress({
@@ -58,21 +65,18 @@ export const SharedAddressPage: React.FC<SharedAddressPageProps> = ({
 
   // Fetch available time slots when date changes
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (date) {
+    const fetchSlots = async () => {
+      if (date) {
+        try {
           const slots = await getAvailableSlots(date);
           setHours(slots);
+        } catch (error) {
+          console.error("Error fetching slots:", error);
         }
-        
-        const warehousesData = await getWarehouses();
-        setWarehouses(warehousesData.data || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
       }
     };
     
-    fetchData();
+    fetchSlots();
   }, [date]);
 
   const handleWarehouseSelect = (warehouseId: string | null) => {

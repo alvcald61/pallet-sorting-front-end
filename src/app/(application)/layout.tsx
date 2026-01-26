@@ -17,6 +17,7 @@ import { theme } from "./theme";
 import "./styles.css";
 import { RBACProvider } from "@/lib/contexts/RBACContext";
 import { BaseLayout } from "@/components/layouts/BaseLayout";
+import { ReactQueryProvider } from "@/lib/providers/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -45,15 +46,18 @@ export default function RootLayout({
         /> */}
       </head>
       <body className="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
-        <MantineProvider
-          // forceColorScheme="dark"
-          theme={theme}
-        >
-          <RBACProvider>
-            <BaseLayout>{children}</BaseLayout>
-          </RBACProvider>
-        </MantineProvider>
+        <ReactQueryProvider>
+          <MantineProvider
+            // forceColorScheme="dark"
+            theme={theme}
+          >
+            <RBACProvider>
+              <BaseLayout>{children}</BaseLayout>
+            </RBACProvider>
+          </MantineProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );
 }
+

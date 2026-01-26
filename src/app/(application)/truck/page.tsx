@@ -19,20 +19,27 @@ import {
   Anchor,
 } from "@mantine/core";
 import { DataTable } from "mantine-datatable";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { TruckForm } from "./components/TruckForm";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
-import { useCRUD } from "@/lib/hooks/useCRUD";
+import { useCRUDWithQuery } from "@/lib/hooks/useCRUDWithQuery";
 import { useFormModal } from "@/lib/hooks/useFormModal";
 import { useDataTable } from "@/lib/hooks/useDataTable";
+import { useQuery } from "@tanstack/react-query";
 
 const PAGE_SIZE = 15;
 
 export default function TruckPage() {
-  const [drivers, setDrivers] = useState<Driver[]>([]);
+  // Fetch drivers with React Query
+  const { data: driversData } = useQuery({
+    queryKey: ["drivers"],
+    queryFn: getDrivers,
+  });
+  const drivers = driversData?.data || [];
 
-  // Use CRUD hook for data management
-  const trucks = useCRUD({
+  // Use CRUD hook with React Query for trucks
+  const trucks = useCRUDWithQuery({
+    queryKey: ["trucks"],
     fetchFn: getTrucks,
     createFn: createTruck,
     updateFn: (id, data) => updateTruck(String(id), data),
@@ -47,20 +54,6 @@ export default function TruckPage() {
 
   // Use data table hook for pagination
   const table = useDataTable(trucks.items, { pageSize: PAGE_SIZE });
-
-  // Fetch drivers for display
-  useEffect(() => {
-    fetchDrivers();
-  }, []);
-
-  const fetchDrivers = async () => {
-    try {
-      const response = await getDrivers();
-      setDrivers(response.data || []);
-    } catch (error) {
-      console.error("Error fetching drivers:", error);
-    }
-  };
 
   const getDriverName = (driverId?: string) => {
     if (!driverId) return "Sin asignar";
@@ -123,6 +116,7 @@ export default function TruckPage() {
         <Button
           leftSection={<IconPlus size={16} />}
           onClick={formModal.openCreate}
+          disabled={trucks.isCreating}
         >
           Crear Camión
         </Button>
@@ -208,7 +202,7 @@ export default function TruckPage() {
                   variant="subtle"
                   color="blue"
                   onClick={() => formModal.openEdit(truck)}
-                  disabled={trucks.loading}
+                  disabled={trucks.loading || trucks.isUpdating}
                 >
                   <IconEdit size={16} />
                 </ActionIcon>
@@ -217,7 +211,7 @@ export default function TruckPage() {
                   variant="subtle"
                   color="red"
                   onClick={() => trucks.remove(truck)}
-                  disabled={trucks.loading}
+                  disabled={trucks.loading || trucks.isDeleting}
                 >
                   <IconTrash size={16} />
                 </ActionIcon>
@@ -239,7 +233,7 @@ export default function TruckPage() {
         onClose={formModal.close}
         onSubmit={handleFormSubmit}
         truck={formModal.selected}
-        isLoading={trucks.loading}
+        isLoading={trucks.isCreating || trucks.isUpdating}
       />
     </div>
   );

@@ -20,15 +20,16 @@ import { DataTable } from "mantine-datatable";
 import React from "react";
 import { PalletForm } from "./components/PalletForm";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
-import { useCRUD } from "@/lib/hooks/useCRUD";
+import { useCRUDWithQuery } from "@/lib/hooks/useCRUDWithQuery";
 import { useFormModal } from "@/lib/hooks/useFormModal";
 import { useDataTable } from "@/lib/hooks/useDataTable";
 
 const PAGE_SIZE = 15;
 
 export default function PalletPage() {
-  // Use CRUD hook for data management
-  const pallets = useCRUD({
+  // Use CRUD hook with React Query
+  const pallets = useCRUDWithQuery({
+    queryKey: ["pallets"],
     fetchFn: getPallets,
     createFn: createPallet,
     updateFn: (id, data) => updatePallet(String(id), data),
@@ -69,6 +70,7 @@ export default function PalletPage() {
         <Button
           leftSection={<IconPlus size={16} />}
           onClick={formModal.openCreate}
+          disabled={pallets.isCreating}
         >
           Crear Pallet
         </Button>
@@ -139,7 +141,7 @@ export default function PalletPage() {
                     variant="subtle"
                     color="blue"
                     onClick={() => formModal.openEdit(pallet)}
-                    disabled={pallets.loading}
+                    disabled={pallets.loading || pallets.isUpdating}
                   >
                     <IconEdit size={16} />
                   </ActionIcon>
@@ -148,7 +150,7 @@ export default function PalletPage() {
                     variant="subtle"
                     color="red"
                     onClick={() => pallets.remove(pallet)}
-                    disabled={pallets.loading}
+                    disabled={pallets.loading || pallets.isDeleting}
                   >
                     <IconTrash size={16} />
                   </ActionIcon>
@@ -171,7 +173,7 @@ export default function PalletPage() {
         onClose={formModal.close}
         onSubmit={handleFormSubmit}
         pallet={formModal.selected}
-        isLoading={pallets.loading}
+        isLoading={pallets.isCreating || pallets.isUpdating}
       />
     </div>
   );
