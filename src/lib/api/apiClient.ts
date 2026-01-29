@@ -1,9 +1,11 @@
+"use server";
 /**
  * Centralized HTTP Client for API requests
  * 
- * Provides type-safe HTTP methods with built-in error handling
- * and consistent configuration across all API calls.
+ * Automatically adds /api prefix to all routes
+ * Automatically includes Authorization Bearer header in all requests
  */
+import { cookies } from 'next/headers';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST || 'http://localhost:5000';
 
@@ -18,6 +20,27 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Get authentication token from cookies (client-side)
+ * Reads the "session" cookie from document.cookie
+ */
+const getAuthToken = (): string | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  // Parse cookies from document.cookie
+  const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+    const [key, value] = cookie.trim().split('=');
+    acc[key] = value;
+    return acc;
+  }, {} as Record<string, string>);
+
+  return cookies['session'] || null;
+};
+
+
+
 interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean>;
 }
@@ -29,14 +52,43 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
+  /**
+   * Builds the full URL with /api prefix
+   */
+  private buildURL(endpoint: string): string {
+    // Remove leading slash if present
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+    
+    // Always prepend /api
+    return `${this.baseUrl}/api/${cleanEndpoint}`;
+  }
+
+  /**
+   * Gets default headers including Authorization Bearer
+   */
+  private getHeaders(customHeaders?: HeadersInit): HeadersInit {
+    const token = getAuthToken();
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      ...customHeaders,
+    };
+
+    // Add Authorization Bearer header if token exists
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return headers;
+  }
+
   private async request<T>(
     endpoint: string,
     options: RequestOptions = {}
   ): Promise<T> {
     const { params, ...fetchOptions } = options;
 
-    // Build URL with query params if provided
-    let url = `${this.baseUrl}${endpoint}`;
+    // Build URL with /api prefix and query params if provided
+    let url = this.buildURL(endpoint);
     if (params) {
       const searchParams = new URLSearchParams(
         Object.entries(params).map(([key, value]) => [key, String(value)])
@@ -44,11 +96,9 @@ class ApiClient {
       url += `?${searchParams.toString()}`;
     }
 
-    // Default headers
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...fetchOptions.headers,
-    };
+    // Get headers with Authorization
+    const headers = this.getHeaders(fetchOptions.headers);
+    console.log("Headers:", headers);
 
     try {
       const response = await fetch(url, {
