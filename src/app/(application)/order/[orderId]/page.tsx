@@ -78,7 +78,6 @@ export default async ({ params }: PageParams) => {
             {order.orderStatus === OrderStatus.APPROVED &&
               order.documents &&
               order.documents.length > 0 &&
-              order.documentPending &&
               (
                 <div className="bg-white  p-6 rounded-lg shadow-sm">
                   <h3 className="text-lg font-semibold text-gray-900  mb-4">
@@ -93,7 +92,7 @@ export default async ({ params }: PageParams) => {
                     <InitiateRouteButton
                       orderId={order.id}
                       orderStatus={order.orderStatus}
-                      isDocumentPending={order.isDocumentPending}
+                      isDocumentPending={order.documentPending}
                       documents={order.documents}
                     />
                   </div>

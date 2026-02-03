@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
 import { OrderStatus } from "@/lib/utils/enums";
 import { Document } from "@/lib/types/orderTypes";
+import { quickStatusUpdate } from "@/lib/api/transport/transportApi";
+import { TransportStatus } from "@/lib/types/trnasportTypes";
 
 interface InitiateRouteButtonProps {
   orderId: string;
@@ -45,7 +47,8 @@ export default function InitiateRouteButton({
     try {
       setIsLoading(true);
       // Llamar a continueOrder sin amount, gpsLink y con deny=false
-      await continueOrder(orderId, undefined, undefined, false);
+      // await continueOrder({orderId, deny: false});
+      await quickStatusUpdate(orderId, TransportStatus.EN_ROUTE_TO_WAREHOUSE);
       setShowModal(false);
       router.refresh();
     } catch (error) {

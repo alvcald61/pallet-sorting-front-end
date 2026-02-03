@@ -1,4 +1,4 @@
-import { apiClient } from "../apiClient";
+import { get, post, put } from "../apiClient";
 import { Order } from "@/lib/types/orderTypes";
 import { Wrapper } from "@/lib/utils";
 
@@ -31,15 +31,15 @@ interface UploadDocumentParams {
  */
 
 export const createOrder = async ({ orderData, type }: CreateOrderParams) => {
-  return apiClient.post<any>(`/order/solve/${type}`, orderData);
+  return post<any>(`/order/solve/${type}`, orderData);
 };
 
 export const getOrders = async () => {
-  return apiClient.get<any[]>("/order");
+  return get<any[]>("/order");
 };
 
 export const getAvailableSlots = async (date: string) => {
-  return apiClient.get<string[]>(`/order/available-slots?date=${date}`);
+  return get<string[]>(`/order/available-slots?date=${date}`);
 };
 
 export const getOrdersByPage = async ({
@@ -47,23 +47,23 @@ export const getOrdersByPage = async ({
   pageSize,
   isAdmin,
 }: OrdersByPageParams) => {
-  return apiClient.get<any>(
+  return get<any>(
     `/order?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`
   );
 };
 
 export const getOrderById = async (id: string) => {
-  return apiClient.get<Wrapper<Order>>(`/order/${id}`);
+  return get<Wrapper<Order>>(`/order/${id}`);
 };
 
 export const getOrderStatus = async (id: string) => {
-  return apiClient.get<any>(`/order/${id}/status`);
+  return get<any>(`/order/${id}/status`);
 };
 
 export const getDistributionImg = async (id: string) => {
   try {
     // For image/text response, use fetch directly
-    const response = await apiClient.get<any>(`/order/${id}/image`);
+    const response = await get<any>(`/order/${id}/image`);
     return response;
   } catch (error) {
     console.error("Error fetching distribution image:", error);
@@ -81,8 +81,8 @@ export const continueOrder = async ({
   if (amount !== undefined) params.append("amount", String(amount));
   if (gpsLink !== undefined) params.append("gpsLink", String(gpsLink));
   params.append("denied", String(deny));
-
-  return apiClient.put<any>(`/order/${orderId}/continue?${params.toString()}`);
+  console.log(orderId);
+  return put<any>(`/order/${orderId}/continue?${params.toString()}`);
 };
 
 export const uploadOrderDocument = async ({

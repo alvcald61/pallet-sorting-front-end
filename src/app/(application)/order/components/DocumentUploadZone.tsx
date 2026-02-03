@@ -59,7 +59,7 @@ export default function DocumentUploadZone({
       // Simular progreso de carga
       setUploadProgress((prev) => ({ ...prev, [documentId]: 30 }));
 
-      const result = await uploadOrderDocument(orderId, documentId, file);
+      const result = await uploadOrderDocument({orderId, documentId, file});
 
       // Capturar el link del response (viene en el campo mensaje)
       if (result && result.mensaje) {
@@ -104,11 +104,7 @@ export default function DocumentUploadZone({
       // Enviar todos los documentos al servidor
       const uploadPromises = Object.entries(uploadedFiles).map(
         async ([documentId, file]) => {
-          const result = await uploadOrderDocument(
-            orderId,
-            parseInt(documentId),
-            file,
-          );
+          const result = await uploadOrderDocument({orderId, documentId: parseInt(documentId), file});
           // Capturar el link del response
           if (result && result.mensaje) {
             setDocumentLinks((prev) => ({
@@ -138,8 +134,9 @@ export default function DocumentUploadZone({
   };
 
   return (
-    isClient && (<Stack gap="lg">
-      {error && (
+    <Stack gap="lg">
+      {/* Alerts - solo visibles para CLIENT que puede subir */}
+      {isClient && error && (
         <Alert color="red" title="Error">
           {error}
           <button
@@ -150,7 +147,7 @@ export default function DocumentUploadZone({
           </button>
         </Alert>
       )}
-      {success && (
+      {isClient && success && (
         <Alert color="green" title="Éxito">
           {success}
           <button
@@ -162,148 +159,152 @@ export default function DocumentUploadZone({
         </Alert>
       )}
 
+      {/* Lista de documentos - visible para TODOS */}
       <div className="space-y-4">
-        {documents.map((doc) => (
-          <div
-            key={doc.documentId}
-            className="border rounded-lg p-4 bg-gray-50"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Text fw={500} size="sm">
-                  {doc.documentName}
-                </Text>
-                {doc.required ? (
-                  <Badge size="sm" color="red">
-                    Requerido
-                  </Badge>
-                ) : (
-                  <Badge size="sm" color="gray" variant="outline">
-                    Opcional
-                  </Badge>
-                )}
-              </div>
-              <Badge color={doc.link ? "green" : "yellow"} variant="light">
-                {doc.link ? "Completado" : "Pendiente"}
-              </Badge>
-            </div>
+        {documents.map((doc) => {
+          const hasLink = documentLinks[doc.documentId] || doc.link;
+          const hasUploadedFile = uploadedFiles[doc.documentId];
+          const isUploading = uploadProgress[doc.documentId] !== undefined;
 
-            {uploadProgress[doc.documentId] !== undefined && (
-              <div className="mb-3">
-                <Progress
-                  value={uploadProgress[doc.documentId]}
-                  size="sm"
-                  color="blue"
-                />
+          return (
+            <div
+              key={doc.documentId}
+              className="border rounded-lg p-4 bg-gray-50"
+            >
+              {/* Header: Nombre y estado - visible para TODOS */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Text fw={500} size="sm">
+                    {doc.documentName}
+                  </Text>
+                  {doc.required ? (
+                    <Badge size="sm" color="red">
+                      Requerido
+                    </Badge>
+                  ) : (
+                    <Badge size="sm" color="gray" variant="outline">
+                      Opcional
+                    </Badge>
+                  )}
+                </div>
+                <Badge color={hasLink ? "green" : "yellow"} variant="light">
+                  {hasLink ? "Completado" : "Pendiente"}
+                </Badge>
               </div>
-            )}
 
-            {documentLinks[doc.documentId] || doc.link ? (
-              <div className="bg-white p-3 rounded border border-green-200">
-                <Group justify="space-between">
+              {/* Progress bar - solo para CLIENT subiendo */}
+              {isClient && isUploading && (
+                <div className="mb-3">
+                  <Progress
+                    value={uploadProgress[doc.documentId]}
+                    size="sm"
+                    color="blue"
+                  />
+                </div>
+              )}
+
+              {/* Documento subido con link - visible para TODOS */}
+              {hasLink ? (
+                <div className="bg-white p-3 rounded border border-green-200">
                   <div>
                     <Text size="sm" fw={500} c="green">
                       ✓ Archivo guardado
                     </Text>
-                    <Text size="xs" c="blue" className="truncate">
+                    <Text size="xs" c="blue" className="truncate max-w-full">
                       <a
                         href={documentLinks[doc.documentId] || doc.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="underline hover:text-blue-700"
+                        className="underline hover:text-blue-700 break-all"
                       >
-                        {documentLinks[doc.documentId] || doc.link}
+                        Ver documento
                       </a>
                     </Text>
                   </div>
-                  {/* <Button
-                    size="xs"
-                    variant="subtle"
-                    onClick={() => {
-                      setDocumentLinks((prev) => {
-                        const { [doc.documentId]: _, ...rest } = prev;
-                        return rest;
-                      });
-                      setUploadedFiles((prev) => {
-                        const { [doc.documentId]: _, ...rest } = prev;
-                        return rest;
-                      });
-                    }}
-                  >
-                    Cambiar
-                  </Button> */}
-                </Group>
-              </div>
-            ) : uploadedFiles[doc.documentId] ? (
-              <div className="bg-white p-3 rounded border border-green-200">
-                <Group justify="space-between">
-                  <div>
-                    <Text size="sm" fw={500} c="green">
-                      ✓ {uploadedFiles[doc.documentId].name}
-                    </Text>
-                    <Text size="xs" c="dimmed">
-                      {(
-                        uploadedFiles[doc.documentId].size /
-                        1024 /
-                        1024
-                      ).toFixed(2)}{" "}
-                      MB
-                    </Text>
-                  </div>
-                  <Button
-                    size="xs"
-                    variant="subtle"
-                    onClick={() => {
-                      setUploadedFiles((prev) => {
-                        const { [doc.documentId]: _, ...rest } = prev;
-                        return rest;
-                      });
-                    }}
-                  >
-                    Cambiar
-                  </Button>
-                </Group>
-              </div>
-            ) : (
-              <Dropzone
-                onDrop={(files) => handleDrop(files, doc.documentId)}
-                accept={[...IMAGE_MIME_TYPE, ...PDF_MIME_TYPE]}
-                multiple={false}
-                maxSize={50 * 1024 * 1024}
-                disabled={uploadProgress[doc.documentId] !== undefined}
-              >
-                <Group
-                  justify="center"
-                  gap="xl"
-                  mih={100}
-                  style={{ pointerEvents: "none" }}
+                </div>
+              ) : hasUploadedFile && isClient ? (
+                /* Archivo cargado localmente pero no enviado - solo CLIENT */
+                <div className="bg-white p-3 rounded border border-blue-200">
+                  <Group justify="space-between">
+                    <div>
+                      <Text size="sm" fw={500} c="blue">
+                        📎 {uploadedFiles[doc.documentId].name}
+                      </Text>
+                      <Text size="xs" c="dimmed">
+                        {(
+                          uploadedFiles[doc.documentId].size /
+                          1024 /
+                          1024
+                        ).toFixed(2)}{" "}
+                        MB - Listo para enviar
+                      </Text>
+                    </div>
+                    <Button
+                      size="xs"
+                      variant="subtle"
+                      onClick={() => {
+                        setUploadedFiles((prev) => {
+                          const { [doc.documentId]: _, ...rest } = prev;
+                          return rest;
+                        });
+                      }}
+                    >
+                      Cambiar
+                    </Button>
+                  </Group>
+                </div>
+              ) : isClient ? (
+                /* Dropzone - solo para CLIENT */
+                <Dropzone
+                  onDrop={(files) => handleDrop(files, doc.documentId)}
+                  accept={[...IMAGE_MIME_TYPE, ...PDF_MIME_TYPE]}
+                  multiple={false}
+                  maxSize={50 * 1024 * 1024}
+                  disabled={isUploading}
                 >
-                  <Stack gap={0} align="center">
-                    <Text size="sm" fw={500}>
-                      Arrastra el archivo aquí o haz clic para seleccionar
-                    </Text>
-                    <Text size="xs" c="dimmed">
-                      PDF o Imagen (máx. 50MB)
-                    </Text>
-                  </Stack>
-                </Group>
-              </Dropzone>
-            )}
-          </div>
-        ))}
+                  <Group
+                    justify="center"
+                    gap="xl"
+                    mih={100}
+                    style={{ pointerEvents: "none" }}
+                  >
+                    <Stack gap={0} align="center">
+                      <Text size="sm" fw={500}>
+                        Arrastra el archivo aquí o haz clic para seleccionar
+                      </Text>
+                      <Text size="xs" c="dimmed">
+                        PDF o Imagen (máx. 50MB)
+                      </Text>
+                    </Stack>
+                  </Group>
+                </Dropzone>
+              ) : (
+                /* Placeholder para usuarios no-CLIENT */
+                <div className="bg-white p-3 rounded border border-gray-300">
+                  <Text size="sm" c="dimmed" ta="center">
+                    Esperando que el cliente suba el documento
+                  </Text>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      <div className="flex justify-end gap-2 mt-6">
-        <Button
-          onClick={handleSendDocuments}
-          loading={isSending}
-          disabled={Object.keys(uploadedFiles).length === 0}
-          size="md"
-          color="green"
-        >
-          Enviar Documentos
-        </Button>
-      </div>
-    </Stack>)
+      {/* Botón de enviar - solo para CLIENT */}
+      {isClient && (
+        <div className="flex justify-end gap-2 mt-6">
+          <Button
+            onClick={handleSendDocuments}
+            loading={isSending}
+            disabled={Object.keys(uploadedFiles).length === 0}
+            size="md"
+            color="green"
+          >
+            Enviar Documentos
+          </Button>
+        </div>
+      )}
+    </Stack>
   );
 }

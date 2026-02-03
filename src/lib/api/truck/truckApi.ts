@@ -3,30 +3,30 @@ import {
   Truck,
   UpdateTruckRequest,
 } from "@/lib/types/truckType";
-import { apiClient } from "../apiClient";
+import { get, post, put, apiDelete } from "../apiClient";
 
 export async function getTrucks(): Promise<{ data: Truck[] }> {
-  return apiClient.get<{ data: Truck[] }>("/api/truck");
+  return get<{ data: Truck[] }>("/api/truck");
 }
 
 export async function getTruckById(id: string): Promise<{ data: Truck }> {
-  return apiClient.get<{ data: Truck }>(`/api/truck/${id}`);
+  return get<{ data: Truck }>(`/api/truck/${id}`);
 }
 
 export async function createTruck(
   data: CreateTruckRequest
 ): Promise<{ data: Truck }> {
-  return apiClient.post<{ data: Truck }>("/api/truck", data);
+  return post<{ data: Truck }>("/api/truck", data);
 }
 
 export async function updateTruck(
   id: string,
   data: CreateTruckRequest
 ): Promise<{ data: Truck }> {
-  return apiClient.put<{ data: Truck }>(`/api/truck/${id}`, data);
+  return put<{ data: Truck }>(`/api/truck/${id}`, data);
 }
 
 export async function deleteTruck(id: string): Promise<void> {
-  await apiClient.delete<void>(`/api/truck/${id}`);
+  await apiDelete<void>(`/api/truck/${id}`);
 }
 
