@@ -6,6 +6,7 @@ import { continueOrder } from "@/lib/api/order/orderApi";
 import { useRouter } from "next/navigation";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
 import { OrderStatus } from "@/lib/utils/enums";
+import OrderStatusBadge from "./OrderStatusBadge";
 
 interface OrderHeaderActionsProps {
   orderId: string;
@@ -92,6 +93,9 @@ export default function OrderHeaderActions({
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Order Details</h1>
           <p className="text-gray-500 mt-1">Order {orderId}</p>
+          <div className="mt-3">
+            <OrderStatusBadge status={orderStatus} variant="badge" />
+          </div>
         </div>
 
         {canModifyOrder && (

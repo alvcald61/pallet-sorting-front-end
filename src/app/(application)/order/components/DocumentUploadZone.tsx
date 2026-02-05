@@ -59,12 +59,12 @@ export default function DocumentUploadZone({
       // Simular progreso de carga
       setUploadProgress((prev) => ({ ...prev, [documentId]: 30 }));
 
-      const result = await uploadOrderDocument({orderId, documentId, file});
+      // const result = await uploadOrderDocument({orderId, documentId, file});
 
-      // Capturar el link del response (viene en el campo mensaje)
-      if (result && result.mensaje) {
-        setDocumentLinks((prev) => ({ ...prev, [documentId]: result.mensaje }));
-      }
+      // // Capturar el link del response (viene en el campo mensaje)
+      // if (result && result.mensaje) {
+      //   setDocumentLinks((prev) => ({ ...prev, [documentId]: result.mensaje }));
+      // }
 
       setUploadProgress((prev) => ({ ...prev, [documentId]: 100 }));
       setUploadedFiles((prev) => ({ ...prev, [documentId]: file }));

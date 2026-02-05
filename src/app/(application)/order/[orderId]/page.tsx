@@ -5,6 +5,7 @@ import {
   getDistributionImg,
 } from "@/lib/api/order/orderApi";
 import OrderHeaderActions from "../components/OrderHeaderActions";
+import OrderStatusBadge from "../components/OrderStatusBadge";
 import DocumentUploadZone from "../components/DocumentUploadZone";
 import InitiateRouteButton from "../components/InitiateRouteButton";
 import TransportFlow from "../components/TransportFlow";
@@ -30,6 +31,11 @@ export default async ({ params }: PageParams) => {
   return (
     <main className="flex-1 px-4 sm:px-6 lg:px-8 xl:px-40 py-10">
       <div className="max-w-5xl mx-auto">
+        {/* Order Status Banner - Prominent Display */}
+        {/* <div className="mb-8">
+          <OrderStatusBadge status={order.orderStatus} variant="banner" />
+        </div> */}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <OrderHeaderActions
