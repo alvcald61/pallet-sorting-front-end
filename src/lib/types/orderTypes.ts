@@ -1,4 +1,5 @@
 import { OrderStatus } from "../utils/enums";
+import { TransportStatus } from "./trnasportTypes";
 
 export interface Order {
   id: string;
@@ -27,6 +28,7 @@ export interface Order {
   toAddressLink: string;
   documents: Document[];
   documentPending: boolean;
+  transportStatus?: TransportStatus;
 }
 
 export interface Document {

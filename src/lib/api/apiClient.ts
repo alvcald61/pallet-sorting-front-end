@@ -90,6 +90,7 @@ async function request<T>(
   // Get headers with Authorization
   const headers = await getHeaders(fetchOptions.headers);
 
+  
   try {
     const response = await fetch(url, {
       ...fetchOptions,

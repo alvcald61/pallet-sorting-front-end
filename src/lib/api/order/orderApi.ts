@@ -1,4 +1,4 @@
-import { get, post, put } from "../apiClient";
+import { get, patch, post, put } from "../apiClient";
 import { Order } from "@/lib/types/orderTypes";
 import { Wrapper } from "@/lib/utils";
 
@@ -47,9 +47,7 @@ export const getOrdersByPage = async ({
   pageSize,
   isAdmin,
 }: OrdersByPageParams) => {
-  return get<any>(
-    `/order?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`
-  );
+  return get<any>(`/order?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`);
 };
 
 export const getOrderById = async (id: string) => {
@@ -58,6 +56,10 @@ export const getOrderById = async (id: string) => {
 
 export const getOrderStatus = async (id: string) => {
   return get<any>(`/order/${id}/status`);
+};
+
+export const updateOrderStatus = async (id: string, status: string) => {
+  return patch<any>(`/order/${id}/status/${status}`);
 };
 
 export const getDistributionImg = async (id: string) => {
@@ -106,7 +108,7 @@ export const uploadOrderDocument = async ({
         Authorization: `Bearer ${token}`,
       },
       body: formData,
-    }
+    },
   );
 
   if (!response.ok) {

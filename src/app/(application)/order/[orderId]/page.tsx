@@ -7,6 +7,7 @@ import {
 import OrderHeaderActions from "../components/OrderHeaderActions";
 import DocumentUploadZone from "../components/DocumentUploadZone";
 import InitiateRouteButton from "../components/InitiateRouteButton";
+import TransportFlow from "../components/TransportFlow";
 import OrderInformationCard from "../components/OrderInformationCard";
 import TruckAndDriverCard from "../components/TruckAndDriverCard";
 import PackagesCard from "../components/PackagesCard";
@@ -77,8 +78,7 @@ export default async ({ params }: PageParams) => {
 
             {order.orderStatus === OrderStatus.APPROVED &&
               order.documents &&
-              order.documents.length > 0 &&
-              (
+              order.documents.length > 0 && (
                 <div className="bg-white  p-6 rounded-lg shadow-sm">
                   <h3 className="text-lg font-semibold text-gray-900  mb-4">
                     Documentos Requeridos
@@ -94,9 +94,18 @@ export default async ({ params }: PageParams) => {
                       orderStatus={order.orderStatus}
                       isDocumentPending={order.documentPending}
                       documents={order.documents}
+                      currentTransportStatus={order.transportStatus}
                     />
                   </div>
                 </div>
+              )}
+
+            {order.orderStatus === OrderStatus.APPROVED &&
+              order.transportStatus && (
+                <TransportFlow
+                  orderId={order.id}
+                  currentTransportStatus={order.transportStatus}
+                />
               )}
           </div>
           {order.orderStatus === OrderStatus.REVIEW && (

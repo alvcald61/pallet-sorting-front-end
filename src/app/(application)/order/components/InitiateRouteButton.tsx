@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Button, Modal, Group, Alert } from "@mantine/core";
-import { continueOrder } from "@/lib/api/order/orderApi";
 import { useRouter } from "next/navigation";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
 import { OrderStatus } from "@/lib/utils/enums";
@@ -15,6 +14,7 @@ interface InitiateRouteButtonProps {
   orderStatus: OrderStatus;
   isDocumentPending: boolean;
   documents: Document[];
+  currentTransportStatus?: TransportStatus;
 }
 
 export default function InitiateRouteButton({
@@ -22,6 +22,7 @@ export default function InitiateRouteButton({
   orderStatus,
   isDocumentPending,
   documents,
+  currentTransportStatus,
 }: InitiateRouteButtonProps) {
   const isDriver = useCanAccess(["DRIVER"], undefined, false);
   const router = useRouter();
@@ -33,8 +34,13 @@ export default function InitiateRouteButton({
   // 1. Es conductor (rol DRIVER)
   // 2. La orden está aprobada
   // 3. No hay documentos pendientes
+  // 4. El transporte aún no ha sido iniciado (status no asignado o pending)
   const canInitiateRoute =
-    isDriver && orderStatus === OrderStatus.APPROVED && !isDocumentPending;
+    isDriver &&
+    orderStatus === OrderStatus.APPROVED &&
+    !isDocumentPending &&
+    (!currentTransportStatus ||
+      currentTransportStatus === TransportStatus.TRUCK_ASSIGNED);
 
   // Determinar si hay documentos pendientes no cargados
   const pendingDocuments =
@@ -61,6 +67,14 @@ export default function InitiateRouteButton({
 
   // No mostrar nada si no es conductor
   if (!isDriver) {
+    return null;
+  }
+
+  // No mostrar si la ruta ya ha sido iniciada
+  if (
+    currentTransportStatus &&
+    currentTransportStatus !== TransportStatus.TRUCK_ASSIGNED
+  ) {
     return null;
   }
 
