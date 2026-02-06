@@ -4,8 +4,10 @@ import {
   getOrderStatus,
   getDistributionImg,
 } from "@/lib/api/order/orderApi";
+import { getTransportHistory } from "@/lib/api/transport/transportApi";
 import OrderHeaderActions from "../components/OrderHeaderActions";
 import OrderStatusBadge from "../components/OrderStatusBadge";
+import DeliveryStatusTimeline from "../components/DeliveryStatusTimeline";
 import DocumentUploadZone from "../components/DocumentUploadZone";
 import InitiateRouteButton from "../components/InitiateRouteButton";
 import TransportFlow from "../components/TransportFlow";
@@ -21,12 +23,18 @@ type PageParams = {
 
 export default async ({ params }: PageParams) => {
   const { orderId } = await params;
-  // const [amount, setAmount] = useState<string | number>(0);
   const order = (await getOrderById(orderId)).data;
-  console.log("order", order);
   const status = await getOrderStatus(orderId);
   const image = await getDistributionImg(orderId);
-  console.log(status);
+
+  // Fetch transport history for delivery timeline
+  let transportHistory: any[] = [];
+  try {
+    const historyResponse = await getTransportHistory(orderId);
+    transportHistory = historyResponse.data || [];
+  } catch (error) {
+    console.error("Error fetching transport history:", error);
+  }
 
   return (
     <main className="flex-1 px-4 sm:px-6 lg:px-8 xl:px-40 py-10">
@@ -105,81 +113,18 @@ export default async ({ params }: PageParams) => {
                   </div>
                 </div>
               )}
-
-            {order.orderStatus === OrderStatus.APPROVED &&
-              order.transportStatus && (
-                <TransportFlow
-                  orderId={order.id}
-                  currentTransportStatus={order.transportStatus}
-                />
-              )}
           </div>
-          {order.orderStatus === OrderStatus.REVIEW && (
-            <div className="lg:col-span-1">
-              <div className="bg-white  p-6 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900  mb-6">
-                  Estado del transporte
-                </h3>
-                <div className="relative">
-                  <div className="absolute left-3 top-3 bottom-0 w-0.5 bg-gray-200 "></div>
-                  <div className="space-y-8">
-                    <div className="flex items-start">
-                      <div className="z-10 flex-shrink-0 size-6 rounded-full bg-primary flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white text-base">
-                          {" "}
-                          check{" "}
-                        </span>
-                      </div>
-                      <div className="ml-4">
-                        <p className="font-semibold text-primary">Pendiente</p>
-                        <p className="text-sm text-gray-500 ">
-                          {new Date(order.createdAt).toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="z-10 flex-shrink-0 size-6 rounded-full bg-primary flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white text-base">
-                          {" "}
-                          local_shipping{" "}
-                        </span>
-                      </div>
-                      <div className="ml-4">
-                        <p className="font-semibold text-primary">Recogido</p>
-                        <p className="text-sm text-gray-500 ">
-                          {order.pickupDate}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="z-10 flex-shrink-0 size-6 rounded-full bg-primary flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white text-base">
-                          {" "}
-                          package_2{" "}
-                        </span>
-                      </div>
-                      <div className="ml-4">
-                        <p className="font-semibold text-primary">En camino</p>
-                        <p className="text-sm text-gray-500 ">July 20, 2024</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="z-10 flex-shrink-0 size-6 rounded-full bg-primary flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white text-base">
-                          {" "}
-                          package_2{" "}
-                        </span>
-                      </div>
-                      <div className="ml-4">
-                        <p className="font-semibold text-primary">Entregado</p>
-                        <p className="text-sm text-gray-500 ">July 20, 2024</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          {order.orderStatus === OrderStatus.APPROVED &&
+            order.transportStatus && (
+              <div className="lg:col-span-1">
+                {order.transportStatus && transportHistory.length > 0 ? (
+                  <DeliveryStatusTimeline
+                    history={transportHistory}
+                    currentStatus={order.transportStatus}
+                  />
+                ) : null}
               </div>
-            </div>
-          )}
+            )}
         </div>
       </div>
     </main>

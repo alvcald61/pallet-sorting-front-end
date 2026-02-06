@@ -28,7 +28,7 @@ export default function OrderHeaderActions({
 
   const [amount, setAmount] = useState<number | string | undefined>(undefined);
   const [gpsLink, setGpsLink] = useState<number | string | undefined>(
-    orderGpsLink
+    orderGpsLink,
   );
   const [isLoading, setIsLoading] = useState(false);
   const [action, setAction] = useState<ActionType>(null);
@@ -44,8 +44,9 @@ export default function OrderHeaderActions({
     isAdmin && orderStatus === OrderStatus.REVIEW && !initialAmount;
   const canConfirmOrder = !isAdmin && orderStatus === OrderStatus.PRE_APPROVED;
   const showAmountInput = !initialAmount && canConfirmProposal;
-  const showGpsLinkInput = !gpsLink && isAdmin && orderStatus === OrderStatus.IN_PROGRESS;
-  
+  const showGpsLinkInput =
+    !gpsLink && isAdmin && orderStatus === OrderStatus.IN_PROGRESS;
+
   const handleOpenModal = (actionType: ActionType) => {
     if (actionType === "cancel") {
       setAmount(undefined);
@@ -58,7 +59,7 @@ export default function OrderHeaderActions({
   const handleConfirmAction = async () => {
     try {
       setIsLoading(true);
-      await continueOrder(orderId, amount, gpsLink, action === "cancel");
+      await continueOrder({orderId, amount, gpsLink, deny: action === "cancel"});
       setShowModal(false);
       setAction(null);
       router.refresh();
