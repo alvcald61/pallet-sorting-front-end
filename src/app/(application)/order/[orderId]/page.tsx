@@ -24,6 +24,7 @@ type PageParams = {
 export default async ({ params }: PageParams) => {
   const { orderId } = await params;
   const order = (await getOrderById(orderId)).data;
+  console.log("Order details fetched:", order);
   const status = await getOrderStatus(orderId);
   const image = await getDistributionImg(orderId);
 
@@ -114,11 +115,14 @@ export default async ({ params }: PageParams) => {
                 </div>
               )}
           </div>
-          {order.orderStatus === OrderStatus.APPROVED &&
+          {(order.orderStatus === OrderStatus.APPROVED ||
+            order.orderStatus === OrderStatus.IN_PROGRESS ||
+            order.orderStatus === OrderStatus.DELIVERED) &&
             order.transportStatus && (
               <div className="lg:col-span-1">
                 {order.transportStatus && transportHistory.length > 0 ? (
                   <DeliveryStatusTimeline
+                    orderId={orderId}
                     history={transportHistory}
                     currentStatus={order.transportStatus}
                   />

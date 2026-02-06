@@ -1,8 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button, Modal, Group } from "@mantine/core";
 import { TransportStatus } from "@/lib/types/trnasportTypes";
-import { TransportHistoryEntry } from "@/lib/api/transport/transportApi";
+import {
+  TransportHistoryEntry,
+  quickStatusUpdate,
+} from "@/lib/api/transport/transportApi";
+import { updateOrderStatus } from "@/lib/api/order/orderApi";
+import { useCanAccess } from "@/lib/utils/rbacUtils";
 import {
   IconTruck,
   IconPackageExport,
@@ -14,6 +21,7 @@ import {
 } from "@tabler/icons-react";
 
 interface DeliveryStatusTimelineProps {
+  orderId: string;
   history: TransportHistoryEntry[];
   currentStatus: TransportStatus;
 }
@@ -146,10 +154,53 @@ function formatDate(dateString: string): string {
   });
 }
 
+const TRANSPORT_FLOW: TransportStatus[] = [
+  TransportStatus.TRUCK_ASSIGNED,
+  TransportStatus.EN_ROUTE_TO_WAREHOUSE,
+  TransportStatus.ARRIVED_AT_WAREHOUSE,
+  TransportStatus.LOADING,
+  TransportStatus.LOADING_COMPLETED,
+  TransportStatus.EN_ROUTE_TO_DESTINATION,
+  TransportStatus.ARRIVED_AT_DESTINATION,
+  TransportStatus.UNLOADING,
+  TransportStatus.UNLOADING_COMPLETED,
+  TransportStatus.DELIVERED,
+];
+
+function getNextStatus(current: TransportStatus): TransportStatus | null {
+  const idx = TRANSPORT_FLOW.indexOf(current);
+  if (idx === -1 || idx === TRANSPORT_FLOW.length - 1) return null;
+  return TRANSPORT_FLOW[idx + 1];
+}
+
 export default function DeliveryStatusTimeline({
+  orderId,
   history,
   currentStatus,
 }: DeliveryStatusTimelineProps) {
+  const isDriver = useCanAccess(["DRIVER"], undefined, false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const nextStatus = getNextStatus(currentStatus);
+  const nextStatusInfo = nextStatus ? getStatusInfo(nextStatus) : null;
+
+  const handleAdvanceStatus = async () => {
+    if (!nextStatus) return;
+    try {
+      setIsLoading(true);
+      await quickStatusUpdate(orderId, nextStatus);
+      setShowModal(false);
+      router.refresh();
+    } catch (error) {
+      console.error("Error actualizando estado del transporte:", error);
+      alert("Error al actualizar el estado. Por favor intenta de nuevo.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Sort history by timestamp descending (most recent first)
   const sortedHistory = [...history].sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
@@ -170,9 +221,22 @@ export default function DeliveryStatusTimeline({
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-900 mb-6">
-        Estado de Entrega
-      </h3>
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-semibold text-gray-900">
+          Estado de Entrega
+        </h3>
+        {isDriver && nextStatus && (
+          <Button
+            onClick={() => setShowModal(true)}
+            loading={isLoading}
+            size="sm"
+            variant="filled"
+            color="blue"
+          >
+            Siguiente estado
+          </Button>
+        )}
+      </div>
 
       <div className="space-y-6">
         {sortedHistory.map((entry, index) => {
@@ -266,6 +330,40 @@ export default function DeliveryStatusTimeline({
           </span>
         </div>
       </div>
+
+      {/* Confirmation modal */}
+      <Modal
+        opened={showModal}
+        onClose={() => setShowModal(false)}
+        title="Confirmar Cambio de Estado"
+        centered
+      >
+        <div className="space-y-4">
+          <p>
+            ¿Deseas cambiar el estado a <strong>{nextStatusInfo?.label}</strong>
+            ?
+          </p>
+          <p className="text-sm text-gray-600">
+            Esta acción registrará el nuevo estado en el sistema.
+          </p>
+          <Group justify="flex-end" mt="lg">
+            <Button
+              variant="default"
+              onClick={() => setShowModal(false)}
+              disabled={isLoading}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleAdvanceStatus}
+              loading={isLoading}
+              color="blue"
+            >
+              Confirmar
+            </Button>
+          </Group>
+        </div>
+      </Modal>
     </div>
   );
 }
