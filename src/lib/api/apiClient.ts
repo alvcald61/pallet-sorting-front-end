@@ -120,17 +120,9 @@ async function request<T>(
     // Parse JSON response
     return await response.json();
   } catch (error) {
-    // Re-throw ApiError as-is
-    if (error) {
-      throw error;
-    }
-
-    // Handle network errors
-    if (error ) {
+    if (error instanceof TypeError) {
       throw new Error('Network error: Unable to connect to server');
     }
-
-    // Handle other errors
     throw error;
   }
 }

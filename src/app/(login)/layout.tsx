@@ -14,8 +14,6 @@ import {
 import { theme } from "../../theme";
 // import "style.css"
 import "../styles.css";
-import { RBACProvider } from "@/lib/contexts/RBACContext";
-import { BaseLayout } from "@/components/layouts/BaseLayout";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -48,7 +46,7 @@ export default function LoginLayout({
           // forceColorScheme="dark"
           theme={theme}
         >
-          <RBACProvider>{children}</RBACProvider>
+          {children}
         </MantineProvider>
       </body>
     </html>
