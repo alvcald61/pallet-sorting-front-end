@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { NumberInput, Button, Group, Modal } from "@mantine/core";
+import { NumberInput, Button, Group, Modal, TextInput } from "@mantine/core";
 import { continueOrder } from "@/lib/api/order/orderApi";
 import { useRouter } from "next/navigation";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
@@ -45,8 +45,14 @@ export default function OrderHeaderActions({
   const canConfirmOrder = !isAdmin && orderStatus === OrderStatus.PRE_APPROVED;
   const showAmountInput = !initialAmount && canConfirmProposal;
   const showGpsLinkInput =
-    !gpsLink && isAdmin && orderStatus === OrderStatus.IN_PROGRESS;
-
+    !orderGpsLink && isAdmin && orderStatus === OrderStatus.IN_PROGRESS;
+  console.log(
+    showAmountInput,
+    gpsLink,
+    isAdmin,
+    orderStatus,
+    OrderStatus.IN_PROGRESS,
+  );
   const handleOpenModal = (actionType: ActionType) => {
     if (actionType === "cancel") {
       setAmount(undefined);
@@ -59,7 +65,12 @@ export default function OrderHeaderActions({
   const handleConfirmAction = async () => {
     try {
       setIsLoading(true);
-      await continueOrder({orderId, amount, gpsLink, deny: action === "cancel"});
+      await continueOrder({
+        orderId,
+        amount,
+        gpsLink,
+        deny: action === "cancel",
+      });
       setShowModal(false);
       setAction(null);
       router.refresh();
@@ -114,16 +125,18 @@ export default function OrderHeaderActions({
               </Button>
             )}
 
-            {isAdmin && !gpsLink && orderStatus === OrderStatus.IN_PROGRESS && (
-              <Button
-                onClick={() => handleOpenModal("confirm")}
-                loading={isLoading}
-                size="md"
-                variant="filled"
-              >
-                {getConfirmButtonLabel()}
-              </Button>
-            )}
+            {isAdmin &&
+              !orderGpsLink &&
+              orderStatus === OrderStatus.IN_PROGRESS && (
+                <Button
+                  onClick={() => handleOpenModal("confirm")}
+                  loading={isLoading}
+                  size="md"
+                  variant="filled"
+                >
+                  {getConfirmButtonLabel()}
+                </Button>
+              )}
             {isAdmin && orderStatus === OrderStatus.REVIEW && (
               <Button
                 onClick={() => handleOpenModal("confirm")}
@@ -166,6 +179,20 @@ export default function OrderHeaderActions({
         </div>
       )}
 
+      {showGpsLinkInput && (
+        <div className="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Link GPS
+          </label>
+          <TextInput
+            placeholder="Ingresa el link GPS"
+            value={gpsLink}
+            onChange={(e) => setGpsLink(e.target.value)}
+            size="sm"
+          />
+        </div>
+      )}
+
       <Modal
         opened={showModal}
         onClose={() => {
@@ -179,12 +206,12 @@ export default function OrderHeaderActions({
           <p>{getModalContent()}</p>
           {showAmountInput && amount && (
             <p className="text-sm text-gray-600">
-              Monto de la orden: <strong>${amount}</strong>
+              Monto de la orden: <strong>{amount}</strong>
             </p>
           )}
           {showGpsLinkInput && gpsLink && (
             <p className="text-sm text-gray-600">
-              Link GPS: <strong>${gpsLink}</strong>
+              Link GPS: <strong>{gpsLink}</strong>
             </p>
           )}
           <Group justify="flex-end" mt="lg">
