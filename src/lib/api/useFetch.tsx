@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 function useFetch(url: string) {
   const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,8 +15,8 @@ function useFetch(url: string) {
         if (!res.ok) throw new Error("Network response was not ok");
         const json = await res.json();
         setData(json);
-      } catch (err: any) {
-        if (err.name !== "AbortError") setError(err);
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name !== "AbortError") setError(err);
       } finally {
         setLoading(false);
       }

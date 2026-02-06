@@ -5,7 +5,12 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { getCurrentUser } from "@/lib/api/auth/userApi";
 
-export async function login(prevState: any, formData: FormData) {
+export interface LoginFormState {
+  error?: string;
+  success?: boolean;
+}
+
+export async function login(prevState: LoginFormState | undefined, formData: FormData) {
   try {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;

@@ -97,7 +97,7 @@ export function useCRUDWithQuery<
       const previousData = queryClient.getQueryData(queryKey);
 
       // Optimistically update cache
-      queryClient.setQueryData(queryKey, (old: any) => {
+      queryClient.setQueryData(queryKey, (old: { data: T[] } | undefined) => {
         if (!old?.data) return old;
         return {
           ...old,
@@ -141,7 +141,7 @@ export function useCRUDWithQuery<
       const previousData = queryClient.getQueryData(queryKey);
 
       // Optimistically remove from cache
-      queryClient.setQueryData(queryKey, (old: any) => {
+      queryClient.setQueryData(queryKey, (old: { data: T[] } | undefined) => {
         if (!old?.data) return old;
         return {
           ...old,

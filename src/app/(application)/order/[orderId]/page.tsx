@@ -4,7 +4,7 @@ import {
   getOrderStatus,
   getDistributionImg,
 } from "@/lib/api/order/orderApi";
-import { getTransportHistory } from "@/lib/api/transport/transportApi";
+import { getTransportHistory, TransportHistoryEntry } from "@/lib/api/transport/transportApi";
 import OrderHeaderActions from "../components/OrderHeaderActions";
 import OrderStatusBadge from "../components/OrderStatusBadge";
 import DeliveryStatusTimeline from "../components/DeliveryStatusTimeline";
@@ -24,12 +24,11 @@ type PageParams = {
 export default async ({ params }: PageParams) => {
   const { orderId } = await params;
   const order = (await getOrderById(orderId)).data;
-  console.log("Order details fetched:", order);
   const status = await getOrderStatus(orderId);
   const image = await getDistributionImg(orderId);
 
   // Fetch transport history for delivery timeline
-  let transportHistory: any[] = [];
+  let transportHistory: TransportHistoryEntry[] = [];
   try {
     const historyResponse = await getTransportHistory(orderId);
     transportHistory = historyResponse.data || [];

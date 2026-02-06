@@ -5,7 +5,12 @@ import { getAuthToken } from "@/lib/api/auth/authApi";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
-export async function register(prevState: any, formData: FormData) {
+interface RegisterFormState {
+  error?: string;
+  success?: boolean;
+}
+
+export async function register(prevState: RegisterFormState | undefined, formData: FormData) {
   try {
     const firstName = formData.get("firstName") as string;
     const lastName = formData.get("lastName") as string;

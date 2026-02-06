@@ -1,6 +1,17 @@
 import { get, loadImageAsBytes, patch, post, put } from "../apiClient";
 import { Order } from "@/lib/types/orderTypes";
 import { Wrapper } from "@/lib/utils";
+import { OrderStatus } from "@/lib/utils/enums";
+
+interface PageInfo {
+  totalElements: number;
+  totalPages: number;
+}
+
+interface PaginatedOrders {
+  data: Order[];
+  pageInfo: PageInfo;
+}
 
 interface OrdersByPageParams {
   page: number;
@@ -9,7 +20,7 @@ interface OrdersByPageParams {
 }
 
 interface CreateOrderParams {
-  orderData: any;
+  orderData: Record<string, unknown>;
   type: string;
 }
 
@@ -20,17 +31,16 @@ interface ContinueOrderParams {
   deny: boolean;
 }
 
-
 /**
  * Order API - Refactored to use apiClient
  */
 
 export const createOrder = async ({ orderData, type }: CreateOrderParams) => {
-  return post<any>(`/order/solve/${type}`, orderData);
+  return post<Wrapper<Order>>(`/order/solve/${type}`, orderData);
 };
 
 export const getOrders = async () => {
-  return get<any[]>("/order");
+  return get<{ data: Order[] }>("/order");
 };
 
 export const getAvailableSlots = async (date: string) => {
@@ -42,7 +52,7 @@ export const getOrdersByPage = async ({
   pageSize,
   isAdmin,
 }: OrdersByPageParams) => {
-  return get<any>(`/order?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`);
+  return get<PaginatedOrders>(`/order?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`);
 };
 
 export const getOrderById = async (id: string) => {
@@ -50,16 +60,15 @@ export const getOrderById = async (id: string) => {
 };
 
 export const getOrderStatus = async (id: string) => {
-  return get<any>(`/order/${id}/status`);
+  return get<Wrapper<{ orderStatus: OrderStatus }>>(`/order/${id}/status`);
 };
 
 export const updateOrderStatus = async (id: string, status: string) => {
-  return patch<any>(`/order/${id}/status/${status}`);
+  return patch<Wrapper<Order>>(`/order/${id}/status/${status}`);
 };
 
 export const getDistributionImg = async (id: string) => {
   try {
-    // For image/text response, use fetch directly
     const response = await loadImageAsBytes(`/order/${id}/image`);
     return response;
   } catch (error) {
@@ -78,6 +87,5 @@ export const continueOrder = async ({
   if (amount !== undefined) params.append("amount", String(amount));
   if (gpsLink !== undefined) params.append("gpsLink", String(gpsLink));
   params.append("denied", String(deny));
-  return put<any>(`/order/${orderId}/continue?${params.toString()}`);
+  return put<Wrapper<Order>>(`/order/${orderId}/continue?${params.toString()}`);
 };
-
