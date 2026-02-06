@@ -78,7 +78,6 @@ export const continueOrder = async ({
   if (amount !== undefined) params.append("amount", String(amount));
   if (gpsLink !== undefined) params.append("gpsLink", String(gpsLink));
   params.append("denied", String(deny));
-  console.log(orderId);
   return put<any>(`/order/${orderId}/continue?${params.toString()}`);
 };
 

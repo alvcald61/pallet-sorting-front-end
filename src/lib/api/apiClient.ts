@@ -195,6 +195,42 @@ export async function apiDelete<T>(endpoint: string, options?: RequestOptions): 
 }
 
 /**
+ * HTTP POST request with FormData (multipart/form-data)
+ * Does not set Content-Type header to let the browser set the boundary
+ */
+export async function postFormData<T>(
+  endpoint: string,
+  formData: FormData,
+): Promise<T> {
+  const url = buildURL(endpoint);
+  const token = await getAuthToken();
+
+  const headers: HeadersInit = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: formData,
+  });
+
+  if (response.status === 401) {
+    const cookieStore = await cookies();
+    cookieStore.delete("session");
+    throw new Error("SESSION_EXPIRED");
+  }
+
+  if (!response.ok) {
+    const errorMessage = await extractErrorMessage(response);
+    throw new Error(errorMessage || `Upload failed: ${response.statusText}`);
+  }
+
+  return await response.json();
+}
+
+/**
  * Download file from endpoint
  * @param endpoint - API endpoint to download from
  * @param filename - Optional filename for the download

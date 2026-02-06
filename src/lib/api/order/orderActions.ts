@@ -1,8 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST || "http://localhost:5000";
+import { postFormData } from "../apiClient";
 
 interface UploadDocumentParams {
   orderId: string;
@@ -15,35 +13,11 @@ export async function uploadOrderDocument({
   documentId,
   file,
 }: UploadDocumentParams) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("session")?.value;
-
-  if (!token) {
-    throw new Error("SESSION_EXPIRED");
-  }
-
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch(
-    `${BASE_URL}/api/order/${orderId}/documents/${documentId}/upload`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    },
+  return postFormData<{ mensaje?: string }>(
+    `/order/${orderId}/documents/${documentId}/upload`,
+    formData,
   );
-
-  if (response.status === 401) {
-    cookieStore.delete("session");
-    throw new Error("SESSION_EXPIRED");
-  }
-
-  if (!response.ok) {
-    throw new Error("Failed to upload document");
-  }
-
-  return response.json();
 }

@@ -1,70 +1,29 @@
 import { User } from "@/lib/types/authTypes";
-import { getTokenFromLocalStorage } from "@/lib/utils/sessionUtils";
+import { get, post } from "../apiClient";
 
 /**
  * Obtiene la información del usuario autenticado, incluyendo roles y permisos
  * Este endpoint debe ser llamado después del login para obtener datos completos
  */
 export const getCurrentUser = async (): Promise<User> => {
-  const token = await getTokenFromLocalStorage();
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_HOST}/api/auth/me`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error("No se pudo obtener la información del usuario");
-  }
-
-  const data: User = await res.json();
-  return data;
+  return get<User>("/auth/me");
 };
 
 /**
  * Refresca el token de autenticación
  */
-export const refreshToken = async (currentToken: string): Promise<string> => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_HOST}/api/auth/refresh`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${currentToken}`,
-      },
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error("No se pudo refrescar el token");
-  }
-
-  const data: { accessToken: string } = await res.json();
+export const refreshToken = async (): Promise<string> => {
+  const data = await post<{ accessToken: string }>("/auth/refresh");
   return data.accessToken;
 };
 
 /**
  * Valida si el token es válido y aún tiene permisos
  */
-export const validateToken = async (token: string): Promise<boolean> => {
+export const validateToken = async (): Promise<boolean> => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_HOST}/api/auth/validate`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return res.ok;
+    await get<void>("/auth/validate");
+    return true;
   } catch {
     return false;
   }

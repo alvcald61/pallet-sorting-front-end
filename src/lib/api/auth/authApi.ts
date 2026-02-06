@@ -4,7 +4,6 @@ export const getAuthToken = async (
   email: string,
   password: string
 ): Promise<LoginResponse> => {
-  console.log(process.env.NEXT_PUBLIC_BACKEND_HOST);
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_HOST + "/api/auth/login",
     {
