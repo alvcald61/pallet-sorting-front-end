@@ -1,8 +1,21 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  QueryCache,
+  MutationCache,
+} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState, type ReactNode } from "react";
+
+function isSessionExpiredError(error: unknown): boolean {
+  return error instanceof Error && error.message === "SESSION_EXPIRED";
+}
+
+function handleSessionExpired() {
+  window.location.href = "/login";
+}
 
 /**
  * React Query Provider Component
@@ -12,14 +25,31 @@ export function ReactQueryProvider({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
+        queryCache: new QueryCache({
+          onError: (error) => {
+            if (isSessionExpiredError(error)) {
+              handleSessionExpired();
+            }
+          },
+        }),
+        mutationCache: new MutationCache({
+          onError: (error) => {
+            if (isSessionExpiredError(error)) {
+              handleSessionExpired();
+            }
+          },
+        }),
         defaultOptions: {
           queries: {
             // Cache data for 5 minutes
             staleTime: 5 * 60 * 1000,
             // Keep unused data in cache for 10 minutes
             gcTime: 10 * 60 * 1000,
-            // Retry failed requests 3 times
-            retry: 3,
+            // Retry failed requests, but not on auth errors
+            retry: (failureCount, error) => {
+              if (isSessionExpiredError(error)) return false;
+              return failureCount < 3;
+            },
             // Retry with exponential backoff
             retryDelay: (attemptIndex) =>
               Math.min(1000 * 2 ** attemptIndex, 30000),
@@ -31,8 +61,11 @@ export function ReactQueryProvider({ children }: { children: ReactNode }) {
             refetchOnReconnect: true,
           },
           mutations: {
-            // Retry mutations once
-            retry: 1,
+            // Retry mutations once, but not on auth errors
+            retry: (failureCount, error) => {
+              if (isSessionExpiredError(error)) return false;
+              return failureCount < 1;
+            },
             // Retry after 1 second
             retryDelay: 1000,
           },

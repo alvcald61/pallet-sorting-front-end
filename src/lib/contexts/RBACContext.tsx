@@ -15,7 +15,7 @@ export const RBACProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { setCurrentUser, currentUser } = useUserStore();
+  const { setCurrentUser, currentUser, clearUser } = useUserStore();
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -43,6 +43,15 @@ export const RBACProvider: React.FC<{ children: React.ReactNode }> = ({
             : "Error al obtener datos del usuario"
         );
         setUser(null);
+        clearUser();
+
+        if (
+          err instanceof Error &&
+          err.message === "SESSION_EXPIRED"
+        ) {
+          window.location.href = "/login";
+          return;
+        }
         router.push("/login");
       } finally {
         setLoading(false);

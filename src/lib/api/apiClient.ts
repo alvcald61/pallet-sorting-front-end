@@ -97,6 +97,13 @@ async function request<T>(
       headers,
     });
 
+    // Handle expired/invalid token - delete cookie and throw specific error
+    if (response.status === 401) {
+      const cookieStore = await cookies();
+      cookieStore.delete("session");
+      throw new Error("SESSION_EXPIRED");
+    }
+
     // Handle non-OK responses
     if (!response.ok) {
       const errorMessage = await extractErrorMessage(response);
