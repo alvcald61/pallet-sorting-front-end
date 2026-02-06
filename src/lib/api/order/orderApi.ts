@@ -1,4 +1,4 @@
-import { get, patch, post, put } from "../apiClient";
+import { get, loadImageAsBytes, patch, post, put } from "../apiClient";
 import { Order } from "@/lib/types/orderTypes";
 import { Wrapper } from "@/lib/utils";
 
@@ -65,7 +65,7 @@ export const updateOrderStatus = async (id: string, status: string) => {
 export const getDistributionImg = async (id: string) => {
   try {
     // For image/text response, use fetch directly
-    const response = await get<any>(`/order/${id}/image`);
+    const response = await loadImageAsBytes(`/order/${id}/image`);
     return response;
   } catch (error) {
     console.error("Error fetching distribution image:", error);
