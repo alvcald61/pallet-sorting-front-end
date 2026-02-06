@@ -5,9 +5,9 @@ import {
   getOrderStatus,
   getDistributionImg,
   continueOrder,
-  uploadOrderDocument,
   createOrder,
 } from "@/lib/api/order/orderApi";
+import { uploadOrderDocument } from "@/lib/api/order/orderActions";
 import { notifications } from "@mantine/notifications";
 
 /**

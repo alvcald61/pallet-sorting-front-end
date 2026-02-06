@@ -12,7 +12,7 @@ import {
   Progress,
 } from "@mantine/core";
 import { Document } from "@/lib/types/orderTypes";
-import { uploadOrderDocument } from "@/lib/api/order/orderApi";
+import { uploadOrderDocument } from "@/lib/api/order/orderActions";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
 
 interface DocumentUploadZoneProps {

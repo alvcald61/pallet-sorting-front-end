@@ -20,11 +20,6 @@ interface ContinueOrderParams {
   deny: boolean;
 }
 
-interface UploadDocumentParams {
-  orderId: string;
-  documentId: number;
-  file: File;
-}
 
 /**
  * Order API - Refactored to use apiClient
@@ -87,33 +82,3 @@ export const continueOrder = async ({
   return put<any>(`/order/${orderId}/continue?${params.toString()}`);
 };
 
-export const uploadOrderDocument = async ({
-  orderId,
-  documentId,
-  file,
-}: UploadDocumentParams) => {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  // apiClient doesn't handle FormData well, so we'll use fetch directly
-  // but with proper error handling
-  const token = localStorage.getItem("jwt");
-  const baseURL = process.env.NEXT_PUBLIC_BACKEND_HOST;
-
-  const response = await fetch(
-    `${baseURL}/api/order/${orderId}/documents/${documentId}/upload`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    },
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to upload document");
-  }
-
-  return response.json();
-};

@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useState } from "react";
+import React, { useActionState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,28 +9,18 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { getAuthToken } from "@/lib/api/auth/authApi";
+import { login } from "../login/action";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(login, undefined);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const authResponse = await getAuthToken(email, password);
-      localStorage.setItem("jwt", authResponse.accessToken);
-      window.location.href = "/order";
-    } catch (err: any) {
-      setError(err.message || "Error de autenticación");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/");
     }
-  };
+  }, [state, router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center ">
@@ -39,7 +28,7 @@ export default function LoginForm() {
         <CardHeader>
           <h2 className="text-2xl font-bold text-center ">Iniciar sesión</h2>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
+        <form action={formAction}>
           <CardContent className="flex flex-col gap-4 mb-3">
             <div>
               <Label className="mb-3" htmlFor="email">
@@ -47,9 +36,8 @@ export default function LoginForm() {
               </Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
                 autoFocus
               />
@@ -58,17 +46,18 @@ export default function LoginForm() {
               <Label htmlFor="password">Contraseña</Label>
               <Input
                 id="password"
+                name="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-            {error && <div className="text-red-500 text-sm">{error}</div>}
+            {state?.error && (
+              <div className="text-red-500 text-sm">{state.error}</div>
+            )}
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Ingresando..." : "Ingresar"}
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "Ingresando..." : "Ingresar"}
             </Button>
           </CardFooter>
         </form>
