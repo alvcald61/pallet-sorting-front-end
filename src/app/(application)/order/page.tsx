@@ -19,6 +19,8 @@ import OneSignal from "react-onesignal";
 import { useQuery } from "@tanstack/react-query";
 import { getClients } from "@/lib/api/client/clientApi";
 import { useOrders } from "@/lib/hooks/useOrder";
+import { useOrderFilters } from "@/lib/hooks/useOrderFilters";
+import { OrderFiltersComponent } from "./components/OrderFilters";
 
 const PAGE_SIZE = 15;
 
@@ -31,6 +33,19 @@ const Page = () => {
 
   const { addUserId } = useOrderStore();
   const isAdmin = useCanAccess(["ADMIN"]);
+
+  const {
+    filters,
+    effectiveFilters,
+    setFilters,
+    resetFilters,
+    hasActiveFilters,
+  } = useOrderFilters();
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [effectiveFilters]);
 
   // Initialize OneSignal
   useEffect(() => {
@@ -49,7 +64,8 @@ const Page = () => {
   const { data: ordersData, isLoading: isFetchingOrders } = useOrders(
     page - 1,
     PAGE_SIZE,
-    isAdmin
+    isAdmin,
+    effectiveFilters
   );
 
   const records = ordersData?.data || [];
@@ -122,7 +138,16 @@ const Page = () => {
           </Menu>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-4">
+          <OrderFiltersComponent
+            filters={filters}
+            onFiltersChange={setFilters}
+            onReset={resetFilters}
+            hasActiveFilters={hasActiveFilters}
+          />
+        </div>
+
+        <div className="mt-4">
           <DataTable
             withTableBorder
             borderRadius="sm"

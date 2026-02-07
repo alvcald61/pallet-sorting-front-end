@@ -1,5 +1,6 @@
 import { get, loadImageAsBytes, patch, post, put } from "../apiClient";
 import { Order } from "@/lib/types/orderTypes";
+import { OrderFilters } from "@/lib/types/orderFilterTypes";
 import { Wrapper } from "@/lib/utils";
 import { OrderStatus } from "@/lib/utils/enums";
 
@@ -17,6 +18,7 @@ interface OrdersByPageParams {
   page: number;
   pageSize: number;
   isAdmin: boolean;
+  filters?: OrderFilters;
 }
 
 interface CreateOrderParams {
@@ -51,8 +53,22 @@ export const getOrdersByPage = async ({
   page,
   pageSize,
   isAdmin,
+  filters,
 }: OrdersByPageParams) => {
-  return get<PaginatedOrders>(`/order?page=${page}&size=${pageSize}&isAdmin=${isAdmin}`);
+  const params = new URLSearchParams();
+  params.append("page", String(page));
+  params.append("size", String(pageSize));
+  params.append("isAdmin", String(isAdmin));
+
+  if (filters?.search) params.append("search", filters.search);
+  if (filters?.statuses && filters.statuses.length > 0) {
+    filters.statuses.forEach((s) => params.append("status", s));
+  }
+  if (filters?.orderType) params.append("orderType", filters.orderType);
+  if (filters?.pickupDateFrom) params.append("pickupDateFrom", filters.pickupDateFrom);
+  if (filters?.pickupDateTo) params.append("pickupDateTo", filters.pickupDateTo);
+
+  return get<PaginatedOrders>(`/order?${params.toString()}`);
 };
 
 export const getOrderById = async (id: string) => {

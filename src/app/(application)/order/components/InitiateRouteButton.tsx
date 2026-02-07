@@ -7,7 +7,7 @@ import { useCanAccess } from "@/lib/utils/rbacUtils";
 import { OrderStatus } from "@/lib/utils/enums";
 import { Document } from "@/lib/types/orderTypes";
 import { quickStatusUpdate } from "@/lib/api/transport/transportApi";
-import { TransportStatus } from "@/lib/types/trnasportTypes";
+import { TransportStatus } from "@/lib/types/transportTypes";
 
 interface InitiateRouteButtonProps {
   orderId: string;

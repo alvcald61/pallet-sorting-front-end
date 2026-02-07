@@ -49,7 +49,7 @@ export function ProtectedElement({
   if (hasAccess && requiredPermissions) {
     if (requireAll) {
       hasAccess = requiredPermissions.every(
-        (p) => !hasAnyPermission([p]) || hasAnyPermission([p])
+        (p) => hasAnyPermission([p])
       );
     } else {
       hasAccess = hasAnyPermission(requiredPermissions);
@@ -87,7 +87,7 @@ export function useCanAccess(
   if (hasAccess && requiredPermissions) {
     if (requireAll) {
       hasAccess = requiredPermissions.every(
-        (p) => !hasAnyPermission([p]) || hasAnyPermission([p])
+        (p) => hasAnyPermission([p])
       );
     } else {
       hasAccess = hasAnyPermission(requiredPermissions);

@@ -22,6 +22,8 @@ import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
 import { useCRUDWithQuery } from "@/lib/hooks/useCRUDWithQuery";
 import { useFormModal } from "@/lib/hooks/useFormModal";
 import { useDataTable } from "@/lib/hooks/useDataTable";
+import { ProtectedPage } from "@/components/auth/ProtectedPage";
+import { ROLES } from "@/lib/const/rbac";
 
 const PAGE_SIZE = 15;
 
@@ -54,6 +56,7 @@ export default function DriverPage() {
   };
 
   return (
+    <ProtectedPage requiredRoles={[ROLES.ADMIN]}>
     <div className="flex flex-col justify-start w-full grow p-10">
       <Breadcrumbs className="mb-4">
         <Anchor href="/truck">Home</Anchor>
@@ -143,5 +146,6 @@ export default function DriverPage() {
         isLoading={drivers.isCreating || drivers.isUpdating}
       />
     </div>
+    </ProtectedPage>
   );
 }

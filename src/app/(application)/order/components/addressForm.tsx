@@ -19,9 +19,8 @@ export const AddressForm = () => {
     setPlacesSuggestions([]);
   }, [from, to]);
 
-  const displaySuggestions = function (predictions, status) {
-    //@ts-ignore
-    if (status != google.maps.places.PlacesServiceStatus.OK || !predictions) {
+  const displaySuggestions = function (predictions: { description: string }[] | null, status: string) {
+    if (status !== "OK" || !predictions) {
       alert(status);
       return;
     }

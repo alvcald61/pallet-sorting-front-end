@@ -1,4 +1,4 @@
-import { TransportStatus } from "@/lib/types/trnasportTypes";
+import { TransportStatus } from "@/lib/types/transportTypes";
 import { patch, get } from "../apiClient";
 
 export interface TransportHistoryEntry {

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button, Modal, Group, Alert } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
-import { TransportStatus } from "@/lib/types/trnasportTypes";
+import { TransportStatus } from "@/lib/types/transportTypes";
 import { quickStatusUpdate } from "@/lib/api/transport/transportApi";
 import { updateOrderStatus } from "@/lib/api/order/orderApi";
 

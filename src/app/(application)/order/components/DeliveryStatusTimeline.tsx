@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Modal, Group } from "@mantine/core";
-import { TransportStatus } from "@/lib/types/trnasportTypes";
+import { TransportStatus } from "@/lib/types/transportTypes";
 import {
   TransportHistoryEntry,
   quickStatusUpdate,

@@ -1,5 +1,5 @@
 import { OrderStatus } from "../utils/enums";
-import { TransportStatus } from "./trnasportTypes";
+import { TransportStatus } from "./transportTypes";
 
 export interface Order {
   id: string;

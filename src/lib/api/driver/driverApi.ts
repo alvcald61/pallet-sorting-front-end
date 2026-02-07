@@ -6,27 +6,27 @@ import {
 import { get, post, put, apiDelete } from "../apiClient";
 
 export async function getDrivers(): Promise<{ data: Driver[] }> {
-  return get<{ data: Driver[] }>("/api/driver");
+  return get<{ data: Driver[] }>("/driver");
 }
 
 export async function getDriverById(id: string): Promise<{ data: Driver }> {
-  return get<{ data: Driver }>(`/api/driver/${id}`);
+  return get<{ data: Driver }>(`/driver/${id}`);
 }
 
 export async function createDriver(
   data: CreateDriverRequest
 ): Promise<{ data: Driver }> {
-  return post<{ data: Driver }>("/api/driver", data);
+  return post<{ data: Driver }>("/driver", data);
 }
 
 export async function updateDriver(
   id: string,
   data: UpdateDriverRequest
 ): Promise<{ data: Driver }> {
-  return put<{ data: Driver }>(`/api/driver/${id}`, data);
+  return put<{ data: Driver }>(`/driver/${id}`, data);
 }
 
 export async function deleteDriver(id: string): Promise<{ message: string }> {
-  return apiDelete<{ message: string }>(`/api/driver/${id}`);
+  return apiDelete<{ message: string }>(`/driver/${id}`);
 }
 

@@ -34,14 +34,13 @@ function buildURL(endpoint: string): string {
 /**
  * Gets default headers including Authorization Bearer
  */
-async function getHeaders(customHeaders?: HeadersInit): Promise<HeadersInit> {
+async function getHeaders(customHeaders?: HeadersInit): Promise<Record<string, string>> {
   const token = await getAuthToken();
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...customHeaders,
+    ...(customHeaders as Record<string, string>),
   };
 
-  // Add Authorization Bearer header if token exists
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }

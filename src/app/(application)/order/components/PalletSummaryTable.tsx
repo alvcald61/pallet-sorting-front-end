@@ -1,6 +1,7 @@
 import React from "react";
+import { Pallet } from "@/lib/types/palletType";
 
-const PalletSummaryTable = ({ pallets }) => {
+const PalletSummaryTable = ({ pallets }: { pallets: Pallet[] }) => {
   return (
     <table className="w-full text-sm text-left">
       <thead className="text-xs text-gray-500  uppercase bg-gray-50 ">

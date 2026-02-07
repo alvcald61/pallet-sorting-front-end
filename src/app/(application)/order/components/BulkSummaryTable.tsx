@@ -1,6 +1,7 @@
 import React from "react";
+import { Bulk } from "@/lib/types/bulkType";
 
-const BulkSummaryTable = ({ bulk }) => {
+const BulkSummaryTable = ({ bulk }: { bulk: Bulk[] }) => {
   return (
     <table className="w-full text-sm text-left">
       <thead className="text-xs text-gray-500  uppercase bg-gray-50 ">

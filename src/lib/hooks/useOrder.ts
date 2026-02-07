@@ -9,16 +9,22 @@ import {
 } from "@/lib/api/order/orderApi";
 import { uploadOrderDocument } from "@/lib/api/order/orderActions";
 import { notifications } from "@mantine/notifications";
+import { OrderFilters } from "@/lib/types/orderFilterTypes";
 
 /**
  * React Query hooks for Order operations
  */
 
-// Fetch orders with pagination
-export const useOrders = (page: number, pageSize: number, isAdmin: boolean) => {
+// Fetch orders with pagination and filters
+export const useOrders = (
+  page: number,
+  pageSize: number,
+  isAdmin: boolean,
+  filters?: OrderFilters
+) => {
   return useQuery({
-    queryKey: ["orders", page, isAdmin],
-    queryFn: () => getOrdersByPage({ page, pageSize, isAdmin }),
+    queryKey: ["orders", page, isAdmin, filters],
+    queryFn: () => getOrdersByPage({ page, pageSize, isAdmin, filters }),
     staleTime: 2 * 60 * 1000, // 2 minutes - orders change frequently
   });
 };

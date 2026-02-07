@@ -24,8 +24,8 @@ export default function LoginForm() {
   const router = useRouter();
   const [state, formAction] = useActionState(login, undefined);
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("alvarocalderom@gmail.com");
-  const [password, setPassword] = useState("12345678");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const emailError = email && !isValidEmail(email);
 
@@ -140,6 +140,14 @@ export default function LoginForm() {
                     <Eye className="h-4 w-4" />
                   )}
                 </button>
+              </div>
+              <div className="text-right">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+                >
+                  ¿Olvidaste tu contraseña?
+                </Link>
               </div>
             </div>
           </CardContent>

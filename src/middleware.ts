@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/sign-up"];
+const PUBLIC_PATHS = ["/login", "/sign-up", "/forgot-password", "/reset-password"];
 
 export default async function roleValidation(req: NextRequest) {
   const path = req.nextUrl.pathname;
