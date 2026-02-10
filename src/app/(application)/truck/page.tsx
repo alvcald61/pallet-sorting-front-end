@@ -59,7 +59,7 @@ export default function TruckPage() {
 
   const getDriverName = (driverId?: string) => {
     if (!driverId) return "Sin asignar";
-    const driver = drivers.find((d) => d.driverId === Number(driverId));
+    const driver = drivers.find((d) => String(d.driverId) === driverId);
     return driver ? `${driver.firstName} ${driver.lastName}` : "Desconocido";
   };
 

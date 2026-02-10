@@ -107,9 +107,11 @@ export default function DocumentUploadZone({
           const result = await uploadOrderDocument({orderId, documentId: parseInt(documentId), file});
           // Capturar el link del response
           if (result && result.mensaje) {
+            const docId = parseInt(documentId);
+            const link = result.mensaje;
             setDocumentLinks((prev) => ({
               ...prev,
-              [parseInt(documentId)]: result.mensaje,
+              [docId]: link,
             }));
           }
           return result;

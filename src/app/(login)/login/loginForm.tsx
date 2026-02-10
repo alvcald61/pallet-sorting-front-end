@@ -40,9 +40,6 @@ export default function LoginForm() {
       OneSignal.init({
         appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
         allowLocalhostAsSecureOrigin: true,
-        notifyButton: {
-          enable: true,
-        },
       });
       console.log("OneSignal initialized successfully");
     }

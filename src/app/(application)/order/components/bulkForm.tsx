@@ -79,7 +79,8 @@ export const BulkForm = () => {
                 tempId: Date.now().toString(),
                 volume: volume,
                 quantity: quantity,
-                weight: weight, // set a default or calculated value for weight
+                weight: weight,
+                height: 1.5, // default height in meters
               });
             }}
           >

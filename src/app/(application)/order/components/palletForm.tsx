@@ -15,7 +15,7 @@ import "./style.css";
 import { randomUUID } from "crypto";
 
 export const PalletForm = () => {
-  const [select, setSelect] = useState([]);
+  const [select, setSelect] = useState<{ value: string; label: string }[]>([]);
   const [pallets, setPallets] = useState<Pallet[]>([]);
   const [selectedPallet, setSelectedPallet] = useState("");
   const [checked, setChecked] = useState(false);

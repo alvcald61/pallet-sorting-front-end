@@ -33,16 +33,16 @@ export default function OrderLayoutWrapper({
 
   const callOrderApi = async () => {
     try {
-      const response = await createOrder(
-        {
+      const response = await createOrder({
+        orderData: {
           pallets: orderData,
           ...address,
           zoneId: 1,
           deliveryDate: `${address.date} ${address.time}`,
           userId: userId || "",
         },
-        orderType
-      );
+        type: orderType,
+      });
       setNotificationVisible(true);
       setTimeout(() => {
         setNotificationVisible(false);

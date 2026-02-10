@@ -75,12 +75,14 @@ export function OrderFiltersComponent({
                 ? new Date(filters.pickupDateFrom)
                 : null
             }
-            onChange={(date) =>
-              updateFilter(
-                "pickupDateFrom",
-                date ? date.toISOString().split("T")[0] : undefined
-              )
-            }
+            onChange={(date) => {
+              if (date === null) {
+                updateFilter("pickupDateFrom", undefined);
+              } else {
+                // date is string
+                updateFilter("pickupDateFrom", new Date(date).toISOString().split("T")[0]);
+              }
+            }}
             clearable
             valueFormat="DD/MM/YYYY"
           />
@@ -89,12 +91,14 @@ export function OrderFiltersComponent({
             value={
               filters.pickupDateTo ? new Date(filters.pickupDateTo) : null
             }
-            onChange={(date) =>
-              updateFilter(
-                "pickupDateTo",
-                date ? date.toISOString().split("T")[0] : undefined
-              )
-            }
+            onChange={(date) => {
+              if (date === null) {
+                updateFilter("pickupDateTo", undefined);
+              } else {
+                // date is string
+                updateFilter("pickupDateTo", new Date(date).toISOString().split("T")[0]);
+              }
+            }}
             clearable
             valueFormat="DD/MM/YYYY"
           />
