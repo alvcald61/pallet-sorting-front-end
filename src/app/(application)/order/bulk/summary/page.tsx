@@ -1,48 +1,134 @@
 "use client";
-import React, { useEffect } from "react";
 
+import { ImprovedOrderLayout } from "../../components/ImprovedOrderLayout";
+import { useOrderDraft } from "@/lib/hooks/useOrderDraft";
+import { Paper, Title, Stack, Group, Button, Divider, Alert, Badge, Text } from "@mantine/core";
+import { IconCheck, IconAlertCircle, IconReceipt } from "@tabler/icons-react";
 import useOrderStore from "@/lib/store/OrderStore";
-import ShippingDetailsCard from "../../components/ShippingDetailsCard";
-import PackagesCard from "../../components/PackagesCard";
+import { useRouter } from "next/navigation";
 
-const Page = () => {
+export default function BulkSummaryPage() {
+  const router = useRouter();
+  const { clearDraft } = useOrderDraft("bulk");
   const { bulkOrder, address } = useOrderStore();
 
-  useEffect(() => {
-    console.log("bulkOrder", bulkOrder);
-    console.log("address", address);
-  }, [address, bulkOrder]);
+  const handleConfirmOrder = async () => {
+    // Clear draft on successful order
+    clearDraft();
+    // Navigate to order list or confirmation page
+    router.push("/order");
+  };
+
+  const totalVolume = bulkOrder.reduce(
+    (sum, item) => sum + item.volume * item.quantity,
+    0
+  );
+  const totalWeight = bulkOrder.reduce(
+    (sum, item) => sum + item.weight * item.quantity,
+    0
+  );
 
   return (
-    <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
-      <div className="layout-container flex h-full grow flex-col">
-        <div className="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div className="flex flex-col gap-8 p-4">
-              <div className="lg:col-span-2 flex flex-col gap-8">
-                <ShippingDetailsCard
-                  fromAddress={address.fromAddress.address}
-                  toAddress={address.toAddress.address}
-                  fromAddressDistrict={address.fromAddress.district}
-                  fromAddressCity={address.fromAddress.city}
-                  fromAddressState={address.fromAddress.state}
-                  toAddressCity={address.toAddress.city}
-                  toAddressState={address.toAddress.state}
-                  date={address.date}
-                  time={address.time}
-                />
-                <PackagesCard
-                  orderType="BULK"
-                  packages={bulkOrder}
-                  title="Detalle de carga"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+    <ImprovedOrderLayout
+      orderType="bulk"
+      currentStep={2}
+      showSummary={false}
+      showPricing={true}
+    >
+      <Stack gap="lg">
+        <Paper shadow="sm" p="lg" radius="md" withBorder>
+          <Group justify="space-between" mb="md">
+            <Title order={3}>
+              <Group gap="xs">
+                <IconReceipt size={24} />
+                Resumen del Pedido
+              </Group>
+            </Title>
+            <Badge size="xl" variant="light" color="green">
+              Listo para confirmar
+            </Badge>
+          </Group>
 
-export default Page;
+          <Divider my="md" />
+
+          {/* Items Summary */}
+          <div>
+            <Title order={5} mb="sm">Bultos ({bulkOrder.length})</Title>
+            <Stack gap="xs">
+              {bulkOrder.map((item, index) => (
+                <Group key={item.tempId} justify="space-between" p="sm" style={{ backgroundColor: "#f8f9fa", borderRadius: 8 }}>
+                  <div>
+                    <Text fw={600}>Bulto #{index + 1}</Text>
+                    <Text size="sm" c="dimmed">
+                      {item.volume} m³ · {item.weight} kg · Cantidad: {item.quantity}
+                    </Text>
+                  </div>
+                  <Badge>{(item.volume * item.quantity).toFixed(2)} m³ total</Badge>
+                </Group>
+              ))}
+            </Stack>
+
+            <Group justify="space-between" mt="md" p="md" style={{ backgroundColor: "#e7f5ff", borderRadius: 8 }}>
+              <Text fw={700}>Total de Carga:</Text>
+              <Group gap="xl">
+                <Text fw={700}>{totalVolume.toFixed(2)} m³</Text>
+                <Text fw={700}>{totalWeight.toFixed(2)} kg</Text>
+              </Group>
+            </Group>
+          </div>
+
+          <Divider my="md" />
+
+          {/* Route Summary */}
+          <div>
+            <Title order={5} mb="sm">Ruta</Title>
+            <Stack gap="sm">
+              <div>
+                <Text fw={600} size="sm" c="dimmed">Desde:</Text>
+                <Text>{address.fromAddress?.address}</Text>
+                <Text size="sm" c="dimmed">
+                  {address.fromAddress?.district}, {address.fromAddress?.city}, {address.fromAddress?.state}
+                </Text>
+              </div>
+
+              <div>
+                <Text fw={600} size="sm" c="dimmed">Hasta:</Text>
+                <Text>{address.toAddress?.address}</Text>
+                <Text size="sm" c="dimmed">
+                  {address.toAddress?.district}, {address.toAddress?.city}, {address.toAddress?.state}
+                </Text>
+              </div>
+
+              <div>
+                <Text fw={600} size="sm" c="dimmed">Fecha y hora de recojo:</Text>
+                <Text>{address.date} a las {address.time}</Text>
+              </div>
+            </Stack>
+          </div>
+
+          <Divider my="md" />
+
+          <Alert icon={<IconCheck size={16} />} color="green" mb="md">
+            Tu pedido está listo para ser confirmado. Recibirás una confirmación por correo electrónico.
+          </Alert>
+
+          <Group justify="space-between">
+            <Button
+              variant="default"
+              onClick={() => router.push("/order/bulk/address")}
+            >
+              Volver a editar
+            </Button>
+            <Button
+              size="lg"
+              rightSection={<IconCheck size={20} />}
+              onClick={handleConfirmOrder}
+            >
+              Confirmar Pedido
+            </Button>
+          </Group>
+        </Paper>
+      </Stack>
+    </ImprovedOrderLayout>
+  );
+}
