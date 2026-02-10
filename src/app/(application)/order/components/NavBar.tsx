@@ -7,7 +7,9 @@ import {
   IconPalette,
   IconDashboard,
   IconSteeringWheel,
+  IconBuildingWarehouse,
   IconBell,
+  IconClipboardText,
   IconLogout,
 } from "@tabler/icons-react";
 import {
@@ -67,8 +69,14 @@ const mockdata = [
   },
   {
     label: "Almacenes",
-    icon: IconPalette,
+    icon: IconBuildingWarehouse,
     link: "/warehouse",
+    roles: [ROLES.ADMIN],
+  },
+  {
+    label: "Documentos",
+    icon: IconClipboardText,
+    link: "/document",
     roles: [ROLES.ADMIN],
   },
 

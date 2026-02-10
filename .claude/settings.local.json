@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(ls:*)",
+      "Bash(if not exist \"d:\\\\Proyectos\\\\TUPACK\\\\pallet-sorting-front\\\\src\\\\components\\\\auth\" mkdir \"d:\\\\Proyectos\\\\TUPACK\\\\pallet-sorting-front\\\\src\\\\components\\\\auth\")",
+      "Bash(npm run build:*)"
+    ],
+    "additionalDirectories": [
+      "d:\\Proyectos\\TUPACK\\pallet-sorting-front"
     ]
   }
 }

@@ -14,11 +14,13 @@ import {
   Title,
   Breadcrumbs,
   Anchor,
+  Tooltip,
 } from "@mantine/core";
 import { DataTable } from "mantine-datatable";
-import React from "react";
+import React, { useState } from "react";
 import { WarehouseForm } from "./components/WarehouseForm";
-import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
+import { WarehouseDocumentsModal } from "./components/WarehouseDocumentsModal";
+import { IconEdit, IconTrash, IconPlus, IconFileDescription } from "@tabler/icons-react";
 import { useCRUDWithQuery } from "@/lib/hooks/useCRUDWithQuery";
 import { useFormModal } from "@/lib/hooks/useFormModal";
 import { useDataTable } from "@/lib/hooks/useDataTable";
@@ -28,6 +30,12 @@ import { ROLES } from "@/lib/const/rbac";
 const PAGE_SIZE = 15;
 
 export default function WarehousePage() {
+  // State for documents modal
+  const [documentsModal, setDocumentsModal] = useState<{
+    opened: boolean;
+    warehouse: Warehouse | null;
+  }>({ opened: false, warehouse: null });
+
   // Use CRUD hook with React Query
   const warehouses = useCRUDWithQuery({
     queryKey: ["warehouses"],
@@ -53,6 +61,14 @@ export default function WarehousePage() {
       await warehouses.create(data);
     }
     formModal.close();
+  };
+
+  const openDocumentsModal = (warehouse: Warehouse) => {
+    setDocumentsModal({ opened: true, warehouse });
+  };
+
+  const closeDocumentsModal = () => {
+    setDocumentsModal({ opened: false, warehouse: null });
   };
 
   return (
@@ -115,29 +131,44 @@ export default function WarehousePage() {
               title: "Acciones",
               render: (warehouse) => (
                 <Group gap="xs">
-                  <ActionIcon
-                    size="sm"
-                    variant="subtle"
-                    color="blue"
-                    onClick={() => formModal.openEdit(warehouse)}
-                    disabled={warehouses.loading || warehouses.isUpdating}
-                  >
-                    <IconEdit size={16} />
-                  </ActionIcon>
-                  <ActionIcon
-                    size="sm"
-                    variant="subtle"
-                    color="red"
-                    onClick={() => warehouses.remove(warehouse)}
-                    disabled={warehouses.loading || warehouses.isDeleting}
-                  >
-                    <IconTrash size={16} />
-                  </ActionIcon>
+                  <Tooltip label="Gestionar documentos">
+                    <ActionIcon
+                      size="sm"
+                      variant="subtle"
+                      color="green"
+                      onClick={() => openDocumentsModal(warehouse)}
+                      disabled={warehouses.loading}
+                    >
+                      <IconFileDescription size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                  <Tooltip label="Editar">
+                    <ActionIcon
+                      size="sm"
+                      variant="subtle"
+                      color="blue"
+                      onClick={() => formModal.openEdit(warehouse)}
+                      disabled={warehouses.loading || warehouses.isUpdating}
+                    >
+                      <IconEdit size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                  <Tooltip label="Eliminar">
+                    <ActionIcon
+                      size="sm"
+                      variant="subtle"
+                      color="red"
+                      onClick={() => warehouses.remove(warehouse)}
+                      disabled={warehouses.loading || warehouses.isDeleting}
+                    >
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  </Tooltip>
                 </Group>
               ),
             },
           ]}
-          idAccessor="id"
+          idAccessor="warehouseId"
           page={table.page}
           onPageChange={table.setPage}
           fetching={warehouses.loading}
@@ -154,6 +185,15 @@ export default function WarehousePage() {
         warehouse={formModal.selected}
         isLoading={warehouses.isCreating || warehouses.isUpdating}
       />
+
+      {documentsModal.warehouse && (
+        <WarehouseDocumentsModal
+          opened={documentsModal.opened}
+          onClose={closeDocumentsModal}
+          warehouseId={documentsModal.warehouse.warehouseId}
+          warehouseName={documentsModal.warehouse.name}
+        />
+      )}
     </div>
     </ProtectedPage>
   );
