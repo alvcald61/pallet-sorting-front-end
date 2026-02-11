@@ -11,7 +11,7 @@ import {
   Select,
   Box,
 } from "@mantine/core";
-import { DataTable } from "mantine-datatable";
+import { DataTableSortStatus } from "mantine-datatable";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
@@ -21,6 +21,8 @@ import { getClients } from "@/lib/api/client/clientApi";
 import { useOrders } from "@/lib/hooks/useOrder";
 import { useOrderFilters } from "@/lib/hooks/useOrderFilters";
 import { OrderFiltersComponent } from "./components/OrderFilters";
+import { EnhancedDataTable } from "@/components/table/EnhancedDataTable";
+import { IconPackage } from "@tabler/icons-react";
 
 const PAGE_SIZE = 15;
 
@@ -30,6 +32,9 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const [to, setTo] = useState("");
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
+  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any> | null>(
+    null,
+  );
 
   const { addUserId } = useOrderStore();
   const isAdmin = useCanAccess(["ADMIN"]);
@@ -57,12 +62,18 @@ const Page = () => {
     }
   }, []);
 
+  // Extract sort parameter for API in Spring Boot format: "field,direction"
+  const sort = sortStatus
+    ? `${sortStatus.columnAccessor},${sortStatus.direction}`
+    : undefined;
+
   // Fetch orders with React Query using custom hook
   const { data: ordersData, isLoading: isFetchingOrders } = useOrders(
     page - 1,
     PAGE_SIZE,
     isAdmin,
-    effectiveFilters
+    effectiveFilters,
+    sort,
   );
 
   const records = ordersData?.data || [];
@@ -145,12 +156,8 @@ const Page = () => {
         </div>
 
         <div className="mt-4">
-          <DataTable
-            withTableBorder
-            borderRadius="sm"
-            withColumnBorders
-            striped
-            highlightOnHover
+          <EnhancedDataTable
+            serverSide
             records={records}
             columns={[
               { accessor: "id", title: "ID" },
@@ -172,15 +179,30 @@ const Page = () => {
               { accessor: "realDeliveryDate", title: "Fecha real de llegada" },
               { accessor: "orderStatus", title: "Estado del envio" },
             ]}
-            onRowClick={({ record }) => router.push(`/order/${record.id}`)}
-            onPageChange={(p) => setPage(p)}
-            totalRecords={pageInfo.totalElements}
-            recordsPerPage={PAGE_SIZE}
+            loading={isFetchingOrders}
             page={page}
-            fetching={isFetchingOrders}
-            loadingText="Cargando..."
-            noRecordsText="No se encontraron órdenes"
-            height={500}
+            totalRecords={pageInfo.totalElements}
+            onPageChange={setPage}
+            pageSize={PAGE_SIZE}
+            sortStatus={sortStatus}
+            onSortStatusChange={setSortStatus}
+            onRowClick={(record) => router.push(`/order/${record.id}`)}
+            exportable
+            exportFileName="ordenes"
+            searchable={false}
+            selectable={false}
+            emptyState={{
+              title: "No hay órdenes registradas",
+              description:
+                "Comienza creando tu primera orden para gestionar tus envíos.",
+              icon: (
+                <IconPackage size={64} stroke={1.5} style={{ opacity: 0.3 }} />
+              ),
+              action: {
+                label: "Crear primera orden",
+                onClick: () => openModal("/order/bulk"),
+              },
+            }}
           />
         </div>
       </div>

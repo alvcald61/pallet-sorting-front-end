@@ -16,15 +16,15 @@ import {
   Anchor,
   Badge,
 } from "@mantine/core";
-import { DataTable } from "mantine-datatable";
 import React from "react";
 import { DocumentForm } from "./components/DocumentForm";
-import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
+import { IconEdit, IconTrash, IconPlus, IconFile } from "@tabler/icons-react";
 import { useCRUDWithQuery } from "@/lib/hooks/useCRUDWithQuery";
 import { useFormModal } from "@/lib/hooks/useFormModal";
-import { useDataTable } from "@/lib/hooks/useDataTable";
 import { ProtectedPage } from "@/components/auth/ProtectedPage";
 import { ROLES } from "@/lib/const/rbac";
+import { EnhancedDataTable } from "@/components/table/EnhancedDataTable";
+import { modals } from "@mantine/modals";
 
 const PAGE_SIZE = 15;
 
@@ -44,9 +44,6 @@ export default function DocumentPage() {
   // Use form modal hook for modal state
   const formModal = useFormModal<DocumentConfig>();
 
-  // Use data table hook for pagination
-  const table = useDataTable(documents.items, { pageSize: PAGE_SIZE });
-
   const handleFormSubmit = async (data: any) => {
     if (formModal.selected) {
       await documents.update(formModal.selected.documentId, data);
@@ -55,6 +52,31 @@ export default function DocumentPage() {
       await documents.create(data);
     }
     formModal.close();
+  };
+
+  // Handle bulk delete
+  const handleBulkDelete = async (selectedIds: Set<string | number>) => {
+    const selectedDocuments = documents.items.filter(doc =>
+      selectedIds.has(doc.documentId)
+    );
+
+    modals.openConfirmModal({
+      title: 'Eliminar documentos',
+      children: (
+        <>
+          ¿Estás seguro de que deseas eliminar {selectedDocuments.length} documento(s)?
+          <br />
+          Esta acción no se puede deshacer.
+        </>
+      ),
+      labels: { confirm: 'Eliminar', cancel: 'Cancelar' },
+      confirmProps: { color: 'red' },
+      onConfirm: async () => {
+        for (const doc of selectedDocuments) {
+          await documents.remove(doc);
+        }
+      },
+    });
   };
 
   return (
@@ -76,13 +98,8 @@ export default function DocumentPage() {
         </div>
 
         <div className="mt-8">
-          <DataTable
-            withTableBorder
-            borderRadius="sm"
-            withColumnBorders
-            striped
-            highlightOnHover
-            records={table.paginatedData}
+          <EnhancedDataTable
+            records={documents.items}
             columns={[
               {
                 accessor: "documentName",
@@ -100,6 +117,7 @@ export default function DocumentPage() {
                     {document.required ? "Sí" : "No"}
                   </Badge>
                 ),
+                sortable: false,
               },
               {
                 accessor: "actions",
@@ -128,13 +146,32 @@ export default function DocumentPage() {
                 ),
               },
             ]}
-            idAccessor="documentId"
-            page={table.page}
-            onPageChange={table.setPage}
-            fetching={documents.loading}
-            totalRecords={table.totalRecords}
-            recordsPerPage={table.pageSize}
-            height={500}
+            loading={documents.loading}
+            pageSize={PAGE_SIZE}
+            searchable
+            searchableFields={["documentName", "storagePath"]}
+            searchPlaceholder="Buscar por nombre o ruta..."
+            selectable
+            getRecordId={(document) => document.documentId}
+            bulkActions={[
+              {
+                label: "Eliminar seleccionados",
+                icon: <IconTrash size={16} />,
+                color: "red",
+                onClick: handleBulkDelete,
+              },
+            ]}
+            exportable
+            exportFileName="documentos"
+            emptyState={{
+              title: "No hay documentos registrados",
+              description: "Comienza creando tu primer documento para gestionar tu configuración.",
+              icon: <IconFile size={64} stroke={1.5} style={{ opacity: 0.3 }} />,
+              action: {
+                label: "Crear primer documento",
+                onClick: formModal.openCreate,
+              },
+            }}
           />
         </div>
 

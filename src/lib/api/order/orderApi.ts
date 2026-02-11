@@ -19,6 +19,7 @@ interface OrdersByPageParams {
   pageSize: number;
   isAdmin: boolean;
   filters?: OrderFilters;
+  sort?: string; // Spring Boot format: "field,direction" e.g. "amount,desc"
 }
 
 interface CreateOrderParams {
@@ -54,6 +55,7 @@ export const getOrdersByPage = async ({
   pageSize,
   isAdmin,
   filters,
+  sort,
 }: OrdersByPageParams) => {
   const params = new URLSearchParams();
   params.append("page", String(page));
@@ -67,6 +69,9 @@ export const getOrdersByPage = async ({
   if (filters?.orderType) params.append("orderType", filters.orderType);
   if (filters?.pickupDateFrom) params.append("pickupDateFrom", filters.pickupDateFrom);
   if (filters?.pickupDateTo) params.append("pickupDateTo", filters.pickupDateTo);
+
+  // Add sorting parameter in Spring Boot format: "field,direction"
+  if (sort) params.append("sort", sort);
 
   return get<PaginatedOrders>(`/order?${params.toString()}`);
 };

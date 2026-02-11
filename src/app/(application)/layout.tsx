@@ -6,6 +6,7 @@ import "@mantine/core/styles.css";
 import "mantine-datatable/styles.layer.css";
 import "@mantine/dates/styles.css";
 import "@mantine/dropzone/styles.css";
+import "@/styles/datatable-overrides.css";
 import React from "react";
 import {
   ColorSchemeScript,

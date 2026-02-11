@@ -20,11 +20,13 @@ export const useOrders = (
   page: number,
   pageSize: number,
   isAdmin: boolean,
-  filters?: OrderFilters
+  filters?: OrderFilters,
+  sort?: string, // Spring Boot format: "field,direction" e.g. "amount,desc"
 ) => {
+  if (!sort) sort = "id,asc"; // Default sorting by creation date descending
   return useQuery({
-    queryKey: ["orders", page, isAdmin, filters],
-    queryFn: () => getOrdersByPage({ page, pageSize, isAdmin, filters }),
+    queryKey: ["orders", page, isAdmin, filters, sort],
+    queryFn: () => getOrdersByPage({ page, pageSize, isAdmin, filters, sort }),
     staleTime: 2 * 60 * 1000, // 2 minutes - orders change frequently
   });
 };
