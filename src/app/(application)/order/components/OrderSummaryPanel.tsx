@@ -2,6 +2,7 @@
 
 import { Paper, Title, Text, Group, Badge, Divider, Stack, Box, Button, ScrollArea } from "@mantine/core";
 import { IconPackage, IconWeight, IconRuler, IconTrash, IconCopy } from "@tabler/icons-react";
+import { useMemo } from "react";
 import useOrderStore from "@/lib/store/OrderStore";
 import { Bulk } from "@/lib/types/bulkType";
 import { Pallet } from "@/lib/types/palletType";
@@ -214,6 +215,3 @@ export function OrderSummaryPanel({
     </Paper>
   );
 }
-
-// Add useMemo import
-import { useMemo } from "react";

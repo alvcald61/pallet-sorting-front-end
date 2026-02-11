@@ -6,17 +6,47 @@ import { Paper, Title, Stack, Group, Button, Divider, Alert, Badge, Text } from 
 import { IconCheck, IconAlertCircle, IconReceipt } from "@tabler/icons-react";
 import useOrderStore from "@/lib/store/OrderStore";
 import { useRouter } from "next/navigation";
+import { useCreateOrder } from "@/lib/hooks/useOrder";
+import { useState } from "react";
 
 export default function BulkSummaryPage() {
   const router = useRouter();
   const { clearDraft } = useOrderDraft("bulk");
-  const { bulkOrder, address } = useOrderStore();
+  const { bulkOrder, address, userId } = useOrderStore();
+  const createOrder = useCreateOrder();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleConfirmOrder = async () => {
-    // Clear draft on successful order
-    clearDraft();
-    // Navigate to order list or confirmation page
-    router.push("/order");
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      // Prepare order data
+      const orderData = {
+        pallets: bulkOrder,
+        ...address,
+        zoneId: 1,
+        deliveryDate: `${address.date} ${address.time}`,
+        userId: userId || "",
+      };
+
+      // Create the order
+      await createOrder.mutateAsync({
+        orderData,
+        type: "BULK",
+      });
+
+      // Clear draft on successful order
+      clearDraft();
+
+      // Navigate to order list
+      router.push("/order");
+    } catch (error) {
+      console.error("Error creating order:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const totalVolume = bulkOrder.reduce(
@@ -116,6 +146,7 @@ export default function BulkSummaryPage() {
             <Button
               variant="default"
               onClick={() => router.push("/order/bulk/address")}
+              disabled={isSubmitting}
             >
               Volver a editar
             </Button>
@@ -123,6 +154,8 @@ export default function BulkSummaryPage() {
               size="lg"
               rightSection={<IconCheck size={20} />}
               onClick={handleConfirmOrder}
+              loading={isSubmitting}
+              disabled={isSubmitting}
             >
               Confirmar Pedido
             </Button>

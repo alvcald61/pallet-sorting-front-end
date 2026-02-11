@@ -17,6 +17,8 @@ import {
   IconAlertCircle,
   IconCheck,
   IconCurrentLocation,
+  IconArrowLeft,
+  IconArrowRight,
 } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { useState, useEffect } from "react";
@@ -24,6 +26,7 @@ import useOrderStore from "@/lib/store/OrderStore";
 import { getWarehouses } from "@/lib/api/warehouse/warehouseApi";
 import { getAvailableSlots } from "@/lib/api/order/orderApi";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter, usePathname } from "next/navigation";
 
 interface AddressFormValues {
   warehouseId: string;
@@ -35,13 +38,18 @@ interface AddressFormValues {
   toDistrict: string;
   toCity: string;
   toState: string;
-  pickupDate: Date | null;
+  pickupDate: Date | string | null;
   pickupTime: string;
 }
 
 export function ImprovedAddressForm() {
   const { addAddress, address } = useOrderStore();
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Determine order type from pathname (bulk or pallet)
+  const orderType = pathname.includes("/bulk") ? "bulk" : "pallet";
 
   // Fetch warehouses
   const { data: warehousesData } = useQuery({
@@ -83,7 +91,11 @@ export function ImprovedAddressForm() {
     const fetchSlots = async () => {
       if (form.values.pickupDate) {
         try {
-          const dateStr = form.values.pickupDate.toISOString().split("T")[0];
+          // Convert to Date if it's a string, then format
+          const date = typeof form.values.pickupDate === 'string'
+            ? new Date(form.values.pickupDate)
+            : form.values.pickupDate;
+          const dateStr = date.toISOString().split("T")[0];
           const slots = await getAvailableSlots(dateStr);
           setAvailableSlots(slots);
         } catch (error) {
@@ -117,6 +129,19 @@ export function ImprovedAddressForm() {
 
   // Save to store on change
   useEffect(() => {
+    // Format date correctly
+    let dateStr = null;
+    if (form.values.pickupDate) {
+      try {
+        const date = typeof form.values.pickupDate === 'string'
+          ? new Date(form.values.pickupDate)
+          : form.values.pickupDate;
+        dateStr = date.toISOString().split("T")[0];
+      } catch (error) {
+        console.error("Error formatting date:", error);
+      }
+    }
+
     addAddress({
       fromAddress: {
         address: form.values.fromAddress,
@@ -131,7 +156,7 @@ export function ImprovedAddressForm() {
         city: form.values.toCity,
         state: form.values.toState,
       },
-      date: form.values.pickupDate?.toISOString().split("T")[0] || null,
+      date: dateStr,
       time: form.values.pickupTime,
     });
   }, [form.values]);
@@ -179,7 +204,7 @@ export function ImprovedAddressForm() {
               placeholder="Av. Principal 123, Edificio A, Piso 5"
               required
               {...form.getInputProps("fromAddress")}
-              disabled={!!form.values.warehouseId}
+              disabled
             />
           </Grid.Col>
 
@@ -189,7 +214,7 @@ export function ImprovedAddressForm() {
               placeholder="San Isidro"
               required
               {...form.getInputProps("fromDistrict")}
-              disabled={!!form.values.warehouseId}
+              disabled
             />
           </Grid.Col>
 
@@ -199,7 +224,7 @@ export function ImprovedAddressForm() {
               placeholder="Lima"
               required
               {...form.getInputProps("fromCity")}
-              disabled={!!form.values.warehouseId}
+              disabled
             />
           </Grid.Col>
 
@@ -209,7 +234,7 @@ export function ImprovedAddressForm() {
               placeholder="Lima"
               required
               {...form.getInputProps("fromState")}
-              disabled={!!form.values.warehouseId}
+              disabled
             />
           </Grid.Col>
         </Grid>
@@ -310,6 +335,26 @@ export function ImprovedAddressForm() {
           Todos los campos están completos. Puedes continuar al siguiente paso.
         </Alert>
       )}
+
+      {/* Navigation Buttons */}
+      <Paper shadow="sm" p="lg" radius="md" withBorder>
+        <Group justify="space-between">
+          <Button
+            variant="default"
+            leftSection={<IconArrowLeft size={16} />}
+            onClick={() => router.push(`/order/${orderType}`)}
+          >
+            Anterior
+          </Button>
+          <Button
+            rightSection={<IconArrowRight size={16} />}
+            disabled={!form.isValid()}
+            onClick={() => router.push(`/order/${orderType}/summary`)}
+          >
+            Siguiente: Resumen
+          </Button>
+        </Group>
+      </Paper>
     </Stack>
   );
 }

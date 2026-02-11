@@ -2,10 +2,11 @@
 
 import { Paper, Title, Text, Stack, Group, Button, NumberInput, ActionIcon, Badge, Tooltip } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconPlus, IconTrash, IconCopy, IconEdit, IconCheck, IconX } from "@tabler/icons-react";
+import { IconPlus, IconTrash, IconCopy, IconArrowRight } from "@tabler/icons-react";
 import useOrderStore from "@/lib/store/OrderStore";
 import { Bulk } from "@/lib/types/bulkType";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface BulkFormValues {
   volume: number;
@@ -17,6 +18,7 @@ interface BulkFormValues {
 export function ImprovedBulkForm() {
   const { addBulk, bulkOrder, deleteItem } = useOrderStore();
   const [editingId, setEditingId] = useState<string | null>(null);
+  const router = useRouter();
 
   const form = useForm<BulkFormValues>({
     initialValues: {
@@ -271,6 +273,21 @@ export function ImprovedBulkForm() {
               Completa el formulario arriba para agregar tu primer bulto
             </Text>
           </Stack>
+        </Paper>
+      )}
+
+      {/* Navigation Buttons */}
+      {bulkOrder.length > 0 && (
+        <Paper shadow="sm" p="lg" radius="md" withBorder>
+          <Group justify="flex-end">
+            <Button
+              size="lg"
+              rightSection={<IconArrowRight size={16} />}
+              onClick={() => router.push("/order/bulk/address")}
+            >
+              Siguiente: Direcciones
+            </Button>
+          </Group>
         </Paper>
       )}
     </Stack>

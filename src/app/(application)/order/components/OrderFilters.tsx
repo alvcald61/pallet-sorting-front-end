@@ -27,8 +27,8 @@ const STATUS_OPTIONS = Object.entries(OrderStatus).map(([key, value]) => ({
 }));
 
 const ORDER_TYPE_OPTIONS = [
-  { value: "POR BULTO", label: "Por bultos" },
-  { value: "POR PALLET", label: "Por pallet" },
+  { value: "BULK", label: "Por bultos" },
+  { value: "TWO_DIMENSIONAL", label: "Por pallet" },
 ];
 
 export function OrderFiltersComponent({
@@ -71,16 +71,17 @@ export function OrderFiltersComponent({
           <DateInput
             placeholder="Fecha recojo desde"
             value={
-              filters.pickupDateFrom
-                ? new Date(filters.pickupDateFrom)
-                : null
+              filters.pickupDateFrom ? new Date(filters.pickupDateFrom) : null
             }
             onChange={(date) => {
               if (date === null) {
                 updateFilter("pickupDateFrom", undefined);
               } else {
                 // date is string
-                updateFilter("pickupDateFrom", new Date(date).toISOString().split("T")[0]);
+                updateFilter(
+                  "pickupDateFrom",
+                  new Date(date).toISOString().split("T")[0],
+                );
               }
             }}
             clearable
@@ -88,15 +89,16 @@ export function OrderFiltersComponent({
           />
           <DateInput
             placeholder="Fecha recojo hasta"
-            value={
-              filters.pickupDateTo ? new Date(filters.pickupDateTo) : null
-            }
+            value={filters.pickupDateTo ? new Date(filters.pickupDateTo) : null}
             onChange={(date) => {
               if (date === null) {
                 updateFilter("pickupDateTo", undefined);
               } else {
                 // date is string
-                updateFilter("pickupDateTo", new Date(date).toISOString().split("T")[0]);
+                updateFilter(
+                  "pickupDateTo",
+                  new Date(date).toISOString().split("T")[0],
+                );
               }
             }}
             clearable

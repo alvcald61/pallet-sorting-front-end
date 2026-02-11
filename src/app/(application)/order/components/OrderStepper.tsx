@@ -139,32 +139,6 @@ export function OrderStepper({
         })}
       </Stepper>
 
-      {/* Navigation buttons */}
-      <Group justify="space-between" mt="xl">
-        <Button
-          variant="default"
-          onClick={() => {
-            if (currentStep > 0) {
-              handleStepClick(currentStep - 1);
-            } else {
-              router.push("/order");
-            }
-          }}
-        >
-          {currentStep === 0 ? "Cancelar" : "Anterior"}
-        </Button>
-
-        {currentStep < steps.length - 1 && (
-          <Button
-            onClick={() => handleStepClick(currentStep + 1)}
-            disabled={!canProceed}
-            rightSection={<IconCheck size={16} />}
-          >
-            Continuar
-          </Button>
-        )}
-      </Group>
-
       {/* Validation messages */}
       {!canProceed && (
         <Box mt="md" p="sm" style={{ backgroundColor: "#fff3cd", borderRadius: 8 }}>
