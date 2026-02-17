@@ -5,7 +5,11 @@
       "Bash(ls:*)",
       "Bash(if not exist \"d:\\\\Proyectos\\\\TUPACK\\\\pallet-sorting-front\\\\src\\\\components\\\\auth\" mkdir \"d:\\\\Proyectos\\\\TUPACK\\\\pallet-sorting-front\\\\src\\\\components\\\\auth\")",
       "Bash(npm run build:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(xargs cat:*)",
+      "Bash(mvn compile:*)",
+      "Bash(java:*)",
+      "Bash(mvn clean compile:*)"
     ],
     "additionalDirectories": [
       "d:\\Proyectos\\TUPACK\\pallet-sorting-front"

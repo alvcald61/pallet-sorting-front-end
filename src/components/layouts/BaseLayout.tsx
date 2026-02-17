@@ -3,6 +3,9 @@ import { NavbarNested } from "@/app/(application)/order/components/NavBar";
 import { ReactNode, useState, useEffect } from "react";
 import { ActionIcon, Burger } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useRBAC } from "@/lib/contexts/RBACContext";
+import { useOneSignalListeners } from "@/lib/hooks/useOneSignalListeners";
+import OneSignal from "react-onesignal";
 
 interface BaseLayoutProps {
   children: ReactNode;
@@ -11,6 +14,56 @@ interface BaseLayoutProps {
 export const BaseLayout = ({ children }: BaseLayoutProps) => {
   const isDesktop = useMediaQuery("(min-width: 1024px)", true);
   const [opened, { toggle, close, open }] = useDisclosure(false);
+  const { user } = useRBAC();
+  const [oneSignalInitialized, setOneSignalInitialized] = useState(false);
+
+  // Initialize OneSignal when user is available
+  useEffect(() => {
+    if (user?.id && !oneSignalInitialized) {
+      const initOneSignal = async () => {
+        try {
+          // Check if already initialized
+          if (typeof window !== "undefined" && (window as any).OneSignalDeferred) {
+            console.log("OneSignal already initialized, skipping...");
+            setOneSignalInitialized(true);
+            return;
+          }
+
+          console.log("🔔 Initializing OneSignal...");
+
+          await OneSignal.init({
+            appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID!,
+            allowLocalhostAsSecureOrigin: true,
+            serviceWorkerPath: "/OneSignalSDKWorker.js",
+            serviceWorkerUpdaterPath: "/OneSignalSDKUpdaterWorker.js",
+          });
+
+          // Wait a bit for SDK to be ready
+          await new Promise(resolve => setTimeout(resolve, 500));
+
+          // Login user with external_user_id
+          await OneSignal.login(String(user.id));
+
+          console.log("✅ OneSignal initialized for user:", user.id);
+          setOneSignalInitialized(true);
+        } catch (error) {
+          console.error("❌ Failed to initialize OneSignal:", error);
+        }
+      };
+
+      initOneSignal();
+    }
+  }, [user?.id, oneSignalInitialized]);
+
+  // Set up OneSignal event listeners ONLY after initialization
+  useEffect(() => {
+    if (oneSignalInitialized) {
+      console.log("🎧 Setting up OneSignal listeners...");
+    }
+  }, [oneSignalInitialized]);
+
+  // Always call the hook, but it will only add listeners when OneSignal is ready
+  useOneSignalListeners();
 
   // Abrir navbar en desktop por defecto
   useEffect(() => {

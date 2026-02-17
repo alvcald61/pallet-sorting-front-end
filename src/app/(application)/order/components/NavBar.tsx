@@ -8,7 +8,6 @@ import {
   IconDashboard,
   IconSteeringWheel,
   IconBuildingWarehouse,
-  IconBell,
   IconClipboardText,
   IconLogout,
 } from "@tabler/icons-react";
@@ -19,7 +18,6 @@ import {
   Stack,
   Button,
   Badge,
-  Menu,
 } from "@mantine/core";
 import { LinksGroup } from "./NavbarLinksGroup";
 import classes from "./NavbarNested.module.css";
@@ -28,6 +26,7 @@ import { ProtectedElement } from "@/lib/utils/rbacUtils";
 import { useRBAC } from "@/lib/contexts/RBACContext";
 import { logout } from "@/app/(login)/login/action";
 import { useRouter } from "next/navigation";
+import { NotificationMenu } from "@/app/(application)/notifications/components/NotificationMenu";
 
 const mockdata = [
   // { label: "Dashboard", icon: IconGauge },
@@ -175,28 +174,7 @@ export function NavbarNested({ opened = true, onClose }: NavbarNestedProps) {
                 </Stack>
               </Group>
 
-              <Menu position="bottom-end" shadow="md">
-                <Menu.Target>
-                  <Button
-                    variant="subtle"
-                    size="xs"
-                    p="4px"
-                    style={{ minWidth: "auto" }}
-                  >
-                    <IconBell size={18} />
-                  </Button>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Item disabled>
-                    <Group gap="xs">
-                      <Badge size="sm" variant="light" color="orange">
-                        0 nuevas
-                      </Badge>
-                      <span style={{ fontSize: "12px" }}>Notificaciones</span>
-                    </Group>
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
+              <NotificationMenu />
             </Group>
           )}
         </Stack>
