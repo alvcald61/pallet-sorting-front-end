@@ -4,6 +4,7 @@ import React from "react";
 import { OrderStatus } from "@/lib/utils/enums";
 import {
   IconCancel,
+  IconFileSearch,
   IconCheck,
   IconPackageExport,
   IconPencilCheck,
@@ -72,6 +73,13 @@ function getStatusConfig(status: OrderStatus) {
       icon: <IconCancel />,
       description: "Denegado - Orden rechazada",
     },
+    [OrderStatus.DOCUMENT_PENDING]: {
+      color: "text-red-700",
+      bgColor: "bg-red-50",
+      borderColor: "border-red-200",
+      icon: <IconFileSearch />,
+      description: "Documento pendiente - Esperando documentos requeridos",
+    },
   };
 
   return configs[status];
@@ -86,10 +94,10 @@ export default function OrderStatusBadge({
   if (variant === "badge") {
     return (
       <span
-        className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${config.color} ${config.bgColor} border ${config.borderColor}`}
+        className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${config?.color ?? "text-gray-700"} ${config?.bgColor ?? "bg-gray-50"} border ${config?.borderColor ?? "border-gray-200"}`}
       >
         <span className="material-symbols-outlined text-base">
-          {config.icon}
+          {config?.icon}
         </span>
         {status}
       </span>

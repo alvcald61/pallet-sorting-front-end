@@ -155,7 +155,7 @@ function formatDate(dateString: string): string {
 }
 
 const TRANSPORT_FLOW: TransportStatus[] = [
-  TransportStatus.TRUCK_ASSIGNED,
+  TransportStatus.PENDING,
   TransportStatus.EN_ROUTE_TO_WAREHOUSE,
   TransportStatus.ARRIVED_AT_WAREHOUSE,
   TransportStatus.LOADING,
@@ -233,7 +233,7 @@ export default function DeliveryStatusTimeline({
             variant="filled"
             color="blue"
           >
-            Siguiente estado
+            Continuar
           </Button>
         )}
       </div>

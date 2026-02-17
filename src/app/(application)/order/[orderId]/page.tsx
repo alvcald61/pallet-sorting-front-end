@@ -4,16 +4,18 @@ import {
   getOrderStatus,
   getDistributionImg,
 } from "@/lib/api/order/orderApi";
-import { getTransportHistory, TransportHistoryEntry } from "@/lib/api/transport/transportApi";
+import {
+  getTransportHistory,
+  TransportHistoryEntry,
+} from "@/lib/api/transport/transportApi";
 import OrderHeaderActions from "../components/OrderHeaderActions";
-import OrderStatusBadge from "../components/OrderStatusBadge";
 import DeliveryStatusTimeline from "../components/DeliveryStatusTimeline";
 import DocumentUploadZone from "../components/DocumentUploadZone";
 import InitiateRouteButton from "../components/InitiateRouteButton";
-import TransportFlow from "../components/TransportFlow";
 import OrderInformationCard from "../components/OrderInformationCard";
 import TruckAndDriverCard from "../components/TruckAndDriverCard";
 import PackagesCard from "../components/PackagesCard";
+import TransportFlow from "../components/TransportFlow";
 import { Image } from "@mantine/core";
 import { OrderStatus } from "@/lib/utils/enums";
 
@@ -90,7 +92,21 @@ export default async ({ params }: PageParams) => {
               packages={order.packages}
             />
 
-            {order.orderStatus === OrderStatus.APPROVED &&
+            {/* TransportFlow - Para que el conductor avance el estado del transporte */}
+            {/* {(order.orderStatus === OrderStatus.APPROVED ||
+              order.orderStatus === OrderStatus.IN_PROGRESS ||
+              order.orderStatus === OrderStatus.DELIVERED) &&
+              order.transportStatus && (
+                <TransportFlow
+                  orderId={order.id}
+                  currentTransportStatus={order.transportStatus}
+                />
+              )} */}
+
+            {(order.orderStatus === OrderStatus.APPROVED ||
+              order.orderStatus === OrderStatus.IN_PROGRESS ||
+              order.orderStatus === OrderStatus.DOCUMENT_PENDING ||
+              order.orderStatus === OrderStatus.DELIVERED) &&
               order.documents &&
               order.documents.length > 0 && (
                 <div className="bg-white  p-6 rounded-lg shadow-sm">

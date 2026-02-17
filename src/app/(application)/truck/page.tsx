@@ -20,7 +20,12 @@ import {
 } from "@mantine/core";
 import React from "react";
 import { TruckForm } from "./components/TruckForm";
-import { IconEdit, IconTrash, IconPlus, IconTruckDelivery } from "@tabler/icons-react";
+import {
+  IconEdit,
+  IconTrash,
+  IconPlus,
+  IconTruckDelivery,
+} from "@tabler/icons-react";
 import { useCRUDWithQuery } from "@/lib/hooks/useCRUDWithQuery";
 import { useFormModal } from "@/lib/hooks/useFormModal";
 import { useQuery } from "@tanstack/react-query";
@@ -105,21 +110,22 @@ export default function TruckPage() {
 
   // Handle bulk delete
   const handleBulkDelete = async (selectedIds: Set<string | number>) => {
-    const selectedTrucks = trucks.items.filter(truck =>
-      selectedIds.has(truck.id)
+    const selectedTrucks = trucks.items.filter((truck) =>
+      selectedIds.has(truck.id),
     );
 
     modals.openConfirmModal({
-      title: 'Eliminar camiones',
+      title: "Eliminar camiones",
       children: (
         <>
-          ¿Estás seguro de que deseas eliminar {selectedTrucks.length} camión(es)?
+          ¿Estás seguro de que deseas eliminar {selectedTrucks.length}{" "}
+          camión(es)?
           <br />
           Esta acción no se puede deshacer.
         </>
       ),
-      labels: { confirm: 'Eliminar', cancel: 'Cancelar' },
-      confirmProps: { color: 'red' },
+      labels: { confirm: "Eliminar", cancel: "Cancelar" },
+      confirmProps: { color: "red" },
       onConfirm: async () => {
         for (const truck of selectedTrucks) {
           await trucks.remove(truck);
@@ -183,11 +189,6 @@ export default function TruckPage() {
               accessor: "area",
               title: "Área (m²)",
               render: (truck) => <span>{truck.area.toFixed(2)}</span>,
-            },
-            {
-              accessor: "multiplayer",
-              title: "Multiplicador",
-              render: (truck) => <span>{truck.multiplayer.toFixed(1)}</span>,
             },
             {
               accessor: "status",
@@ -261,8 +262,15 @@ export default function TruckPage() {
           exportFileName="camiones"
           emptyState={{
             title: "No hay camiones registrados",
-            description: "Comienza creando tu primer camión para gestionar tus transportes.",
-            icon: <IconTruckDelivery size={64} stroke={1.5} style={{ opacity: 0.3 }} />,
+            description:
+              "Comienza creando tu primer camión para gestionar tus transportes.",
+            icon: (
+              <IconTruckDelivery
+                size={64}
+                stroke={1.5}
+                style={{ opacity: 0.3 }}
+              />
+            ),
             action: {
               label: "Crear primer camión",
               onClick: formModal.openCreate,

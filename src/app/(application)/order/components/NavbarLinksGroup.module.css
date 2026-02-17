@@ -5,11 +5,19 @@
   padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
   color: var(--mantine-color-text);
   font-size: var(--mantine-font-size-sm);
+  border-radius: var(--mantine-radius-sm);
+  transition: all 200ms ease;
 
   @mixin hover {
     background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
     color: light-dark(var(--mantine-color-black), var(--mantine-color-dark-0));
   }
+}
+
+.control.active {
+  background-color: light-dark(var(--mantine-color-blue-0), var(--mantine-color-blue-9));
+  color: var(--mantine-color-blue-7);
+  font-weight: 600;
 }
 
 .link {

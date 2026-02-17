@@ -1,15 +1,56 @@
 "use client";
 import { NavbarNested } from "@/app/(application)/order/components/NavBar";
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
+import { ActionIcon, Burger } from "@mantine/core";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
 interface BaseLayoutProps {
   children: ReactNode;
 }
 
 export const BaseLayout = ({ children }: BaseLayoutProps) => {
+  const isDesktop = useMediaQuery("(min-width: 1024px)", true);
+  const [opened, { toggle, close, open }] = useDisclosure(false);
+
+  // Abrir navbar en desktop por defecto
+  useEffect(() => {
+    if (isDesktop) {
+      open();
+    } else {
+      close();
+    }
+  }, [isDesktop]);
+
   return (
     <div className="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
+        {/* Top Header Bar */}
+        <header
+          className="fixed top-0 right-0 h-16 bg-white dark:bg-dark-6 border-b border-gray-200 dark:border-dark-4 z-[998] flex items-center px-6 transition-all duration-300 shadow-sm"
+          style={{
+            left: opened && isDesktop ? "300px" : "0",
+          }}
+        >
+          <div className="flex items-center gap-4 w-full">
+            <Burger opened={opened} onClick={toggle} size="md" />
+            <div className="h-6 w-px bg-gray-300 dark:bg-dark-4" />
+            <h1 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+              TUPACK - Sistema de Gestión
+            </h1>
+          </div>
+        </header>
+
+        {/* Overlay for mobile - click to close navbar */}
+        {opened && (
+          <div
+            onClick={close}
+            className="fixed inset-0 bg-black/50 z-[999] lg:hidden"
+            style={{
+              transition: "opacity 300ms ease",
+            }}
+          />
+        )}
+
         {/* Layout UI */}
         {/* Place children where you want to render a page or nested layout */}
         {/* <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#000000] px-10 py-3">
@@ -78,9 +119,17 @@ export const BaseLayout = ({ children }: BaseLayoutProps) => {
             <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"></div>
           </div>
         </header> */}
-        <main className="flex grow ml-[300px]">
-          <NavbarNested />
-          <div className="flex-1 overflow-y-auto">{children}</div>
+        <main
+          className="flex grow transition-all duration-300"
+          style={{
+            marginLeft: opened && isDesktop ? "300px" : "0",
+            marginTop: "64px", // Height of header
+          }}
+        >
+          <NavbarNested opened={opened} onClose={close} />
+          <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-dark-7">
+            {children}
+          </div>
         </main>
       </div>
     </div>

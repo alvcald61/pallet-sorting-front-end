@@ -64,7 +64,10 @@ const getStatusDescription = (status: TransportStatus): string => {
 const getNextStatus = (
   currentStatus?: TransportStatus,
 ): TransportStatus | null => {
-  if (!currentStatus) return TransportStatus.TRUCK_ASSIGNED;
+  // Si no hay status o es PENDING, el siguiente es TRUCK_ASSIGNED
+  if (!currentStatus || currentStatus === TransportStatus.PENDING) {
+    return TransportStatus.TRUCK_ASSIGNED;
+  }
 
   const currentIndex = TRANSPORT_FLOW.findIndex(
     (item) => item.status === currentStatus,

@@ -29,10 +29,10 @@ export default function DocumentUploadZone({
   onUploadComplete,
 }: DocumentUploadZoneProps) {
   const isClient = useCanAccess(
-      ["CLIENT"]
-      // [PERMISSIONS.ORDER.CREATE],
-      // false // requireAll = false (tiene almenos uno)
-    );
+    ["CLIENT"],
+    // [PERMISSIONS.ORDER.CREATE],
+    // false // requireAll = false (tiene almenos uno)
+  );
   const [uploadProgress, setUploadProgress] = useState<{
     [key: number]: number;
   }>({});
@@ -104,7 +104,11 @@ export default function DocumentUploadZone({
       // Enviar todos los documentos al servidor
       const uploadPromises = Object.entries(uploadedFiles).map(
         async ([documentId, file]) => {
-          const result = await uploadOrderDocument({orderId, documentId: parseInt(documentId), file});
+          const result = await uploadOrderDocument({
+            orderId,
+            documentId: parseInt(documentId),
+            file,
+          });
           // Capturar el link del response
           if (result && result.mensaje) {
             const docId = parseInt(documentId);
@@ -208,21 +212,39 @@ export default function DocumentUploadZone({
               {/* Documento subido con link - visible para TODOS */}
               {hasLink ? (
                 <div className="bg-white p-3 rounded border border-green-200">
-                  <div>
-                    <Text size="sm" fw={500} c="green">
-                      ✓ Archivo guardado
-                    </Text>
-                    <Text size="xs" c="blue" className="truncate max-w-full">
-                      <a
+                  <Group justify="space-between" align="center">
+                    <div>
+                      <Text size="sm" fw={500} c="green">
+                        ✓ Archivo guardado
+                      </Text>
+                      <Text size="xs" c="dimmed">
+                        Documento disponible para descargar
+                      </Text>
+                    </div>
+                    <Group gap="xs">
+                      <Button
+                        component="a"
                         href={documentLinks[doc.documentId] || doc.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="underline hover:text-blue-700 break-all"
+                        size="xs"
+                        variant="light"
+                        color="blue"
                       >
-                        Ver documento
-                      </a>
-                    </Text>
-                  </div>
+                        Ver
+                      </Button>
+                      <Button
+                        component="a"
+                        href={documentLinks[doc.documentId] || doc.link}
+                        download
+                        size="xs"
+                        variant="filled"
+                        color="green"
+                      >
+                        Descargar
+                      </Button>
+                    </Group>
+                  </Group>
                 </div>
               ) : hasUploadedFile && isClient ? (
                 /* Archivo cargado localmente pero no enviado - solo CLIENT */

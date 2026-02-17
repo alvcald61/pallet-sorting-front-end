@@ -25,7 +25,6 @@ export interface CreateTruckRequest {
   weight: number;
   area: number;
   enabled: boolean;
-  multiplayer: number;
   driverId?: string;
 }
 

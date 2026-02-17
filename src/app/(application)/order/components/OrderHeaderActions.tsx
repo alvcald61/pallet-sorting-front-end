@@ -228,7 +228,7 @@ export default function OrderHeaderActions({
             <Button
               onClick={handleConfirmAction}
               loading={isLoading}
-              color={action === "cancel" ? "red" : undefined}
+              color={action === "cancel" ? "red" : "green"}
             >
               {action === "cancel" ? "Cancelar Orden" : "Confirmar"}
             </Button>

@@ -103,7 +103,12 @@ const mockdata = [
   // },
 ];
 
-export function NavbarNested() {
+interface NavbarNestedProps {
+  opened?: boolean;
+  onClose?: () => void;
+}
+
+export function NavbarNested({ opened = true, onClose }: NavbarNestedProps) {
   const { user } = useRBAC();
   const router = useRouter();
 
@@ -129,7 +134,13 @@ export function NavbarNested() {
     : "U";
 
   return (
-    <nav className={classes.navbar}>
+    <nav
+      className={classes.navbar}
+      style={{
+        transform: opened ? "translateX(0)" : "translateX(-100%)",
+        transition: "transform 300ms ease",
+      }}
+    >
       <div className={classes.header}>
         <Stack gap="md" style={{ width: "100%" }}>
           {user && (

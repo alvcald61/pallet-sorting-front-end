@@ -1,7 +1,7 @@
 "use client";
 
 import { CreateTruckRequest, Truck, TruckStatus } from "@/lib/types/truckType";
-import { getDrivers } from "@/lib/api/driver/driverApi";
+import { getDrivers, getNotAssignedDrivers } from "@/lib/api/driver/driverApi";
 import {
   Button,
   NumberInput,
@@ -32,7 +32,7 @@ export const TruckForm: React.FC<TruckFormProps> = ({
   isLoading = false,
 }) => {
   const [drivers, setDrivers] = useState<{ value: string; label: string }[]>(
-    []
+    [],
   );
 
   const form = useForm({
@@ -44,7 +44,6 @@ export const TruckForm: React.FC<TruckFormProps> = ({
       volume: 0,
       weight: 0,
       area: 0,
-      multiplayer: 1,
       status: "AVAILABLE" as TruckStatus,
       enabled: true,
       driverId: "",
@@ -58,8 +57,6 @@ export const TruckForm: React.FC<TruckFormProps> = ({
       volume: (value) => (value <= 0 ? "El volumen debe ser mayor a 0" : null),
       weight: (value) => (value <= 0 ? "El peso debe ser mayor a 0" : null),
       area: (value) => (value <= 0 ? "El área debe ser mayor a 0" : null),
-      multiplayer: (value) =>
-        value <= 0 ? "El multiplicador debe ser mayor a 0" : null,
     },
   });
 
@@ -79,7 +76,6 @@ export const TruckForm: React.FC<TruckFormProps> = ({
         volume: truck.volume,
         weight: truck.weight,
         area: truck.area,
-        multiplayer: truck.multiplayer,
         status: truck.status,
         enabled: truck.enabled,
         driverId: truck.driverId || "",
@@ -91,7 +87,7 @@ export const TruckForm: React.FC<TruckFormProps> = ({
 
   const fetchDrivers = async () => {
     try {
-      const response = await getDrivers();
+      const response = await getNotAssignedDrivers();
       const driverList = response.data.map((driver: Driver) => ({
         value: driver.driverId + "",
         label: `${driver.dni} - ${driver.firstName} ${driver.lastName}`,
@@ -174,14 +170,6 @@ export const TruckForm: React.FC<TruckFormProps> = ({
             min={0}
             step={100}
             {...form.getInputProps("weight")}
-            disabled={isLoading}
-          />
-          <NumberInput
-            label="Multiplicador"
-            placeholder="1"
-            min={0}
-            step={0.1}
-            {...form.getInputProps("multiplayer")}
             disabled={isLoading}
           />
           <Select

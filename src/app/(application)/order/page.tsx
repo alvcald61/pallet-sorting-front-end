@@ -32,9 +32,9 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const [to, setTo] = useState("");
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
-  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any> | null>(
-    null,
-  );
+  const [sortStatus, setSortStatus] = useState<
+    DataTableSortStatus<any> | undefined
+  >(undefined);
 
   const { addUserId } = useOrderStore();
   const isAdmin = useCanAccess(["ADMIN"]);
@@ -64,7 +64,7 @@ const Page = () => {
 
   // Extract sort parameter for API in Spring Boot format: "field,direction"
   const sort = sortStatus
-    ? `${sortStatus.columnAccessor},${sortStatus.direction}`
+    ? `${sortStatus.columnAccessor.toString()},${sortStatus.direction}`
     : undefined;
 
   // Fetch orders with React Query using custom hook
@@ -186,7 +186,7 @@ const Page = () => {
             pageSize={PAGE_SIZE}
             sortStatus={sortStatus}
             onSortStatusChange={setSortStatus}
-            onRowClick={(record) => router.push(`/order/${record.id}`)}
+            onRowClick={(record) => router.push(`/order/${record.record.id}`)}
             exportable
             exportFileName="ordenes"
             searchable={false}

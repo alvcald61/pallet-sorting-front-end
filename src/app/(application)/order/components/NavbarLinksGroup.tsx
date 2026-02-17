@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { IconCalendarStats, IconChevronRight } from "@tabler/icons-react";
 import {
   Box,
@@ -26,8 +27,17 @@ export function LinksGroup({
   initiallyOpened,
   links,
 }: LinksGroupProps) {
+  const pathname = usePathname();
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
+
+  // Determinar si el enlace está activo
+  const isActive = link
+    ? link === "/"
+      ? pathname === "/" // Para home, debe ser exacto
+      : pathname.startsWith(link) // Para otros, si empieza con el link
+    : false;
+
   const items = (hasLinks ? links : []).map((link) => (
     <Text<"a">
       component="a"
@@ -44,11 +54,15 @@ export function LinksGroup({
     <>
       <UnstyledButton
         onClick={() => setOpened((o) => !o)}
-        className={classes.control}
+        className={`${classes.control} ${isActive ? classes.active : ""}`}
       >
         <Group justify="space-between" gap={0}>
           <Box style={{ display: "flex", alignItems: "center" }}>
-            <ThemeIcon variant="light" size={30}>
+            <ThemeIcon
+              variant={isActive ? "filled" : "light"}
+              size={30}
+              color={isActive ? "blue" : "gray"}
+            >
               <Icon size={18} />
             </ThemeIcon>
             {!link ? (

@@ -1,15 +1,15 @@
 "use server";
 /**
  * Centralized HTTP Client for API requests
- * 
+ *
  * Automatically adds /api prefix to all routes
  * Automatically includes Authorization Bearer header in all requests
  */
 
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST || 'http://localhost:5000';
-
+const BASE_URL =
+  process.env.NEXT_PUBLIC_BACKEND_HOST || "http://localhost:5000";
 
 /**
  * Get authentication token from cookies (server-side)
@@ -25,8 +25,8 @@ async function getAuthToken(): Promise<string | null> {
  */
 function buildURL(endpoint: string): string {
   // Remove leading slash if present
-  const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
-  
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint.slice(1) : endpoint;
+
   // Always prepend /api
   return `${BASE_URL}/api/${cleanEndpoint}`;
 }
@@ -34,15 +34,17 @@ function buildURL(endpoint: string): string {
 /**
  * Gets default headers including Authorization Bearer
  */
-async function getHeaders(customHeaders?: HeadersInit): Promise<Record<string, string>> {
+async function getHeaders(
+  customHeaders?: HeadersInit,
+): Promise<Record<string, string>> {
   const token = await getAuthToken();
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     ...(customHeaders as Record<string, string>),
   };
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   return headers;
@@ -53,14 +55,14 @@ async function getHeaders(customHeaders?: HeadersInit): Promise<Record<string, s
  */
 async function extractErrorMessage(response: Response): Promise<string> {
   try {
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
       const errorData = await response.json();
       return errorData.message || errorData.error || null;
     }
     return await response.text();
   } catch {
-    return '';
+    return "";
   }
 }
 
@@ -73,7 +75,7 @@ interface RequestOptions extends RequestInit {
  */
 async function request<T>(
   endpoint: string,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
 ): Promise<T> {
   const { params, ...fetchOptions } = options;
 
@@ -81,7 +83,7 @@ async function request<T>(
   let url = buildURL(endpoint);
   if (params) {
     const searchParams = new URLSearchParams(
-      Object.entries(params).map(([key, value]) => [key, String(value)])
+      Object.entries(params).map(([key, value]) => [key, String(value)]),
     );
     url += `?${searchParams.toString()}`;
   }
@@ -89,7 +91,6 @@ async function request<T>(
   // Get headers with Authorization
   const headers = await getHeaders(fetchOptions.headers);
 
-  
   try {
     const response = await fetch(url, {
       ...fetchOptions,
@@ -105,10 +106,9 @@ async function request<T>(
 
     // Handle non-OK responses
     if (!response.ok) {
+      console.log(url);
       const errorMessage = await extractErrorMessage(response);
-      throw new Error(
-        errorMessage || `Request failed: ${response.statusText}`,
-      );
+      throw new Error(errorMessage || `Request failed: ${response.statusText}`);
     }
 
     // Handle 204 No Content
@@ -120,7 +120,7 @@ async function request<T>(
     return await response.json();
   } catch (error) {
     if (error instanceof TypeError) {
-      throw new Error('Network error: Unable to connect to server');
+      throw new Error("Network error: Unable to connect to server");
     }
     throw error;
   }
@@ -129,8 +129,11 @@ async function request<T>(
 /**
  * HTTP GET request
  */
-export async function get<T>(endpoint: string, options?: RequestOptions): Promise<T> {
-  return request<T>(endpoint, { ...options, method: 'GET' });
+export async function get<T>(
+  endpoint: string,
+  options?: RequestOptions,
+): Promise<T> {
+  return request<T>(endpoint, { ...options, method: "GET" });
 }
 
 /**
@@ -139,11 +142,11 @@ export async function get<T>(endpoint: string, options?: RequestOptions): Promis
 export async function post<T>(
   endpoint: string,
   data?: unknown,
-  options?: RequestOptions
+  options?: RequestOptions,
 ): Promise<T> {
   return request<T>(endpoint, {
     ...options,
-    method: 'POST',
+    method: "POST",
     body: data ? JSON.stringify(data) : undefined,
   });
 }
@@ -154,11 +157,11 @@ export async function post<T>(
 export async function put<T>(
   endpoint: string,
   data?: unknown,
-  options?: RequestOptions
+  options?: RequestOptions,
 ): Promise<T> {
   return request<T>(endpoint, {
     ...options,
-    method: 'PUT',
+    method: "PUT",
     body: data ? JSON.stringify(data) : undefined,
   });
 }
@@ -169,11 +172,11 @@ export async function put<T>(
 export async function patch<T>(
   endpoint: string,
   data?: unknown,
-  options?: RequestOptions
+  options?: RequestOptions,
 ): Promise<T> {
   return request<T>(endpoint, {
     ...options,
-    method: 'PATCH',
+    method: "PATCH",
     body: data ? JSON.stringify(data) : undefined,
   });
 }
@@ -181,8 +184,11 @@ export async function patch<T>(
 /**
  * HTTP DELETE request
  */
-export async function apiDelete<T>(endpoint: string, options?: RequestOptions): Promise<T> {
-  return request<T>(endpoint, { ...options, method: 'DELETE' });
+export async function apiDelete<T>(
+  endpoint: string,
+  options?: RequestOptions,
+): Promise<T> {
+  return request<T>(endpoint, { ...options, method: "DELETE" });
 }
 
 /**
@@ -198,11 +204,11 @@ export async function postFormData<T>(
 
   const headers: HeadersInit = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: formData,
   });
@@ -230,7 +236,7 @@ export async function postFormData<T>(
 export async function downloadFile(
   endpoint: string,
   filename?: string,
-  options?: RequestOptions
+  options?: RequestOptions,
 ): Promise<void> {
   const { params, ...fetchOptions } = options || {};
 
@@ -238,7 +244,7 @@ export async function downloadFile(
   let url = buildURL(endpoint);
   if (params) {
     const searchParams = new URLSearchParams(
-      Object.entries(params).map(([key, value]) => [key, String(value)])
+      Object.entries(params).map(([key, value]) => [key, String(value)]),
     );
     url += `?${searchParams.toString()}`;
   }
@@ -249,7 +255,7 @@ export async function downloadFile(
   try {
     const response = await fetch(url, {
       ...fetchOptions,
-      method: 'GET',
+      method: "GET",
       headers,
     });
 
@@ -266,11 +272,11 @@ export async function downloadFile(
     // Extract filename from Content-Disposition header if not provided
     let downloadFilename = filename;
     if (!downloadFilename) {
-      const contentDisposition = response.headers.get('content-disposition');
+      const contentDisposition = response.headers.get("content-disposition");
       if (contentDisposition) {
         const match = contentDisposition.match(/filename[^;=\n]*=([^;\n]*)/);
         if (match && match[1]) {
-          downloadFilename = match[1].trim().replace(/['"]/g, '');
+          downloadFilename = match[1].trim().replace(/['"]/g, "");
         }
       }
     }
@@ -282,7 +288,7 @@ export async function downloadFile(
 
     // Create blob URL and trigger download
     const blobUrl = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = blobUrl;
     link.download = downloadFilename;
     document.body.appendChild(link);
@@ -305,7 +311,7 @@ export async function downloadFile(
  */
 export async function loadImageAsBytes(
   endpoint: string,
-  options?: RequestOptions
+  options?: RequestOptions,
 ): Promise<{ buffer: ArrayBuffer; blob: Blob }> {
   const { params, ...fetchOptions } = options || {};
 
@@ -313,7 +319,7 @@ export async function loadImageAsBytes(
   let url = buildURL(endpoint);
   if (params) {
     const searchParams = new URLSearchParams(
-      Object.entries(params).map(([key, value]) => [key, String(value)])
+      Object.entries(params).map(([key, value]) => [key, String(value)]),
     );
     url += `?${searchParams.toString()}`;
   }
@@ -324,7 +330,7 @@ export async function loadImageAsBytes(
   try {
     const response = await fetch(url, {
       ...fetchOptions,
-      method: 'GET',
+      method: "GET",
       headers,
     });
 
