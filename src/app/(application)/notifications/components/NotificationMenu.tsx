@@ -1,7 +1,7 @@
 "use client";
 
-import { Menu, Badge, ActionIcon, ScrollArea, Text, Button, Group, Loader } from "@mantine/core";
-import { IconBell } from "@tabler/icons-react";
+import { Menu, Badge, ActionIcon, ScrollArea, Text, Button, Group, Loader, Alert } from "@mantine/core";
+import { IconBell, IconBellOff } from "@tabler/icons-react";
 import { useNotificationStore } from "@/lib/store/notificationStore";
 import {
   useNotifications,
@@ -10,6 +10,7 @@ import {
   useClearAllNotifications,
 } from "@/lib/hooks/useNotifications";
 import { NotificationItem } from "./NotificationItem";
+import { useEffect, useState } from "react";
 
 export function NotificationMenu() {
   const { unreadCount } = useNotificationStore();
@@ -17,12 +18,19 @@ export function NotificationMenu() {
   const { } = useUnreadCount(); // Polling hook - no need to use data directly
   const markAllAsRead = useMarkAllAsRead();
   const clearAll = useClearAllNotifications();
+  const [notifPermission, setNotifPermission] = useState<NotificationPermission | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setNotifPermission(Notification.permission);
+    }
+  }, []);
 
   const notifications = notificationsData?.data?.data || [];
   const hasNotifications = notifications.length > 0;
 
   return (
-    <Menu shadow="md" width={400} position="bottom-end" offset={10}>
+    <Menu shadow="md" width={400} position="bottom-end" offset={10} zIndex={1100}>
       <Menu.Target>
         <ActionIcon variant="subtle" size="lg" aria-label="Notificaciones">
           <div style={{ position: "relative" }}>
@@ -79,6 +87,33 @@ export function NotificationMenu() {
               Eliminar todas
             </Button>
           </Group>
+        )}
+
+        {/* Permission warning */}
+        {notifPermission === "denied" && (
+          <Alert
+            icon={<IconBellOff size={16} />}
+            color="orange"
+            variant="light"
+            mx="sm"
+            mb="sm"
+            title="Notificaciones bloqueadas"
+            styles={{ message: { fontSize: 12 } }}
+          >
+            Habilítalas desde el ícono 🔒 en la barra de direcciones del navegador.
+          </Alert>
+        )}
+        {notifPermission === "default" && (
+          <Alert
+            icon={<IconBell size={16} />}
+            color="blue"
+            variant="light"
+            mx="sm"
+            mb="sm"
+            styles={{ message: { fontSize: 12 } }}
+          >
+            Activa las notificaciones para recibir alertas de tus pedidos.
+          </Alert>
         )}
 
         <Menu.Divider />

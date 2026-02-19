@@ -9,7 +9,8 @@
       "Bash(xargs cat:*)",
       "Bash(mvn compile:*)",
       "Bash(java:*)",
-      "Bash(mvn clean compile:*)"
+      "Bash(mvn clean compile:*)",
+      "WebFetch(domain:documentation.onesignal.com)"
     ],
     "additionalDirectories": [
       "d:\\Proyectos\\TUPACK\\pallet-sorting-front"

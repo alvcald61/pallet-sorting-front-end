@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
 import { OrderStatus } from "@/lib/utils/enums";
 import { Document } from "@/lib/types/orderTypes";
-import { quickStatusUpdate } from "@/lib/api/transport/transportApi";
 import { TransportStatus } from "@/lib/types/transportTypes";
+import { useQuickStatusUpdate } from "@/lib/hooks/useOrder";
 
 interface InitiateRouteButtonProps {
   orderId: string;
@@ -26,8 +26,8 @@ export default function InitiateRouteButton({
 }: InitiateRouteButtonProps) {
   const isDriver = useCanAccess(["DRIVER"], undefined, false);
   const router = useRouter();
+  const quickStatusUpdate = useQuickStatusUpdate();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   // El conductor solo puede iniciar la ruta si:
@@ -49,20 +49,16 @@ export default function InitiateRouteButton({
     ) || [];
   const hasPendingDocuments = pendingDocuments.length > 0;
 
-  const handleInitiateRoute = async () => {
-    try {
-      setIsLoading(true);
-      // Llamar a continueOrder sin amount, gpsLink y con deny=false
-      // await continueOrder({orderId, deny: false});
-      await quickStatusUpdate(orderId, TransportStatus.EN_ROUTE_TO_WAREHOUSE);
-      setShowModal(false);
-      router.refresh();
-    } catch (error) {
-      console.error("Error iniciando ruta:", error);
-      alert("Error al iniciar la ruta. Por favor intenta de nuevo.");
-    } finally {
-      setIsLoading(false);
-    }
+  const handleInitiateRoute = () => {
+    quickStatusUpdate.mutate(
+      { orderId, status: TransportStatus.EN_ROUTE_TO_WAREHOUSE },
+      {
+        onSuccess: () => {
+          setShowModal(false);
+          router.refresh();
+        },
+      },
+    );
   };
 
   // No mostrar nada si no es conductor
@@ -90,7 +86,7 @@ export default function InitiateRouteButton({
 
       <Button
         onClick={() => setShowModal(true)}
-        loading={isLoading}
+        loading={quickStatusUpdate.isPending}
         disabled={!canInitiateRoute || hasPendingDocuments}
         size="md"
         variant="filled"
@@ -115,13 +111,13 @@ export default function InitiateRouteButton({
             <Button
               variant="default"
               onClick={() => setShowModal(false)}
-              disabled={isLoading}
+              disabled={quickStatusUpdate.isPending}
             >
               Cancelar
             </Button>
             <Button
               onClick={handleInitiateRoute}
-              loading={isLoading}
+              loading={quickStatusUpdate.isPending}
               color="green"
             >
               Iniciar Ruta

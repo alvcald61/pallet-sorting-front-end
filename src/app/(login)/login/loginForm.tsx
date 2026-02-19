@@ -14,10 +14,8 @@ import { Label } from "@/components/ui/label";
 import { login } from "./action";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { AlertCircle, Eye, EyeOff, Router } from "lucide-react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { getCurrentUser } from "@/lib/api/auth/userApi";
-import OneSignal from "react-onesignal";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
@@ -29,42 +27,10 @@ export default function LoginForm() {
 
   const emailError = email && !isValidEmail(email);
 
-  // Inicializar OneSignal una sola vez
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      console.log(
-        "Initializing OneSignal",
-        process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID
-      );
-
-      OneSignal.init({
-        appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
-        allowLocalhostAsSecureOrigin: true,
-      });
-      console.log("OneSignal initialized successfully");
+    if (state?.success) {
+      router.push("/");
     }
-  }, []);
-
-  useEffect(() => {
-    const registerWithOneSignal = async () => {
-      // Si el estado tiene success, significa que el login fue exitoso
-      if (state?.success) {
-        try {
-          const user = await getCurrentUser();
-          if (user?.id) {
-            await OneSignal.login(user.id);
-            console.log(`OneSignal login successful for userId: ${user.id}`);
-          }
-        } catch (error) {
-          console.error("Error registering with OneSignal:", error);
-        } finally {
-          // Navegar después de intentar registrarse en OneSignal
-          router.push("/");
-        }
-      }
-    };
-
-    registerWithOneSignal();
   }, [state, router]);
 
   return (

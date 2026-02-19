@@ -1,15 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button, Modal, Group } from "@mantine/core";
+import { useRouter } from "next/navigation";
 import { TransportStatus } from "@/lib/types/transportTypes";
-import {
-  TransportHistoryEntry,
-  quickStatusUpdate,
-} from "@/lib/api/transport/transportApi";
-import { updateOrderStatus } from "@/lib/api/order/orderApi";
+import { TransportHistoryEntry } from "@/lib/api/transport/transportApi";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
+import { useQuickStatusUpdate } from "@/lib/hooks/useOrder";
 import {
   IconTruck,
   IconPackageExport,
@@ -180,25 +177,23 @@ export default function DeliveryStatusTimeline({
 }: DeliveryStatusTimelineProps) {
   const isDriver = useCanAccess(["DRIVER"], undefined, false);
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const quickStatusUpdate = useQuickStatusUpdate();
   const [showModal, setShowModal] = useState(false);
 
   const nextStatus = getNextStatus(currentStatus);
   const nextStatusInfo = nextStatus ? getStatusInfo(nextStatus) : null;
 
-  const handleAdvanceStatus = async () => {
+  const handleAdvanceStatus = () => {
     if (!nextStatus) return;
-    try {
-      setIsLoading(true);
-      await quickStatusUpdate(orderId, nextStatus);
-      setShowModal(false);
-      router.refresh();
-    } catch (error) {
-      console.error("Error actualizando estado del transporte:", error);
-      alert("Error al actualizar el estado. Por favor intenta de nuevo.");
-    } finally {
-      setIsLoading(false);
-    }
+    quickStatusUpdate.mutate(
+      { orderId, status: nextStatus },
+      {
+        onSuccess: () => {
+          setShowModal(false);
+          router.refresh();
+        },
+      },
+    );
   };
 
   // Sort history by timestamp descending (most recent first)
@@ -228,7 +223,7 @@ export default function DeliveryStatusTimeline({
         {isDriver && nextStatus && (
           <Button
             onClick={() => setShowModal(true)}
-            loading={isLoading}
+            loading={quickStatusUpdate.isPending}
             size="sm"
             variant="filled"
             color="blue"
@@ -350,13 +345,13 @@ export default function DeliveryStatusTimeline({
             <Button
               variant="default"
               onClick={() => setShowModal(false)}
-              disabled={isLoading}
+              disabled={quickStatusUpdate.isPending}
             >
               Cancelar
             </Button>
             <Button
               onClick={handleAdvanceStatus}
-              loading={isLoading}
+              loading={quickStatusUpdate.isPending}
               color="blue"
             >
               Confirmar

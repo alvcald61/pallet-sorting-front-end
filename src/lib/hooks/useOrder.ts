@@ -6,10 +6,27 @@ import {
   getDistributionImg,
   continueOrder,
   createOrder,
+  updateOrderStatus,
 } from "@/lib/api/order/orderApi";
 import { uploadOrderDocument } from "@/lib/api/order/orderActions";
+import { quickStatusUpdate } from "@/lib/api/transport/transportApi";
 import { notifications } from "@mantine/notifications";
 import { OrderFilters } from "@/lib/types/orderFilterTypes";
+import { TransportStatus } from "@/lib/types/transportTypes";
+
+const TRANSPORT_STATUS_LABELS: Record<TransportStatus, string> = {
+  [TransportStatus.PENDING]: "Pendiente",
+  [TransportStatus.TRUCK_ASSIGNED]: "Camión Asignado",
+  [TransportStatus.EN_ROUTE_TO_WAREHOUSE]: "En Ruta al Almacén",
+  [TransportStatus.ARRIVED_AT_WAREHOUSE]: "Llegó al Almacén",
+  [TransportStatus.LOADING]: "Cargando",
+  [TransportStatus.LOADING_COMPLETED]: "Carga Completada",
+  [TransportStatus.EN_ROUTE_TO_DESTINATION]: "En Ruta al Destino",
+  [TransportStatus.ARRIVED_AT_DESTINATION]: "Llegó al Destino",
+  [TransportStatus.UNLOADING]: "Descargando",
+  [TransportStatus.UNLOADING_COMPLETED]: "Descarga Completada",
+  [TransportStatus.DELIVERED]: "Entregado",
+};
 
 /**
  * React Query hooks for Order operations
@@ -137,6 +154,44 @@ export const useUploadDocument = () => {
         color: "red",
         title: "Error",
         message: `Error al subir documento: ${error.message}`,
+      });
+    },
+  });
+};
+
+// Quick transport status update mutation
+export const useQuickStatusUpdate = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      orderId,
+      status,
+    }: {
+      orderId: string;
+      status: TransportStatus;
+    }) => {
+      const promises: Promise<void>[] = [quickStatusUpdate(orderId, status)];
+      if (status === TransportStatus.DELIVERED) {
+        promises.push(updateOrderStatus(orderId, "DELIVERED"));
+      }
+      await Promise.all(promises);
+    },
+    onSuccess: (_, { orderId, status }) => {
+      queryClient.invalidateQueries({ queryKey: ["order", orderId] });
+      queryClient.invalidateQueries({ queryKey: ["order-status", orderId] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      notifications.show({
+        color: "green",
+        title: "Estado actualizado",
+        message: `Transporte avanzó a: ${TRANSPORT_STATUS_LABELS[status] ?? status}`,
+      });
+    },
+    onError: (error: Error) => {
+      notifications.show({
+        color: "red",
+        title: "Error",
+        message: `Error al actualizar el estado: ${error.message}`,
       });
     },
   });

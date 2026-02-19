@@ -22,7 +22,7 @@ export interface TransportHistoryResponse {
   pageInfo: null;
 }
 
-export async function quickStatusUpdate(
+export async function   quickStatusUpdate(
   id: string,
   status: TransportStatus,
 ): Promise<void> {

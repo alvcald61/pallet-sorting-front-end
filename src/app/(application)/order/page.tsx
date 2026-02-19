@@ -15,7 +15,6 @@ import { DataTableSortStatus } from "mantine-datatable";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
-import OneSignal from "react-onesignal";
 import { useQuery } from "@tanstack/react-query";
 import { getClients } from "@/lib/api/client/clientApi";
 import { useOrders } from "@/lib/hooks/useOrder";
@@ -51,16 +50,6 @@ const Page = () => {
   useEffect(() => {
     setPage(1);
   }, [effectiveFilters]);
-
-  // Initialize OneSignal
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      OneSignal.init({
-        appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
-        allowLocalhostAsSecureOrigin: true,
-      });
-    }
-  }, []);
 
   // Extract sort parameter for API in Spring Boot format: "field,direction"
   const sort = sortStatus

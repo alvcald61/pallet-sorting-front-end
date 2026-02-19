@@ -5,8 +5,7 @@ import { Button, Modal, Group, Alert } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
 import { TransportStatus } from "@/lib/types/transportTypes";
-import { quickStatusUpdate } from "@/lib/api/transport/transportApi";
-import { updateOrderStatus } from "@/lib/api/order/orderApi";
+import { useQuickStatusUpdate } from "@/lib/hooks/useOrder";
 
 interface TransportFlowProps {
   orderId: string;
@@ -91,34 +90,26 @@ export default function TransportFlow({
 }: TransportFlowProps) {
   const isDriver = useCanAccess(["DRIVER"], undefined, false);
   const router = useRouter();
+  const quickStatusUpdate = useQuickStatusUpdate();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const currentStepIndex = getCurrentStepIndex(currentTransportStatus);
   const nextStatus = getNextStatus(currentTransportStatus);
   const canAdvanceStatus = isDriver && nextStatus !== null;
 
-  const handleAdvanceStatus = async () => {
+  const handleAdvanceStatus = () => {
     if (!nextStatus) return;
-
-    try {
-      setIsLoading(true);
-      const promises = [] as any[];
-      if (nextStatus === TransportStatus.DELIVERED) {
-        promises.push(updateOrderStatus(orderId, "DELIVERED"));
-      }
-      promises.push(quickStatusUpdate(orderId, nextStatus));
-      await Promise.all(promises);
-      setShowModal(false);
-      onStatusUpdate?.();
-      router.refresh();
-    } catch (error) {
-      console.error("Error actualizando estado del transporte:", error);
-      alert("Error al actualizar el estado. Por favor intenta de nuevo.");
-    } finally {
-      setIsLoading(false);
-    }
+    quickStatusUpdate.mutate(
+      { orderId, status: nextStatus },
+      {
+        onSuccess: () => {
+          setShowModal(false);
+          onStatusUpdate?.();
+          router.refresh();
+        },
+      },
+    );
   };
 
   const nextStepLabel = nextStatus
@@ -141,7 +132,7 @@ export default function TransportFlow({
         {isDriver && canAdvanceStatus && (
           <Button
             onClick={() => setShowModal(true)}
-            loading={isLoading}
+            loading={quickStatusUpdate.isPending}
             size="md"
             variant="filled"
             color="blue"
@@ -219,13 +210,13 @@ export default function TransportFlow({
             <Button
               variant="default"
               onClick={() => setShowModal(false)}
-              disabled={isLoading}
+              disabled={quickStatusUpdate.isPending}
             >
               Cancelar
             </Button>
             <Button
               onClick={handleAdvanceStatus}
-              loading={isLoading}
+              loading={quickStatusUpdate.isPending}
               color="blue"
             >
               Confirmar
