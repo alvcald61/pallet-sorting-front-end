@@ -10,6 +10,7 @@ import {
   IconBuildingWarehouse,
   IconClipboardText,
   IconLogout,
+  IconCurrencyDollar,
 } from "@tabler/icons-react";
 import {
   Group,
@@ -76,6 +77,12 @@ const mockdata = [
     label: "Documentos",
     icon: IconClipboardText,
     link: "/document",
+    roles: [ROLES.ADMIN],
+  },
+  {
+    label: "Precios",
+    icon: IconCurrencyDollar,
+    link: "/pricing",
     roles: [ROLES.ADMIN],
   },
 

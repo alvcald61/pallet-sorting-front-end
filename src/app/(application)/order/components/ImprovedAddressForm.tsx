@@ -73,6 +73,7 @@ export function ImprovedAddressForm() {
       pickupTime: address?.time || "",
     },
     validate: {
+      warehouseId: (value) => (!value ? "Debes seleccionar un almacén de origen" : null),
       fromAddress: (value) => (!value ? "Dirección de origen requerida" : null),
       fromDistrict: (value) => (!value ? "Distrito requerido" : null),
       fromCity: (value) => (!value ? "Ciudad requerida" : null),
@@ -148,7 +149,7 @@ export function ImprovedAddressForm() {
         district: form.values.fromDistrict,
         city: form.values.fromCity,
         state: form.values.fromState,
-        warehouseId: form.values.warehouseId,
+        warehouseId: form.values.warehouseId ? Number(form.values.warehouseId) : null,
       },
       toAddress: {
         address: form.values.toAddress,
@@ -182,8 +183,10 @@ export function ImprovedAddressForm() {
           placeholder="Elige un almacén de origen"
           data={warehouseOptions}
           searchable
+          required
           value={form.values.warehouseId}
           onChange={handleWarehouseSelect}
+          error={form.errors.warehouseId}
           description="Los datos del almacén se cargarán automáticamente"
         />
       </Paper>

@@ -19,6 +19,9 @@ import "./styles.css";
 import { RBACProvider } from "@/lib/contexts/RBACContext";
 import { BaseLayout } from "@/components/layouts/BaseLayout";
 import { ReactQueryProvider } from "@/lib/providers/ReactQueryProvider";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
+import { ModalsProvider } from "@mantine/modals";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -52,9 +55,12 @@ export default function RootLayout({
             // forceColorScheme="dark"
             theme={theme}
           >
-            <RBACProvider>
-              <BaseLayout>{children}</BaseLayout>
-            </RBACProvider>
+            <Notifications position="top-right" />
+            <ModalsProvider>
+              <RBACProvider>
+                <BaseLayout>{children}</BaseLayout>
+              </RBACProvider>
+            </ModalsProvider>
           </MantineProvider>
         </ReactQueryProvider>
       </body>
