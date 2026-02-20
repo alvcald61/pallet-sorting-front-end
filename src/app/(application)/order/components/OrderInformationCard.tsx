@@ -58,28 +58,44 @@ export default function OrderInformationCard({
         {gpsLink && (
           <div>
             <p className="text-gray-500">Link de ubicacion</p>
-            <a className="font-medium text-green-600">
-              {gpsLink ?? "No disponible"}
+            <a href={gpsLink} target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 underline break-all">
+              Ver en mapa
             </a>
           </div>
         )}
         {fromAddressLink && (
           <div>
             <p className="text-gray-500">Link de mapa de recojo</p>
-            <a className="font-medium text-green-600">
-              {fromAddressLink ?? "No disponible"}
+            <a href={fromAddressLink} target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 underline break-all">
+              Ver en mapa
             </a>
           </div>
         )}
         {toAddressLink && (
           <div>
             <p className="text-gray-500">Link de mapa de entrega</p>
-            <p className="font-medium text-green-600">
-              {toAddressLink ?? "No disponible"}
-            </p>
+            <a href={toAddressLink} target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 underline break-all">
+              Ver en mapa
+            </a>
           </div>
         )}
       </div>
+
+      {/* Embedded map of delivery address */}
+      {toAddress && (
+        <div className="mt-6">
+          <p className="text-sm text-gray-500 mb-2">Mapa de entrega</p>
+          <iframe
+            title="Mapa de dirección de entrega"
+            src={`https://maps.google.com/maps?q=${encodeURIComponent(toAddress)}&output=embed&hl=es`}
+            width="100%"
+            height="300"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="rounded-lg border border-gray-200"
+          />
+        </div>
+      )}
     </div>
   );
 }

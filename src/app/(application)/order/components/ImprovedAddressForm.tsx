@@ -19,6 +19,7 @@ import {
   IconCurrentLocation,
   IconArrowLeft,
   IconArrowRight,
+  IconLink,
 } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { useState, useEffect } from "react";
@@ -38,6 +39,7 @@ interface AddressFormValues {
   toDistrict: string;
   toCity: string;
   toState: string;
+  toLocationLink: string;
   pickupDate: Date | string | null;
   pickupTime: string;
 }
@@ -69,6 +71,7 @@ export function ImprovedAddressForm() {
       toDistrict: address?.toAddress?.district || "",
       toCity: address?.toAddress?.city || "",
       toState: address?.toAddress?.state || "",
+      toLocationLink: address?.toAddress?.locationLink || "",
       pickupDate: address?.date ? new Date(address.date) : null,
       pickupTime: address?.time || "",
     },
@@ -156,6 +159,7 @@ export function ImprovedAddressForm() {
         district: form.values.toDistrict,
         city: form.values.toCity,
         state: form.values.toState,
+        locationLink: form.values.toLocationLink || undefined,
       },
       date: dateStr,
       time: form.values.pickupTime,
@@ -286,6 +290,16 @@ export function ImprovedAddressForm() {
               placeholder="Callao"
               required
               {...form.getInputProps("toState")}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={12}>
+            <TextInput
+              label="Link de mapa"
+              placeholder="https://maps.google.com/..."
+              leftSection={<IconLink size={16} />}
+              description="Enlace de Google Maps u otro servicio de mapas hacia la dirección de entrega"
+              {...form.getInputProps("toLocationLink")}
             />
           </Grid.Col>
         </Grid>
