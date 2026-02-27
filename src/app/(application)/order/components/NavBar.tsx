@@ -35,7 +35,7 @@ const mockdata = [
     label: "Dashboard",
     icon: IconDashboard,
     link: "/",
-    roles: [ROLES.ADMIN, ROLES.CLIENT, ROLES.DRIVER],
+    roles: [ROLES.ADMIN],
   },
   {
     label: "Orden",

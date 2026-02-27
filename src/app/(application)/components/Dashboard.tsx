@@ -38,8 +38,10 @@ import {
   getPerformanceMetrics,
 } from "@/lib/api/dashboard/dashboardApi";
 import { showNotification } from "@mantine/notifications";
+import { useCanAccess } from "@/lib/utils/rbacUtils";
 
 const Dashboard = () => {
+  const isAdmin = useCanAccess(["ADMIN"]);
   const [stats, setStats] = useState<any>(null);
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);
   const [ordersByClient, setOrdersByClient] = useState<any[]>([]);
@@ -148,6 +150,21 @@ const Dashboard = () => {
     if (statusLower.includes("cancelled")) return "red";
     return "gray";
   };
+
+  if (!isAdmin) {
+    return (
+      <Center style={{ height: "60vh" }}>
+        <div style={{ textAlign: "center" }}>
+          <Text size="xl" fw={700} c="dimmed" mb="sm">
+            Acceso restringido
+          </Text>
+          <Text size="sm" c="dimmed">
+            No tienes permisos para ver el dashboard.
+          </Text>
+        </div>
+      </Center>
+    );
+  }
 
   return (
     <div className="flex flex-col justify-start w-full grow p-10">
