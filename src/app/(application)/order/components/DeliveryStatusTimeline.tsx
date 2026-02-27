@@ -209,8 +209,8 @@ export default function DeliveryStatusTimeline({
 
   if (history.length === 0) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
           Estado de Entrega
         </h3>
         <p className="text-gray-500 text-center py-8">
@@ -221,9 +221,9 @@ export default function DeliveryStatusTimeline({
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+      <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900">
           Estado de Entrega
         </h3>
         {isDriver && nextStatus && (

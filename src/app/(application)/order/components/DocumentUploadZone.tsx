@@ -212,7 +212,7 @@ export default function DocumentUploadZone({
               {/* Documento subido con link - visible para TODOS */}
               {hasLink ? (
                 <div className="bg-white p-3 rounded border border-green-200">
-                  <Group justify="space-between" align="center">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
                       <Text size="sm" fw={500} c="green">
                         ✓ Archivo guardado
@@ -221,7 +221,7 @@ export default function DocumentUploadZone({
                         Documento disponible para descargar
                       </Text>
                     </div>
-                    <Group gap="xs">
+                    <Group gap="xs" wrap="nowrap">
                       <Button
                         component="a"
                         href={documentLinks[doc.documentId] || doc.link}
@@ -244,7 +244,7 @@ export default function DocumentUploadZone({
                         Descargar
                       </Button>
                     </Group>
-                  </Group>
+                  </div>
                 </div>
               ) : hasUploadedFile && isClient ? (
                 /* Archivo cargado localmente pero no enviado - solo CLIENT */

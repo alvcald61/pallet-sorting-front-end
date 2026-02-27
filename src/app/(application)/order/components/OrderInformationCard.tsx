@@ -24,8 +24,8 @@ export default function OrderInformationCard({
   toAddressLink,
 }: OrderInformationCardProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
         Order Information
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">

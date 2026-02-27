@@ -41,15 +41,15 @@ export default async ({ params }: PageParams) => {
   }
 
   return (
-    <main className="flex-1 px-4 sm:px-6 lg:px-8 xl:px-40 py-10">
+    <main className="flex-1 px-3 sm:px-6 lg:px-8 xl:px-40 py-6 sm:py-10">
       <div className="max-w-5xl mx-auto">
         {/* Order Status Banner - Prominent Display */}
         {/* <div className="mb-8">
           <OrderStatusBadge status={order.orderStatus} variant="banner" />
         </div> */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-8">
             <OrderHeaderActions
               orderId={orderId}
               initialAmount={order.amount}
@@ -59,8 +59,8 @@ export default async ({ params }: PageParams) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-8">
             <OrderInformationCard
               createdAt={order.createdAt}
               amount={order.amount}
@@ -73,8 +73,8 @@ export default async ({ params }: PageParams) => {
               toAddressLink={order.toAddressLink}
             />
             {order.orderType !== "BULK" ? (
-              <div className="bg-white  p-6 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900  mb-4">
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                   Distribucion del camion
                 </h3>
                 <div className="overflow-x-auto">
@@ -130,8 +130,8 @@ export default async ({ params }: PageParams) => {
               order.orderStatus === OrderStatus.DELIVERED) &&
               order.documents &&
               order.documents.length > 0 && (
-                <div className="bg-white  p-6 rounded-lg shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-900  mb-4">
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                     Documentos Requeridos
                   </h3>
                   <DocumentUploadZone

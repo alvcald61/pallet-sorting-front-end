@@ -42,9 +42,9 @@ export function OrderFiltersComponent({
   };
 
   return (
-    <Paper p="md" withBorder radius="sm">
+    <Paper p="sm" withBorder radius="sm">
       <Stack gap="sm">
-        <Group grow align="flex-end">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
           <TextInput
             placeholder="Buscar por ID o dirección..."
             leftSection={<IconSearch size={16} />}
@@ -65,9 +65,9 @@ export function OrderFiltersComponent({
             onChange={(value) => updateFilter("orderType", value || undefined)}
             clearable
           />
-        </Group>
+        </div>
 
-        <Group grow align="flex-end">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 items-end">
           <DateInput
             placeholder="Fecha recojo desde"
             value={
@@ -77,7 +77,6 @@ export function OrderFiltersComponent({
               if (date === null) {
                 updateFilter("pickupDateFrom", undefined);
               } else {
-                // date is string
                 updateFilter(
                   "pickupDateFrom",
                   new Date(date).toISOString().split("T")[0],
@@ -94,7 +93,6 @@ export function OrderFiltersComponent({
               if (date === null) {
                 updateFilter("pickupDateTo", undefined);
               } else {
-                // date is string
                 updateFilter(
                   "pickupDateTo",
                   new Date(date).toISOString().split("T")[0],
@@ -114,7 +112,7 @@ export function OrderFiltersComponent({
               Limpiar filtros
             </Button>
           )}
-        </Group>
+        </div>
       </Stack>
     </Paper>
   );

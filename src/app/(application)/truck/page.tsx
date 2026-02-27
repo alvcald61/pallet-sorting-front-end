@@ -136,14 +136,14 @@ export default function TruckPage() {
 
   return (
     <ProtectedPage requiredRoles={[ROLES.ADMIN]}>
-      <div className="flex flex-col justify-start w-full grow p-10">
+      <div className="flex flex-col justify-start w-full grow p-4 sm:p-10">
         <Breadcrumbs className="mb-4">
           <Anchor href="/">Dashboard</Anchor>
           <span>Camiones</span>
         </Breadcrumbs>
 
-        <div className="flex justify-between mb-4">
-          <Title order={2}>Tus Camiones</Title>
+        <div className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-0 mb-4">
+          <Title order={2} className="text-xl sm:text-2xl">Tus Camiones</Title>
           <Button
             leftSection={<IconPlus size={16} />}
             onClick={formModal.openCreate}

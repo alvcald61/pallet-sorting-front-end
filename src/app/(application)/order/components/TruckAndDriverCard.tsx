@@ -12,8 +12,8 @@ export default function TruckAndDriverCard({
   driver,
 }: TruckAndDriverCardProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
         Camión y Chofer
       </h3>
       <div className="space-y-6">
@@ -21,7 +21,7 @@ export default function TruckAndDriverCard({
           <p className="text-sm font-semibold text-gray-700 mb-3">
             Información del Camión
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm bg-gray-50 p-4 rounded">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm bg-gray-50 p-3 sm:p-4 rounded">
             <div>
               <p className="text-gray-500">Placa</p>
               <p className="font-medium text-gray-800">{truck.licensePlate}</p>
@@ -54,7 +54,7 @@ export default function TruckAndDriverCard({
           <p className="text-sm font-semibold text-gray-700 mb-3">
             Información del Chofer
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm bg-gray-50 p-4 rounded">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm bg-gray-50 p-3 sm:p-4 rounded">
             <div>
               <p className="text-gray-500">Nombre Completo</p>
               <p className="font-medium text-gray-800">

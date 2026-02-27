@@ -15,8 +15,8 @@ export default function PackagesCard({
   title = "Paquetes",
 }: PackagesCardProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">{title}</h3>
       <div className="overflow-x-auto">
         {orderType === "BULK" ? (
           <BulkSummaryTable bulk={packages} />

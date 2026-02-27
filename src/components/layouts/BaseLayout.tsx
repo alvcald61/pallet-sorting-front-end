@@ -84,7 +84,7 @@ export const BaseLayout = ({ children }: BaseLayoutProps) => {
           <div className="flex items-center gap-4 w-full">
             <Burger opened={opened} onClick={toggle} size="md" />
             <div className="h-6 w-px bg-gray-300 dark:bg-dark-4" />
-            <h1 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+            <h1 className="text-sm sm:text-lg font-semibold text-gray-800 dark:text-gray-100 truncate">
               TUPACK - Sistema de Gestión
             </h1>
           </div>

@@ -106,17 +106,17 @@ export default function OrderHeaderActions({
 
   return (
     <>
-      <Group justify="space-between" align="flex-start" mb="xl">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Order Details</h1>
-          <p className="text-gray-500 mt-1">Order {orderId}</p>
+          <h1 className="text-xl sm:text-3xl font-bold text-gray-900">Order Details</h1>
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">Order {orderId}</p>
           <div className="mt-3">
             <OrderStatusBadge status={orderStatus} variant="badge" />
           </div>
         </div>
 
         {canModifyOrder && (
-          <Group>
+          <Group wrap="wrap">
             {((isAdmin && orderStatus === OrderStatus.REVIEW) ||
               orderStatus === OrderStatus.PRE_APPROVED) && (
               <Button
@@ -165,7 +165,7 @@ export default function OrderHeaderActions({
             )}
           </Group>
         )}
-      </Group>
+      </div>
 
       {showAmountInput && (
         <div className="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200">

@@ -195,27 +195,30 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex flex-col justify-start w-full grow p-10">
+    <div className="flex flex-col justify-start w-full grow p-4 sm:p-10">
       <Breadcrumbs className="mb-4">
         <span>Dashboard</span>
       </Breadcrumbs>
 
-      <Group justify="space-between" align="flex-end" mb="xl">
-        <Title order={2}>Dashboard de Gestión</Title>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+        <Title order={2} className="text-xl sm:text-2xl">Dashboard de Gestión</Title>
         <Stack gap="xs" align="flex-end">
-          <SegmentedControl
-            value={filterMode}
-            onChange={(v) => {
-              setFilterMode(v as any);
-              if (v !== "custom") setCustomRange([null, null]);
-            }}
-            data={[
-              { label: "Todos", value: "all" },
-              { label: "Hoy", value: "today" },
-              { label: "Últimos 7 días", value: "7days" },
-              { label: "Rango personalizado", value: "custom" },
-            ]}
-          />
+          <ScrollArea type="auto" offsetScrollbars>
+            <SegmentedControl
+              value={filterMode}
+              onChange={(v) => {
+                setFilterMode(v as any);
+                if (v !== "custom") setCustomRange([null, null]);
+              }}
+              size="xs"
+              data={[
+                { label: "Todos", value: "all" },
+                { label: "Hoy", value: "today" },
+                { label: "7 días", value: "7days" },
+                { label: "Personalizado", value: "custom" },
+              ]}
+            />
+          </ScrollArea>
           {filterMode === "custom" && (
             <DatePickerInput
               type="range"
@@ -224,11 +227,12 @@ const Dashboard = () => {
               onChange={setCustomRange}
               clearable
               size="sm"
+              className="w-full sm:w-auto"
               style={{ minWidth: 260 }}
             />
           )}
         </Stack>
-      </Group>
+      </div>
 
       {/* Cards de Estadísticas Principales */}
       <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md" mb="xl">

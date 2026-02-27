@@ -11,7 +11,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
@@ -35,6 +35,7 @@ export default function DispatcherAssignment({
 }: DispatcherAssignmentProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const isMobile = useMediaQuery("(max-width: 640px)");
   const [modalOpened, { open: openModal, close: closeModal }] =
     useDisclosure(false);
   const [selectedDispatcherId, setSelectedDispatcherId] = useState<
@@ -115,13 +116,13 @@ export default function DispatcherAssignment({
 
   return (
     <>
-      <div className="bg-white p-6 rounded-lg shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
           Despachador
         </h3>
 
         {currentDispatcher && (
-          <div className="bg-gray-50 p-4 rounded mb-4">
+          <div className="bg-gray-50 p-3 sm:p-4 rounded mb-3 sm:mb-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
               <div>
                 <Text size="xs" c="dimmed">
@@ -158,22 +159,23 @@ export default function DispatcherAssignment({
           mb="sm"
         />
 
-        <Group>
-          <Button
-            variant="light"
-            size="xs"
-            onClick={openModal}
-            disabled={assignMutation.isPending}
-          >
-            Crear nuevo despachador
-          </Button>
-        </Group>
+        <Button
+          variant="light"
+          size="xs"
+          onClick={openModal}
+          disabled={assignMutation.isPending}
+          fullWidth
+          className="sm:!w-auto"
+        >
+          Crear nuevo despachador
+        </Button>
       </div>
 
       <Modal
         opened={modalOpened}
         onClose={closeModal}
         title="Nuevo Despachador"
+        fullScreen={isMobile}
         size="sm"
       >
         <form onSubmit={form.onSubmit(handleCreateSubmit)}>
@@ -197,7 +199,7 @@ export default function DispatcherAssignment({
               {...form.getInputProps("phone")}
             />
           </Stack>
-          <Group justify="flex-end" mt="md">
+          <Group justify="flex-end" mt="md" grow={isMobile}>
             <Button
               variant="light"
               onClick={closeModal}

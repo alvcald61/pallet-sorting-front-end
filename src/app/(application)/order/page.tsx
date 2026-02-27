@@ -111,14 +111,14 @@ const Page = () => {
         </Box>
       </Modal>
 
-      <div className="flex flex-col justify-start w-full grow p-10">
+      <div className="flex flex-col justify-start w-full grow p-4 sm:p-10">
         <Breadcrumbs className="mb-4">
           <Anchor href="/">Dashboard</Anchor>
           <span>Ordenes</span>
         </Breadcrumbs>
 
-        <div className="flex justify-between">
-          <Title order={2}>Tus Ordenes</Title>
+        <div className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-0">
+          <Title order={2} className="text-xl sm:text-2xl">Tus Ordenes</Title>
           <Menu width={200} position="bottom-start">
             <Menu.Target>
               <Button>Crear orden</Button>

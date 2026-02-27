@@ -26,7 +26,7 @@ export default function PricingPage() {
 
   if (!isAdmin) {
     return (
-      <div className="flex flex-col w-full p-10">
+      <div className="flex flex-col w-full p-4 sm:p-10">
         <Alert
           icon={<IconAlertCircle size={16} />}
           title="Acceso denegado"
@@ -39,7 +39,7 @@ export default function PricingPage() {
   }
 
   return (
-    <div className="flex flex-col w-full grow p-10">
+    <div className="flex flex-col w-full grow p-4 sm:p-10">
       <Breadcrumbs className="mb-4">
         <Anchor href="/">Dashboard</Anchor>
         <span>Precios</span>
@@ -61,7 +61,7 @@ export default function PricingPage() {
         clearable
         searchable
         mb="md"
-        w={350}
+        className="w-full sm:w-[350px]"
       />
 
       <Tabs defaultValue="prices" keepMounted={false}>
