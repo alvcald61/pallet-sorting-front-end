@@ -1,19 +1,28 @@
 "use client";
 
-import { Anchor, Breadcrumbs, Tabs, Title, Alert } from "@mantine/core";
+import { useState } from "react";
+import { Anchor, Breadcrumbs, Tabs, Title, Alert, Select } from "@mantine/core";
 import {
   IconCurrencyDollar,
   IconMapPin,
   IconRuler,
   IconAlertCircle,
 } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
+import { getClients } from "@/lib/api/client/clientApi";
 import { PricesTab } from "./components/PricesTab";
 import { ZonesTab } from "./components/ZonesTab";
 import { ConditionsTab } from "./components/ConditionsTab";
 
 export default function PricingPage() {
   const isAdmin = useCanAccess(["ADMIN"]);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+
+  const { data: clientsData } = useQuery({
+    queryKey: ["clients"],
+    queryFn: getClients,
+  });
 
   if (!isAdmin) {
     return (
@@ -40,6 +49,21 @@ export default function PricingPage() {
         Gestión de Precios
       </Title>
 
+      <Select
+        label="Cliente"
+        placeholder="Todos los clientes"
+        data={(clientsData?.data ?? []).map((c) => ({
+          value: String(c.id),
+          label: c.businessName,
+        }))}
+        value={selectedClientId}
+        onChange={setSelectedClientId}
+        clearable
+        searchable
+        mb="md"
+        w={350}
+      />
+
       <Tabs defaultValue="prices" keepMounted={false}>
         <Tabs.List mb="md">
           <Tabs.Tab
@@ -57,7 +81,7 @@ export default function PricingPage() {
         </Tabs.List>
 
         <Tabs.Panel value="prices">
-          <PricesTab />
+          <PricesTab clientId={selectedClientId ? Number(selectedClientId) : null} />
         </Tabs.Panel>
 
         <Tabs.Panel value="zones">

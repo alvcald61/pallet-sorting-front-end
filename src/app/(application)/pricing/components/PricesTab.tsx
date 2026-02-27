@@ -21,14 +21,18 @@ import {
   deletePrice,
 } from "@/lib/api/pricing/priceApi";
 
-export function PricesTab() {
+interface PricesTabProps {
+  clientId: number | null;
+}
+
+export function PricesTab({ clientId }: PricesTabProps) {
   const queryClient = useQueryClient();
   const [opened, { open, close }] = useDisclosure(false);
   const [editingPrice, setEditingPrice] = useState<Price | undefined>();
 
   const { data: pricesData, isLoading: loadingPrices } = useQuery({
-    queryKey: ["prices"],
-    queryFn: getPrices,
+    queryKey: ["prices", clientId],
+    queryFn: () => getPrices(clientId),
   });
 
   const { data: zonesData } = useQuery({
@@ -67,6 +71,7 @@ export function PricesTab() {
         zone: { id: number };
         priceCondition: { priceConditionId: number };
         price: number;
+        clientId?: number | null;
       };
     }) => updatePrice(id, data),
     onSuccess: () => {
@@ -105,6 +110,7 @@ export function PricesTab() {
     zone: { id: number };
     priceCondition: { priceConditionId: number };
     price: number;
+    clientId?: number | null;
   }) => {
     if (editingPrice) {
       await updateMutation.mutateAsync({ id: editingPrice.priceId, data });
@@ -132,6 +138,133 @@ export function PricesTab() {
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
+  const columns = [
+    {
+      accessor: "zone.name",
+      title: "Zona",
+      sortable: true,
+      render: (p: Price) => (
+        <div>
+          <Text size="sm" fw={500}>
+            {p.zone?.name}
+          </Text>
+          <Text size="xs" c="dimmed">
+            {p.zone?.zoneName}
+          </Text>
+        </div>
+      ),
+    },
+    {
+      accessor: "zone.district",
+      title: "Distritos",
+      render: (p: Price) => (
+        <Tooltip label={p.zone?.district ?? ""} multiline w={280}>
+          <Text size="sm" lineClamp={1} style={{ maxWidth: 180 }}>
+            {p.zone?.district}
+          </Text>
+        </Tooltip>
+      ),
+    },
+    {
+      accessor: "condition",
+      title: "Condición",
+      render: (p: Price) => {
+        const c = p.priceCondition;
+        if (!c) return "—";
+        const hasVolume = c.minVolume > 0 || c.maxVolume > 0;
+        return (
+          <div>
+            <Text size="sm">
+              Peso: {c.minWeight}–{c.maxWeight} kg
+            </Text>
+            {hasVolume && (
+              <Text size="xs" c="dimmed">
+                Vol: {c.minVolume}–{c.maxVolume} m³
+              </Text>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      accessor: "type",
+      title: "Tipo",
+      render: (p: Price) => {
+        const c = p.priceCondition;
+        if (!c) return null;
+        const hasVolume = c.minVolume > 0 || c.maxVolume > 0;
+        return (
+          <Badge color={hasVolume ? "blue" : "green"} size="sm">
+            {hasVolume ? "Peso + Vol." : "Solo Peso"}
+          </Badge>
+        );
+      },
+    },
+    ...(!clientId
+      ? [
+          {
+            accessor: "clientBusinessName",
+            title: "Cliente",
+            render: (p: Price) => (
+              <Text size="sm">{p.clientBusinessName ?? "—"}</Text>
+            ),
+          },
+        ]
+      : []),
+    {
+      accessor: "price",
+      title: "Tarifa",
+      sortable: true,
+      render: (p: Price) => {
+        const currency = p.priceCondition?.currency ?? "PEN";
+        const prefix = currency === "USD" ? "$ " : "S/ ";
+        return (
+          <Text fw={600} size="sm">
+            {prefix}
+            {Number(p.price).toFixed(2)}
+          </Text>
+        );
+      },
+    },
+    {
+      accessor: "currency",
+      title: "Moneda",
+      render: (p: Price) => (
+        <Badge variant="outline" size="sm">
+          {p.priceCondition?.currency ?? "—"}
+        </Badge>
+      ),
+    },
+    {
+      accessor: "actions",
+      title: "Acciones",
+      sortable: false,
+      render: (price: Price) => (
+        <Group gap="xs">
+          <Tooltip label="Editar">
+            <ActionIcon
+              variant="light"
+              color="blue"
+              onClick={() => handleEdit(price)}
+            >
+              <IconEdit size={16} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Eliminar">
+            <ActionIcon
+              variant="light"
+              color="red"
+              loading={deleteMutation.isPending}
+              onClick={() => handleDelete(price)}
+            >
+              <IconTrash size={16} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
+      ),
+    },
+  ];
+
   return (
     <>
       <PriceFormModal
@@ -142,6 +275,7 @@ export function PricesTab() {
         conditions={conditions}
         initialValues={editingPrice}
         loading={isSubmitting}
+        clientId={clientId}
       />
 
       <EnhancedDataTable
@@ -160,121 +294,7 @@ export function PricesTab() {
             Nueva Tarifa
           </Button>
         }
-        columns={[
-          {
-            accessor: "zone.name",
-            title: "Zona",
-            sortable: true,
-            render: (p) => (
-              <div>
-                <Text size="sm" fw={500}>
-                  {p.zone?.name}
-                </Text>
-                <Text size="xs" c="dimmed">
-                  {p.zone?.zoneName}
-                </Text>
-              </div>
-            ),
-          },
-          {
-            accessor: "zone.district",
-            title: "Distritos",
-            render: (p) => (
-              <Tooltip label={p.zone?.district ?? ""} multiline w={280}>
-                <Text size="sm" lineClamp={1} style={{ maxWidth: 180 }}>
-                  {p.zone?.district}
-                </Text>
-              </Tooltip>
-            ),
-          },
-          {
-            accessor: "condition",
-            title: "Condición",
-            render: (p) => {
-              const c = p.priceCondition;
-              if (!c) return "—";
-              const hasVolume = c.minVolume > 0 || c.maxVolume > 0;
-              return (
-                <div>
-                  <Text size="sm">
-                    Peso: {c.minWeight}–{c.maxWeight} kg
-                  </Text>
-                  {hasVolume && (
-                    <Text size="xs" c="dimmed">
-                      Vol: {c.minVolume}–{c.maxVolume} m³
-                    </Text>
-                  )}
-                </div>
-              );
-            },
-          },
-          {
-            accessor: "type",
-            title: "Tipo",
-            render: (p) => {
-              const c = p.priceCondition;
-              if (!c) return null;
-              const hasVolume = c.minVolume > 0 || c.maxVolume > 0;
-              return (
-                <Badge color={hasVolume ? "blue" : "green"} size="sm">
-                  {hasVolume ? "Peso + Vol." : "Solo Peso"}
-                </Badge>
-              );
-            },
-          },
-          {
-            accessor: "price",
-            title: "Tarifa",
-            sortable: true,
-            render: (p) => {
-              const currency = p.priceCondition?.currency ?? "PEN";
-              const prefix = currency === "USD" ? "$ " : "S/ ";
-              return (
-                <Text fw={600} size="sm">
-                  {prefix}
-                  {Number(p.price).toFixed(2)}
-                </Text>
-              );
-            },
-          },
-          {
-            accessor: "currency",
-            title: "Moneda",
-            render: (p) => (
-              <Badge variant="outline" size="sm">
-                {p.priceCondition?.currency ?? "—"}
-              </Badge>
-            ),
-          },
-          {
-            accessor: "actions",
-            title: "Acciones",
-            sortable: false,
-            render: (price) => (
-              <Group gap="xs">
-                <Tooltip label="Editar">
-                  <ActionIcon
-                    variant="light"
-                    color="blue"
-                    onClick={() => handleEdit(price)}
-                  >
-                    <IconEdit size={16} />
-                  </ActionIcon>
-                </Tooltip>
-                <Tooltip label="Eliminar">
-                  <ActionIcon
-                    variant="light"
-                    color="red"
-                    loading={deleteMutation.isPending}
-                    onClick={() => handleDelete(price)}
-                  >
-                    <IconTrash size={16} />
-                  </ActionIcon>
-                </Tooltip>
-              </Group>
-            ),
-          },
-        ]}
+        columns={columns}
         emptyState={{
           title: "No hay tarifas registradas",
           description:

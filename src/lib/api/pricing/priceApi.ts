@@ -31,6 +31,8 @@ export interface Price {
   priceId: number;
   zone: Zone;
   priceCondition: PriceCondition;
+  clientId?: number;
+  clientBusinessName?: string;
   price: number;
   enabled: boolean;
   createdAt?: string;
@@ -45,8 +47,9 @@ interface ApiResponse<T> {
 
 // ─── Prices ───────────────────────────────────────────────────────────────────
 
-export const getPrices = async (): Promise<ApiResponse<Price[]>> => {
-  return get<ApiResponse<Price[]>>("price");
+export const getPrices = async (clientId?: number | null): Promise<ApiResponse<Price[]>> => {
+  const params = clientId ? `?clientId=${clientId}` : "";
+  return get<ApiResponse<Price[]>>(`price${params}`);
 };
 
 export const getPriceById = async (id: number): Promise<ApiResponse<Price>> => {
@@ -57,6 +60,7 @@ export const createPrice = async (data: {
   zone: { id: number };
   priceCondition: { priceConditionId: number };
   price: number;
+  clientId?: number | null;
 }): Promise<ApiResponse<Price>> => {
   return post<ApiResponse<Price>>("price", data);
 };
@@ -67,6 +71,7 @@ export const updatePrice = async (
     zone: { id: number };
     priceCondition: { priceConditionId: number };
     price: number;
+    clientId?: number | null;
   }
 ): Promise<ApiResponse<Price>> => {
   return put<ApiResponse<Price>>(`price/${id}`, data);
