@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Modal, Group, Alert } from "@mantine/core";
+import { Button, Modal, Group, Alert, Textarea } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
 import { OrderStatus } from "@/lib/utils/enums";
@@ -29,6 +29,7 @@ export default function InitiateRouteButton({
   const quickStatusUpdate = useQuickStatusUpdate();
 
   const [showModal, setShowModal] = useState(false);
+  const [observations, setObservations] = useState("");
 
   // El conductor solo puede iniciar la ruta si:
   // 1. Es conductor (rol DRIVER)
@@ -49,12 +50,17 @@ export default function InitiateRouteButton({
     ) || [];
   const hasPendingDocuments = pendingDocuments.length > 0;
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setObservations("");
+  };
+
   const handleInitiateRoute = () => {
     quickStatusUpdate.mutate(
-      { orderId, status: TransportStatus.EN_ROUTE_TO_WAREHOUSE },
+      { orderId, status: TransportStatus.EN_ROUTE_TO_WAREHOUSE, notes: observations.trim() || undefined },
       {
         onSuccess: () => {
-          setShowModal(false);
+          handleCloseModal();
           router.refresh();
         },
       },
@@ -97,20 +103,27 @@ export default function InitiateRouteButton({
 
       <Modal
         opened={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={handleCloseModal}
         title="Iniciar Ruta"
         centered
       >
         <div className="space-y-4">
           <p>¿Estás seguro de que deseas iniciar esta ruta?</p>
-          <p className="text-sm text-gray-600">
-            Una vez iniciada, la ruta será registrada en el sistema y los
-            cambios serán permanentes.
-          </p>
+          <Textarea
+            label="Observaciones"
+            placeholder="Agrega una observación opcional al iniciar la ruta..."
+            value={observations}
+            onChange={(e) => setObservations(e.currentTarget.value)}
+            maxLength={500}
+            autosize
+            minRows={2}
+            maxRows={4}
+            description={`${observations.length}/500 caracteres`}
+          />
           <Group justify="flex-end" mt="lg">
             <Button
               variant="default"
-              onClick={() => setShowModal(false)}
+              onClick={handleCloseModal}
               disabled={quickStatusUpdate.isPending}
             >
               Cancelar

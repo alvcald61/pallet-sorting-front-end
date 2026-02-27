@@ -167,11 +167,13 @@ export const useQuickStatusUpdate = () => {
     mutationFn: async ({
       orderId,
       status,
+      notes,
     }: {
       orderId: string;
       status: TransportStatus;
+      notes?: string;
     }) => {
-      const promises: Promise<void>[] = [quickStatusUpdate(orderId, status)];
+      const promises: Promise<void>[] = [quickStatusUpdate(orderId, status, notes)];
       if (status === TransportStatus.DELIVERED) {
         promises.push(updateOrderStatus(orderId, "DELIVERED"));
       }

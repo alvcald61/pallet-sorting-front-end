@@ -22,11 +22,12 @@ export interface TransportHistoryResponse {
   pageInfo: null;
 }
 
-export async function   quickStatusUpdate(
+export async function quickStatusUpdate(
   id: string,
   status: TransportStatus,
+  notes?: string,
 ): Promise<void> {
-  await patch<void>(`/order/${id}/transport/status/quick?status=${status}`);
+  await patch<void>(`/order/${id}/transport/status`, { status, notes });
 }
 
 export async function getTransportHistory(

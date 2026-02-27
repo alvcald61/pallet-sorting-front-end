@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Modal, Group } from "@mantine/core";
+import { Button, Modal, Group, Textarea } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { TransportStatus } from "@/lib/types/transportTypes";
 import { TransportHistoryEntry } from "@/lib/api/transport/transportApi";
@@ -179,17 +179,23 @@ export default function DeliveryStatusTimeline({
   const router = useRouter();
   const quickStatusUpdate = useQuickStatusUpdate();
   const [showModal, setShowModal] = useState(false);
+  const [observations, setObservations] = useState("");
 
   const nextStatus = getNextStatus(currentStatus);
   const nextStatusInfo = nextStatus ? getStatusInfo(nextStatus) : null;
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setObservations("");
+  };
+
   const handleAdvanceStatus = () => {
     if (!nextStatus) return;
     quickStatusUpdate.mutate(
-      { orderId, status: nextStatus },
+      { orderId, status: nextStatus, notes: observations.trim() || undefined },
       {
         onSuccess: () => {
-          setShowModal(false);
+          handleCloseModal();
           router.refresh();
         },
       },
@@ -329,7 +335,7 @@ export default function DeliveryStatusTimeline({
       {/* Confirmation modal */}
       <Modal
         opened={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={handleCloseModal}
         title="Confirmar Cambio de Estado"
         centered
       >
@@ -338,13 +344,21 @@ export default function DeliveryStatusTimeline({
             ¿Deseas cambiar el estado a <strong>{nextStatusInfo?.label}</strong>
             ?
           </p>
-          <p className="text-sm text-gray-600">
-            Esta acción registrará el nuevo estado en el sistema.
-          </p>
+          <Textarea
+            label="Observaciones"
+            placeholder="Agrega una observación opcional sobre este cambio de estado..."
+            value={observations}
+            onChange={(e) => setObservations(e.currentTarget.value)}
+            maxLength={500}
+            autosize
+            minRows={2}
+            maxRows={4}
+            description={`${observations.length}/500 caracteres`}
+          />
           <Group justify="flex-end" mt="lg">
             <Button
               variant="default"
-              onClick={() => setShowModal(false)}
+              onClick={handleCloseModal}
               disabled={quickStatusUpdate.isPending}
             >
               Cancelar
