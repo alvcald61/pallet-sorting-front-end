@@ -18,7 +18,9 @@ import {
   Center,
   ScrollArea,
   Progress,
+  SegmentedControl,
 } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import {
   IconTrendingUp,
   IconPackage,
@@ -36,6 +38,7 @@ import {
   getOrdersByTruck,
   getOrdersByStatus,
   getPerformanceMetrics,
+  type DateRangeParams,
 } from "@/lib/api/dashboard/dashboardApi";
 import { showNotification } from "@mantine/notifications";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
@@ -51,10 +54,35 @@ const Dashboard = () => {
   const [performanceMetrics, setPerformanceMetrics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  // Date filter state
+  type FilterMode = "all" | "today" | "7days" | "custom";
+  const [filterMode, setFilterMode] = useState<FilterMode>("all");
+  const [customRange, setCustomRange] = useState<[string | null, string | null]>([null, null]);
+
+  const getDateParams = (): DateRangeParams | undefined => {
+    const fmt = (d: Date) => d.toISOString().split("T")[0];
+    if (filterMode === "today") {
+      const today = fmt(new Date());
+      return { startDate: today, endDate: today };
+    }
+    if (filterMode === "7days") {
+      const end = new Date();
+      const start = new Date();
+      start.setDate(start.getDate() - 6);
+      return { startDate: fmt(start), endDate: fmt(end) };
+    }
+    if (filterMode === "custom" && customRange[0] && customRange[1]) {
+      return { startDate: customRange[0], endDate: customRange[1] };
+    }
+    return undefined;
+  };
+
   useEffect(() => {
+    if (!isAdmin) return;
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
+        const dateParams = getDateParams();
         const [
           statsData,
           pendingData,
@@ -64,13 +92,13 @@ const Dashboard = () => {
           statusData,
           metricsData,
         ] = await Promise.all([
-          getDashboardStats().catch(() => null),
-          getPendingOrders().catch(() => []),
-          getOrdersByClient().catch(() => []),
-          getOrdersByDriver().catch(() => []),
-          getOrdersByTruck().catch(() => []),
-          getOrdersByStatus().catch(() => []),
-          getPerformanceMetrics().catch(() => null),
+          getDashboardStats(dateParams).catch(() => null),
+          getPendingOrders(10, dateParams).catch(() => []),
+          getOrdersByClient(dateParams).catch(() => []),
+          getOrdersByDriver(dateParams).catch(() => []),
+          getOrdersByTruck(dateParams).catch(() => []),
+          getOrdersByStatus(dateParams).catch(() => []),
+          getPerformanceMetrics(dateParams).catch(() => null),
         ]);
 
         setStats(statsData);
@@ -93,7 +121,7 @@ const Dashboard = () => {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [isAdmin, filterMode, customRange]);
 
   const StatCard = ({
     icon: Icon,
@@ -172,9 +200,35 @@ const Dashboard = () => {
         <span>Dashboard</span>
       </Breadcrumbs>
 
-      <Title order={2} mb="xl">
-        Dashboard de Gestión
-      </Title>
+      <Group justify="space-between" align="flex-end" mb="xl">
+        <Title order={2}>Dashboard de Gestión</Title>
+        <Stack gap="xs" align="flex-end">
+          <SegmentedControl
+            value={filterMode}
+            onChange={(v) => {
+              setFilterMode(v as any);
+              if (v !== "custom") setCustomRange([null, null]);
+            }}
+            data={[
+              { label: "Todos", value: "all" },
+              { label: "Hoy", value: "today" },
+              { label: "Últimos 7 días", value: "7days" },
+              { label: "Rango personalizado", value: "custom" },
+            ]}
+          />
+          {filterMode === "custom" && (
+            <DatePickerInput
+              type="range"
+              placeholder="Selecciona un rango"
+              value={customRange}
+              onChange={setCustomRange}
+              clearable
+              size="sm"
+              style={{ minWidth: 260 }}
+            />
+          )}
+        </Stack>
+      </Group>
 
       {/* Cards de Estadísticas Principales */}
       <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md" mb="xl">
