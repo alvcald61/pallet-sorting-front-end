@@ -26,7 +26,9 @@ export default function OrderHeaderActions({
   const isAdmin = useCanAccess(["ADMIN"]);
   const router = useRouter();
 
-  const [amount, setAmount] = useState<number | string | undefined>(undefined);
+  const [amount, setAmount] = useState<number | string | undefined>(
+    initialAmount ?? undefined,
+  );
   const [gpsLink, setGpsLink] = useState<number | string | undefined>(
     orderGpsLink,
   );
@@ -41,9 +43,9 @@ export default function OrderHeaderActions({
   ].includes(orderStatus);
 
   const canConfirmProposal =
-    isAdmin && orderStatus === OrderStatus.REVIEW && !initialAmount;
+    isAdmin && orderStatus === OrderStatus.REVIEW;
   const canConfirmOrder = !isAdmin && orderStatus === OrderStatus.PRE_APPROVED;
-  const showAmountInput = !initialAmount && canConfirmProposal;
+  const showAmountInput = canConfirmProposal;
   const showGpsLinkInput =
     !orderGpsLink && isAdmin && orderStatus === OrderStatus.IN_PROGRESS;
   console.log(
@@ -87,7 +89,7 @@ export default function OrderHeaderActions({
       return "Agregar link GPS";
     }
     if (isAdmin && orderStatus === OrderStatus.REVIEW) {
-      return initialAmount ? "Confirmar Orden" : "Enviar propuesta";
+      return initialAmount ? "Modificar monto" : "Enviar propuesta";
     }
     return "Confirmar Orden";
   };
@@ -95,6 +97,9 @@ export default function OrderHeaderActions({
   const getModalContent = () => {
     if (action === "cancel") {
       return "¿Estás seguro de que deseas cancelar esta orden?";
+    }
+    if (initialAmount && canConfirmProposal) {
+      return "¿Desea modificar el monto?";
     }
     return "¿Estás seguro de que deseas confirmar?";
   };
@@ -165,7 +170,7 @@ export default function OrderHeaderActions({
       {showAmountInput && (
         <div className="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Monto Total
+            {initialAmount ? "Modificar monto" : "Monto Total"}
           </label>
           <NumberInput
             placeholder="Ingresa el monto"
@@ -206,7 +211,8 @@ export default function OrderHeaderActions({
           <p>{getModalContent()}</p>
           {showAmountInput && amount && (
             <p className="text-sm text-gray-600">
-              Monto de la orden: <strong>{amount}</strong>
+              {initialAmount ? "Nuevo" : "Monto de la orden"}:{" "}
+              <strong>{amount}</strong>
             </p>
           )}
           {showGpsLinkInput && gpsLink && (
