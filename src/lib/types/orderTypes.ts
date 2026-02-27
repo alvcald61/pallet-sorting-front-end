@@ -74,6 +74,7 @@ export interface Driver {
   enabled: boolean;
   dni: string;
   phone: string;
+  driverLicence?: string;
   email: string;
   firstName: string;
   lastName: string;

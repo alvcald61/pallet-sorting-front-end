@@ -62,8 +62,8 @@ export default function TruckAndDriverCard({
               </p>
             </div>
             <div>
-              <p className="text-gray-500">DNI</p>
-              <p className="font-medium text-gray-800">{driver.dni}</p>
+              <p className="text-gray-500">Licencia de Conducir</p>
+              <p className="font-medium text-gray-800">{driver.driverLicence ?? "—"}</p>
             </div>
             <div>
               <p className="text-gray-500">Teléfono</p>

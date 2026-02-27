@@ -2,6 +2,7 @@ export interface Driver {
   driverId: string;
   dni: string;
   phone: string;
+  driverLicence?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -11,6 +12,7 @@ export interface Driver {
 export interface CreateDriverRequest {
   dni: string;
   phone: string;
+  driverLicence?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -20,6 +22,7 @@ export interface CreateDriverRequest {
 export interface UpdateDriverRequest {
   dni: string;
   phone: string;
+  driverLicence?: string;
   firstName: string;
   lastName: string;
   email: string;

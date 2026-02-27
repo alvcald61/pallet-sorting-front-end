@@ -35,6 +35,7 @@ export const DriverForm: React.FC<DriverFormProps> = ({
     initialValues: {
       dni: "",
       phone: "",
+      driverLicence: "",
       firstName: "",
       lastName: "",
       email: "",
@@ -42,8 +43,6 @@ export const DriverForm: React.FC<DriverFormProps> = ({
     },
     validate: {
       dni: (value) => (value.trim().length === 0 ? "DNI es requerido" : null),
-      phone: (value) =>
-        value.trim().length === 0 ? "Teléfono es requerido" : null,
       firstName: (value) =>
         value.trim().length === 0 ? "Nombre es requerido" : null,
       lastName: (value) =>
@@ -61,6 +60,7 @@ export const DriverForm: React.FC<DriverFormProps> = ({
       form.setValues({
         dni: driver.dni,
         phone: driver.phone,
+        driverLicence: driver.driverLicence ?? "",
         firstName: driver.firstName,
         lastName: driver.lastName,
         email: driver.email,
@@ -73,10 +73,11 @@ export const DriverForm: React.FC<DriverFormProps> = ({
 
   const handleSubmit = async (values: any) => {
     try {
-      const submitData = driver
+    const submitData = driver
         ? {
             dni: values.dni,
             phone: values.phone,
+            driverLicence: values.driverLicence,
             firstName: values.firstName,
             lastName: values.lastName,
             email: values.email,
@@ -102,10 +103,10 @@ export const DriverForm: React.FC<DriverFormProps> = ({
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="md">
           <TextInput
-            label="DNI"
-            placeholder="12345678"
-            {...form.getInputProps("dni")}
-            disabled={isLoading || !!driver}
+            label="Licencia de Conducir"
+            placeholder="Ej: A1-12345"
+            {...form.getInputProps("driverLicence")}
+            disabled={isLoading}
           />
           <TextInput
             label="Nombre"
