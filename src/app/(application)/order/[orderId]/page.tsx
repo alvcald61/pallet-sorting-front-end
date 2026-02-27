@@ -16,6 +16,7 @@ import OrderInformationCard from "../components/OrderInformationCard";
 import TruckAndDriverCard from "../components/TruckAndDriverCard";
 import PackagesCard from "../components/PackagesCard";
 import TransportFlow from "../components/TransportFlow";
+import SunatDocumentUpload from "../components/SunatDocumentUpload";
 import { Image } from "@mantine/core";
 import { OrderStatus } from "@/lib/utils/enums";
 
@@ -102,6 +103,16 @@ export default async ({ params }: PageParams) => {
                   currentTransportStatus={order.transportStatus}
                 />
               )} */}
+
+            {/* Documento SUNAT — solo admin, en PRE_APPROVED o APPROVED */}
+            {(order.orderStatus === OrderStatus.PRE_APPROVED ||
+              order.orderStatus === OrderStatus.APPROVED) && (
+              <SunatDocumentUpload
+                orderId={order.id}
+                orderStatus={order.orderStatus}
+                existingDocumentPath={order.sunatDocumentPath}
+              />
+            )}
 
             {(order.orderStatus === OrderStatus.APPROVED ||
               order.orderStatus === OrderStatus.IN_PROGRESS ||

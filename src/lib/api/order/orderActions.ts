@@ -21,3 +21,21 @@ export async function uploadOrderDocument({
     formData,
   );
 }
+
+interface UploadSunatDocumentParams {
+  orderId: string;
+  file: File;
+}
+
+export async function uploadSunatDocument({
+  orderId,
+  file,
+}: UploadSunatDocumentParams) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return postFormData<{ data?: string; message?: string }>(
+    `/order/${orderId}/sunat-document`,
+    formData,
+  );
+}

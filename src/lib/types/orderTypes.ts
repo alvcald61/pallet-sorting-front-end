@@ -29,6 +29,7 @@ export interface Order {
   documents: Document[];
   documentPending: boolean;
   transportStatus?: TransportStatus;
+  sunatDocumentPath?: string;
 }
 
 export interface Document {
