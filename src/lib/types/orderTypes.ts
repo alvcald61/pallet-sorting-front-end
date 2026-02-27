@@ -30,6 +30,16 @@ export interface Order {
   documentPending: boolean;
   transportStatus?: TransportStatus;
   sunatDocumentPath?: string;
+  dispatcher?: Dispatcher;
+  clientId?: number;
+}
+
+export interface Dispatcher {
+  id: number;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  clientId: number;
 }
 
 export interface Document {

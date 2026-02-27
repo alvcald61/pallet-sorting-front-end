@@ -14,6 +14,7 @@ import DocumentUploadZone from "../components/DocumentUploadZone";
 import InitiateRouteButton from "../components/InitiateRouteButton";
 import OrderInformationCard from "../components/OrderInformationCard";
 import TruckAndDriverCard from "../components/TruckAndDriverCard";
+import DispatcherAssignment from "../components/DispatcherAssignment";
 import PackagesCard from "../components/PackagesCard";
 import TransportFlow from "../components/TransportFlow";
 import SunatDocumentUpload from "../components/SunatDocumentUpload";
@@ -88,6 +89,15 @@ export default async ({ params }: PageParams) => {
               </div>
             ) : null}
             <TruckAndDriverCard truck={order.truck} driver={order.driver} />
+            {(order.orderStatus === OrderStatus.APPROVED ||
+              order.orderStatus === OrderStatus.DOCUMENT_PENDING) &&
+              order.clientId && (
+                <DispatcherAssignment
+                  orderId={order.id}
+                  clientId={order.clientId}
+                  currentDispatcher={order.dispatcher}
+                />
+              )}
             <PackagesCard
               orderType={order.orderType}
               packages={order.packages}
