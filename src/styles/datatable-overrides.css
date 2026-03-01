@@ -1,0 +1,205 @@
+/**
+ * Enhanced DataTable Styles
+ * Custom styling for mantine-datatable to improve UX/UI
+ */
+
+/* Table Headers */
+.mantine-DataTable-header {
+  background-color: #f8f9fa !important;
+  font-weight: 600 !important;
+}
+
+.mantine-DataTable-header th {
+  font-weight: 600 !important;
+  color: #495057 !important;
+  padding: 12px 16px !important;
+}
+
+/* Sortable columns */
+.mantine-DataTable-header th[data-sortable="true"] {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 150ms ease;
+}
+
+.mantine-DataTable-header th[data-sortable="true"]:hover {
+  background-color: #e9ecef !important;
+}
+
+/* Sort icons */
+.mantine-DataTable-sortIcon {
+  opacity: 0.6;
+  transition: opacity 150ms ease;
+}
+
+.mantine-DataTable-header th[data-sortable="true"]:hover .mantine-DataTable-sortIcon {
+  opacity: 1;
+}
+
+/* Active sort column */
+.mantine-DataTable-header th[data-sorted="true"] {
+  background-color: #e7f5ff !important;
+  color: #1971c2 !important;
+}
+
+.mantine-DataTable-header th[data-sorted="true"] .mantine-DataTable-sortIcon {
+  opacity: 1;
+  color: #1971c2 !important;
+}
+
+/* Table Rows */
+.mantine-DataTable-row {
+  transition: background-color 150ms ease;
+}
+
+/* Striped rows - better contrast */
+.mantine-DataTable-tbody tr:nth-of-type(odd) {
+  background-color: #ffffff;
+}
+
+.mantine-DataTable-tbody tr:nth-of-type(even) {
+  background-color: #f8f9fa;
+}
+
+/* Hover state */
+.mantine-DataTable-row:hover {
+  background-color: #e7f5ff !important;
+}
+
+/* Selected row (if using row selection) */
+.mantine-DataTable-row[data-selected="true"] {
+  background-color: #d0ebff !important;
+}
+
+.mantine-DataTable-row[data-selected="true"]:hover {
+  background-color: #a5d8ff !important;
+}
+
+/* Table cells */
+.mantine-DataTable-tbody td {
+  padding: 12px 16px !important;
+  vertical-align: middle;
+}
+
+/* Empty state */
+.mantine-DataTable-emptyState {
+  padding: 60px 20px !important;
+}
+
+/* Pagination */
+.mantine-DataTable-pagination {
+  padding: 12px 16px !important;
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Loading overlay */
+.mantine-DataTable-loadingOverlay {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mantine-DataTable-header th,
+  .mantine-DataTable-tbody td {
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+  }
+
+  .mantine-DataTable-sortIcon {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
+
+/* Checkbox column */
+.mantine-DataTable-tbody td:first-child,
+.mantine-DataTable-header th:first-child {
+  text-align: center !important;
+}
+
+/* Action column */
+.mantine-DataTable-tbody td:last-child {
+  white-space: nowrap;
+}
+
+/* Table borders */
+.mantine-DataTable-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* First and last cells rounded corners */
+.mantine-DataTable-header th:first-child {
+  border-top-left-radius: 4px;
+}
+
+.mantine-DataTable-header th:last-child {
+  border-top-right-radius: 4px;
+}
+
+/* Scrollable table shadow indicators */
+.mantine-DataTable-scrollArea {
+  position: relative;
+}
+
+.mantine-DataTable-scrollArea::before,
+.mantine-DataTable-scrollArea::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.mantine-DataTable-scrollArea::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.05), transparent);
+}
+
+.mantine-DataTable-scrollArea::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.05), transparent);
+}
+
+.mantine-DataTable-scrollArea[data-scrolled-left="true"]::before {
+  opacity: 1;
+}
+
+.mantine-DataTable-scrollArea[data-scrolled-right="true"]::after {
+  opacity: 1;
+}
+
+/* Compact mode */
+.mantine-DataTable--compact .mantine-DataTable-header th,
+.mantine-DataTable--compact .mantine-DataTable-tbody td {
+  padding: 8px 12px !important;
+}
+
+/* Spacious mode */
+.mantine-DataTable--spacious .mantine-DataTable-header th,
+.mantine-DataTable--spacious .mantine-DataTable-tbody td {
+  padding: 16px 20px !important;
+}
+
+/* Badge styling in tables */
+.mantine-DataTable-tbody .mantine-Badge {
+  font-weight: 500;
+}
+
+/* Link styling in tables */
+.mantine-DataTable-tbody a {
+  color: #1971c2;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.mantine-DataTable-tbody a:hover {
+  color: #1864ab;
+  text-decoration: underline;
+}

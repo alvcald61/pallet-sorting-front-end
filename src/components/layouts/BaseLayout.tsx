@@ -1,0 +1,187 @@
+"use client";
+import { NavbarNested } from "@/app/(application)/order/components/NavBar";
+import { ReactNode, useState, useEffect } from "react";
+import { ActionIcon, Burger } from "@mantine/core";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useRBAC } from "@/lib/contexts/RBACContext";
+import { useOneSignalListeners } from "@/lib/hooks/useOneSignalListeners";
+import OneSignal from "react-onesignal";
+
+interface BaseLayoutProps {
+  children: ReactNode;
+}
+
+export const BaseLayout = ({ children }: BaseLayoutProps) => {
+  const isDesktop = useMediaQuery("(min-width: 1024px)", true);
+  const [opened, { toggle, close, open }] = useDisclosure(false);
+  const { user } = useRBAC();
+  const [oneSignalInitialized, setOneSignalInitialized] = useState(false);
+
+  // Initialize OneSignal when user is available
+  useEffect(() => {
+    if (!user?.id || oneSignalInitialized) return;
+
+    const initOneSignal = async () => {
+      try {
+        console.log("🔔 Initializing OneSignal...");
+
+        await OneSignal.init({
+          appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID!,
+          allowLocalhostAsSecureOrigin: true,
+          serviceWorkerPath: "/OneSignalSDKWorker.js",
+          serviceWorkerUpdaterPath: "/OneSignalSDKUpdaterWorker.js",
+        });
+
+        // Mark as initialized regardless of notification permission
+        setOneSignalInitialized(true);
+
+        const permission = Notification.permission;
+
+        if (permission === "denied") {
+          return;
+        }
+
+        if (permission === "default") {
+          const granted = await OneSignal.Notifications.requestPermission();
+          if (!granted) return;
+        }
+        console.log("🔑 Logging in to OneSignal with user ID:", user.id);
+        await OneSignal.login(`tupack_${user.id}`);
+        console.log("✅ OneSignal initialized for user:", user.id);
+      } catch (error) {
+        console.error(
+          "❌ Failed to initialize OneSignal:",
+          error instanceof Error ? error.message : error,
+        );
+      }
+    };
+
+    initOneSignal();
+  }, [user?.id, oneSignalInitialized]);
+
+  // Always call the hook, but it will only add listeners when OneSignal is ready
+  useOneSignalListeners();
+
+  // Abrir navbar en desktop por defecto
+  useEffect(() => {
+    if (isDesktop) {
+      open();
+    } else {
+      close();
+    }
+  }, [isDesktop]);
+
+  return (
+    <div className="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden">
+      <div className="layout-container flex h-full grow flex-col">
+        {/* Top Header Bar */}
+        <header
+          className="fixed top-0 right-0 h-16 bg-white dark:bg-dark-6 border-b border-gray-200 dark:border-dark-4 z-[998] flex items-center px-6 transition-all duration-300 shadow-sm"
+          style={{
+            left: opened && isDesktop ? "300px" : "0",
+          }}
+        >
+          <div className="flex items-center gap-4 w-full">
+            <Burger opened={opened} onClick={toggle} size="md" />
+            <div className="h-6 w-px bg-gray-300 dark:bg-dark-4" />
+            <h1 className="text-sm sm:text-lg font-semibold text-gray-800 dark:text-gray-100 truncate">
+              TUPACK - Sistema de Gestión
+            </h1>
+          </div>
+        </header>
+
+        {/* Overlay for mobile - click to close navbar */}
+        {opened && (
+          <div
+            onClick={close}
+            className="fixed inset-0 bg-black/50 z-[999] lg:hidden"
+            style={{
+              transition: "opacity 300ms ease",
+            }}
+          />
+        )}
+
+        {/* Layout UI */}
+        {/* Place children where you want to render a page or nested layout */}
+        {/* <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#000000] px-10 py-3">
+          <div className="flex items-center gap-4 text-[#000000]">
+            <div className="size-4">
+              <svg
+                viewBox="0 0 48 48"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+            </div>
+            <h2 className="text-[#000000] text-lg font-bold leading-tight tracking-[-0.015em]">
+              SwiftShip
+            </h2>
+          </div>
+          <div className="flex flex-1 justify-end gap-8">
+            <div className="flex items-center gap-9">
+              <a
+                className="text-[#000000] text-sm font-medium leading-normal"
+                href="#"
+              >
+                Dashboard
+              </a>
+              <a
+                className="text-[#000000] text-sm font-medium leading-normal"
+                href="#"
+              >
+                Orders
+              </a>
+              <a
+                className="text-[#000000] text-sm font-medium leading-normal"
+                href="#"
+              >
+                Pricing
+              </a>
+              <a
+                className="text-[#000000] text-sm font-medium leading-normal"
+                href="#"
+              >
+                Support
+              </a>
+            </div>
+            <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#000000] text-[#000000] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
+              <div
+                className="text-[#ffffff]"
+                data-icon="Bell"
+                data-size="20px"
+                data-weight="regular"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20px"
+                  height="20px"
+                  fill="currentColor"
+                  viewBox="0 0 256 256"
+                >
+                  <path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
+                </svg>
+              </div>
+            </button>
+            <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"></div>
+          </div>
+        </header> */}
+        <main
+          className="flex grow transition-all duration-300"
+          style={{
+            marginLeft: opened && isDesktop ? "300px" : "0",
+            marginTop: "64px", // Height of header
+          }}
+        >
+          <NavbarNested opened={opened} onClose={close} />
+          <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-dark-7">
+            {children}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
