@@ -13,7 +13,7 @@ import {
   createExportColumns
 } from '@/lib/utils/exportTable';
 
-export interface EnhancedDataTableProps<T> extends Omit<DataTableProps<T>, 'records' | 'page' | 'onPageChange' | 'totalRecords' | 'sortStatus' | 'onSortStatusChange'> {
+export interface EnhancedDataTableProps<T> extends Omit<DataTableProps<T>, 'records' | 'page' | 'onPageChange' | 'totalRecords' | 'sortStatus' | 'onSortStatusChange' | 'columns' | 'groups' | 'emptyState'> {
   /** Data records to display */
   records: T[];
 
@@ -216,13 +216,13 @@ export function EnhancedDataTable<T extends Record<string, any>>({
         <Checkbox
           checked={table.isAllRowsSelected}
           indeterminate={table.isSomeRowsSelected}
-          onChange={(e) => table.toggleAllRows?.(e.currentTarget.checked)}
+          onChange={(e) => table.toggleAllRows!(e.currentTarget.checked)}
         />
       ),
       width: 40,
       render: (record) => (
         <Checkbox
-          checked={table.isRowSelected(getRecordId(record))}
+          checked={table.isRowSelected!(getRecordId(record))}
           onChange={() => table.toggleRowSelection?.(getRecordId(record))}
           onClick={(e) => e.stopPropagation()}
         />
@@ -278,7 +278,7 @@ export function EnhancedDataTable<T extends Record<string, any>>({
 
       {/* Data Table */}
       <DataTable
-        {...dataTableProps}
+        {...(dataTableProps as any)}
         records={table.records}
         columns={sortableColumns}
         totalRecords={table.totalRecords || table.filteredRecords}

@@ -173,7 +173,7 @@ export const useQuickStatusUpdate = () => {
       status: TransportStatus;
       notes?: string;
     }) => {
-      const promises: Promise<void>[] = [quickStatusUpdate(orderId, status, notes)];
+      const promises: Promise<unknown>[] = [quickStatusUpdate(orderId, status, notes)];
       if (status === TransportStatus.DELIVERED) {
         promises.push(updateOrderStatus(orderId, "DELIVERED"));
       }

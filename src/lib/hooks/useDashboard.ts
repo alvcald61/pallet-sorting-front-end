@@ -17,7 +17,7 @@ import {
 export const useDashboardStats = () => {
   return useQuery({
     queryKey: ["dashboard-stats"],
-    queryFn: getDashboardStats,
+    queryFn: () => getDashboardStats(),
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchInterval: 5 * 60 * 1000, // Auto-refresh every 5 minutes
   });
@@ -36,7 +36,7 @@ export const usePendingOrders = (limit: number = 10) => {
 export const useOrdersByClient = () => {
   return useQuery({
     queryKey: ["orders-by-client"],
-    queryFn: getOrdersByClient,
+    queryFn: () => getOrdersByClient(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
@@ -45,7 +45,7 @@ export const useOrdersByClient = () => {
 export const useOrdersByDriver = () => {
   return useQuery({
     queryKey: ["orders-by-driver"],
-    queryFn: getOrdersByDriver,
+    queryFn: () => getOrdersByDriver(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
@@ -54,7 +54,7 @@ export const useOrdersByDriver = () => {
 export const useOrdersByTruck = () => {
   return useQuery({
     queryKey: ["orders-by-truck"],
-    queryFn: getOrdersByTruck,
+    queryFn: () => getOrdersByTruck(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
@@ -63,7 +63,7 @@ export const useOrdersByTruck = () => {
 export const useOrdersByStatus = () => {
   return useQuery({
     queryKey: ["orders-by-status"],
-    queryFn: getOrdersByStatus,
+    queryFn: () => getOrdersByStatus(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
@@ -72,7 +72,7 @@ export const useOrdersByStatus = () => {
 export const usePerformanceMetrics = () => {
   return useQuery({
     queryKey: ["performance-metrics"],
-    queryFn: getPerformanceMetrics,
+    queryFn: () => getPerformanceMetrics(),
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
 };
