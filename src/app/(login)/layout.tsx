@@ -35,11 +35,6 @@ export default function LoginLayout({
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
         />
         <ColorSchemeScript />
-        {/* <script
-            async
-            defer
-            src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
-          /> */}
       </head>
       <body className="bg-gray-50 font-display text-gray-900">
         <MantineProvider

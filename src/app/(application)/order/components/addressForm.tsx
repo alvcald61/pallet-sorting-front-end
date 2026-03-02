@@ -34,20 +34,6 @@ export const AddressForm = () => {
     signal: AbortSignal
   ): Promise<boolean> => {
     try {
-      // const client = new Client({});
-      // const response = await client.placeAutocomplete({
-      //   params: {
-      //     input: searchQuery,
-      //     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-      //     components: ["country:pe"],
-      //   },
-      //   signal: signal,
-      // });
-      // const suggestions = response.data.predictions.map(
-      //   (prediction) => prediction.description
-      // );
-      // setPlacesSuggestions(suggestions);
-      // @ts-ignore
 
       const service = new google.maps.places.AutocompleteService();
 
