@@ -92,7 +92,7 @@ export const SharedAddressPage: React.FC<SharedAddressPageProps> = ({
         district: selectedWarehouse.district || "",
         city: selectedWarehouse.city || "",
         state: selectedWarehouse.state || "",
-        warehouseId: String(selectedWarehouse.warehouseId),
+        warehouseId: selectedWarehouse.warehouseId,
         locationLink: selectedWarehouse.locationLink || "",
       });
     }
