@@ -1,16 +1,6 @@
 "use client";
 
 import React, { useActionState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  CardDescription,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { resetPasswordAction } from "./action";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
@@ -36,15 +26,15 @@ export default function ResetPasswordForm() {
   if (!token) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-        <Card className="w-full max-w-md shadow-xl border-0">
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
+        <div className="w-full max-w-md rounded-xl bg-white shadow-xl border-0 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-6 rounded-t-lg">
             <h1 className="text-3xl font-bold">TUPACK</h1>
-            <CardDescription className="text-blue-100">
+            <p className="text-blue-100 text-sm">
               Sistema de Gestión de Camiones
-            </CardDescription>
-          </CardHeader>
+            </p>
+          </div>
 
-          <CardContent className="flex flex-col items-center gap-4 py-8">
+          <div className="flex flex-col items-center gap-4 px-6 py-8">
             <AlertCircle className="h-16 w-16 text-red-500" />
             <h2 className="text-xl font-semibold text-gray-800">
               Enlace inválido
@@ -53,9 +43,9 @@ export default function ResetPasswordForm() {
               El enlace de recuperación es inválido o ha expirado. Por favor,
               solicita uno nuevo.
             </p>
-          </CardContent>
+          </div>
 
-          <CardFooter className="flex flex-col gap-3 items-center">
+          <div className="flex flex-col gap-3 items-center px-6 pb-6">
             <Link
               href="/forgot-password"
               className="text-sm text-indigo-600 hover:text-indigo-700 font-semibold transition-colors"
@@ -68,8 +58,8 @@ export default function ResetPasswordForm() {
             >
               Volver al login
             </Link>
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }
@@ -77,15 +67,15 @@ export default function ResetPasswordForm() {
   if (state?.success) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-        <Card className="w-full max-w-md shadow-xl border-0">
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
+        <div className="w-full max-w-md rounded-xl bg-white shadow-xl border-0 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-6 rounded-t-lg">
             <h1 className="text-3xl font-bold">TUPACK</h1>
-            <CardDescription className="text-blue-100">
+            <p className="text-blue-100 text-sm">
               Sistema de Gestión de Camiones
-            </CardDescription>
-          </CardHeader>
+            </p>
+          </div>
 
-          <CardContent className="flex flex-col items-center gap-4 py-8">
+          <div className="flex flex-col items-center gap-4 px-6 py-8">
             <CheckCircle2 className="h-16 w-16 text-green-500" />
             <h2 className="text-xl font-semibold text-gray-800">
               Contraseña actualizada
@@ -94,40 +84,40 @@ export default function ResetPasswordForm() {
               Tu contraseña ha sido restablecida correctamente. Ya puedes
               iniciar sesión con tu nueva contraseña.
             </p>
-          </CardContent>
+          </div>
 
-          <CardFooter className="flex justify-center">
+          <div className="flex justify-center px-6 pb-6">
             <Link
               href="/login"
               className="w-full"
             >
-              <Button className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold">
+              <button className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-md">
                 Ir a iniciar sesión
-              </Button>
+              </button>
             </Link>
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md shadow-xl border-0">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
+      <div className="w-full max-w-md rounded-xl bg-white shadow-xl border-0 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-6 rounded-t-lg">
           <h1 className="text-3xl font-bold">TUPACK</h1>
-          <CardDescription className="text-blue-100">
+          <p className="text-blue-100 text-sm">
             Sistema de Gestión de Camiones
-          </CardDescription>
+          </p>
           <h2 className="text-xl font-semibold mt-4">
             Restablecer contraseña
           </h2>
-        </CardHeader>
+        </div>
 
         <form action={formAction} className="w-full">
           <input type="hidden" name="token" value={token} />
 
-          <CardContent className="flex flex-col gap-5 py-6">
+          <div className="flex flex-col gap-5 px-6 py-6">
             {state?.error && (
               <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -136,14 +126,14 @@ export default function ResetPasswordForm() {
             )}
 
             <div className="space-y-2">
-              <Label
+              <label
                 htmlFor="password"
-                className="font-semibold text-gray-700"
+                className="text-sm font-semibold text-gray-700"
               >
                 Nueva contraseña
-              </Label>
+              </label>
               <div className="relative">
-                <Input
+                <input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
@@ -152,7 +142,7 @@ export default function ResetPasswordForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoFocus
-                  className="h-10 pr-10"
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 pr-10 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                 />
                 <button
                   type="button"
@@ -175,14 +165,14 @@ export default function ResetPasswordForm() {
             </div>
 
             <div className="space-y-2">
-              <Label
+              <label
                 htmlFor="confirmPassword"
-                className="font-semibold text-gray-700"
+                className="text-sm font-semibold text-gray-700"
               >
                 Confirmar contraseña
-              </Label>
+              </label>
               <div className="relative">
-                <Input
+                <input
                   id="confirmPassword"
                   name="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
@@ -190,7 +180,7 @@ export default function ResetPasswordForm() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className={`h-10 pr-10 ${
+                  className={`flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 pr-10 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm ${
                     passwordsDontMatch ? "border-red-500" : ""
                   } ${passwordsMatch ? "border-green-500" : ""}`}
                 />
@@ -219,9 +209,9 @@ export default function ResetPasswordForm() {
                 </p>
               )}
             </div>
-          </CardContent>
+          </div>
 
-          <CardFooter className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 px-6 pb-6">
             <SubmitButton />
             <Link
               href="/login"
@@ -229,9 +219,9 @@ export default function ResetPasswordForm() {
             >
               Volver al login
             </Link>
-          </CardFooter>
+          </div>
         </form>
-      </Card>
+      </div>
     </div>
   );
 }
@@ -239,19 +229,19 @@ export default function ResetPasswordForm() {
 const SubmitButton = () => {
   const { pending } = useFormStatus();
   return (
-    <Button
+    <button
       type="submit"
-      className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold"
+      className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
       disabled={pending}
     >
       {pending ? (
-        <span className="flex items-center gap-2">
+        <span className="flex items-center justify-center gap-2">
           <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
           Restableciendo...
         </span>
       ) : (
         "Restablecer contraseña"
       )}
-    </Button>
+    </button>
   );
 };

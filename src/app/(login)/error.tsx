@@ -1,13 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 
@@ -24,13 +17,13 @@ export default function LoginError({
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md shadow-xl border-0">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
+      <div className="w-full max-w-md rounded-xl bg-white shadow-xl border-0 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-6 rounded-t-lg">
           <h1 className="text-3xl font-bold">TUPACK</h1>
           <p className="text-blue-100">Sistema de Gestión de Camiones</p>
-        </CardHeader>
+        </div>
 
-        <CardContent className="flex flex-col items-center gap-4 py-8">
+        <div className="flex flex-col items-center gap-4 px-6 py-8">
           <AlertCircle className="h-16 w-16 text-red-500" />
           <h2 className="text-xl font-semibold text-gray-800">
             Algo salió mal
@@ -51,23 +44,23 @@ export default function LoginError({
               )}
             </div>
           )}
-        </CardContent>
+        </div>
 
-        <CardFooter className="flex flex-col gap-3">
-          <Button
+        <div className="flex flex-col gap-3 px-6 pb-6">
+          <button
             onClick={reset}
-            className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold"
+            className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-md"
           >
             Reintentar
-          </Button>
+          </button>
           <Link
             href="/login"
-            className="text-sm text-indigo-600 hover:text-indigo-700 font-semibold transition-colors"
+            className="text-sm text-indigo-600 hover:text-indigo-700 font-semibold transition-colors text-center"
           >
             Volver al login
           </Link>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

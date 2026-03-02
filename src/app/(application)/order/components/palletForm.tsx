@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Checkbox, Select } from "@mantine/core";
 
 import useOrderStore from "@/lib/store/OrderStore";
-import { Card, CardContent } from "@/components/ui/card";
 import { useDisclosure } from "@mantine/hooks";
 
 import { Pallet } from "@/lib/types/palletType";

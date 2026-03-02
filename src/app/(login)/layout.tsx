@@ -41,9 +41,9 @@ export default function LoginLayout({
             src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
           /> */}
       </head>
-      <body className="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+      <body className="bg-gray-50 font-display text-gray-900">
         <MantineProvider
-          // forceColorScheme="dark"
+          forceColorScheme="light"
           theme={theme}
         >
           {children}

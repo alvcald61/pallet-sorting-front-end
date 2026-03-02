@@ -1,16 +1,6 @@
 "use client";
 
 import React, { useActionState, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  CardDescription,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { register } from "./action";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
@@ -48,20 +38,20 @@ export default function SignUpForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-2xl shadow-xl border-0">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
+      <div className="w-full max-w-2xl rounded-xl bg-white shadow-xl border-0 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-6 rounded-t-lg">
           <h1 className="text-3xl font-bold">TUPACK</h1>
-          <CardDescription className="text-blue-100">
+          <p className="text-blue-100 text-sm">
             Sistema de Gestión de Paletas
-          </CardDescription>
+          </p>
           <h2 className="text-xl font-semibold mt-4">Crear nueva cuenta</h2>
           <p className="text-blue-100 text-sm mt-1">
             Regístrate para comenzar a gestionar tus pedidos
           </p>
-        </CardHeader>
+        </div>
 
         <form action={formAction} className="w-full">
-          <CardContent className="flex flex-col gap-6 py-6">
+          <div className="flex flex-col gap-6 px-6 py-6">
             {/* Error Alert */}
             {state?.error && (
               <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -73,13 +63,13 @@ export default function SignUpForm() {
             <div className="grid grid-cols-2 gap-4">
               {/* First Name */}
               <div className="space-y-2">
-                <Label
+                <label
                   htmlFor="firstName"
-                  className="font-semibold text-gray-700"
+                  className="text-sm font-semibold text-gray-700"
                 >
                   Nombre
-                </Label>
-                <Input
+                </label>
+                <input
                   id="firstName"
                   name="firstName"
                   type="text"
@@ -87,19 +77,19 @@ export default function SignUpForm() {
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  className="h-10"
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                 />
               </div>
 
               {/* Last Name */}
               <div className="space-y-2">
-                <Label
+                <label
                   htmlFor="lastName"
-                  className="font-semibold text-gray-700"
+                  className="text-sm font-semibold text-gray-700"
                 >
                   Apellido
-                </Label>
-                <Input
+                </label>
+                <input
                   id="lastName"
                   name="lastName"
                   type="text"
@@ -107,17 +97,17 @@ export default function SignUpForm() {
                   value={formData.lastName}
                   onChange={handleChange}
                   required
-                  className="h-10"
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                 />
               </div>
             </div>
 
             {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="font-semibold text-gray-700">
+              <label htmlFor="email" className="text-sm font-semibold text-gray-700">
                 Correo electrónico
-              </Label>
-              <Input
+              </label>
+              <input
                 id="email"
                 name="email"
                 type="email"
@@ -125,19 +115,19 @@ export default function SignUpForm() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="h-10"
+                className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
               />
             </div>
 
             {/* Business Name */}
             <div className="space-y-2">
-              <Label
+              <label
                 htmlFor="businessName"
-                className="font-semibold text-gray-700"
+                className="text-sm font-semibold text-gray-700"
               >
                 Razón Social
-              </Label>
-              <Input
+              </label>
+              <input
                 id="businessName"
                 name="businessName"
                 type="text"
@@ -145,17 +135,17 @@ export default function SignUpForm() {
                 value={formData.businessName}
                 onChange={handleChange}
                 required
-                className="h-10"
+                className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               {/* RUC */}
               <div className="space-y-2">
-                <Label htmlFor="ruc" className="font-semibold text-gray-700">
+                <label htmlFor="ruc" className="text-sm font-semibold text-gray-700">
                   RUC
-                </Label>
-                <Input
+                </label>
+                <input
                   id="ruc"
                   name="ruc"
                   type="text"
@@ -163,16 +153,16 @@ export default function SignUpForm() {
                   value={formData.ruc}
                   onChange={handleChange}
                   required
-                  className="h-10"
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                 />
               </div>
 
               {/* Phone */}
               <div className="space-y-2">
-                <Label htmlFor="phone" className="font-semibold text-gray-700">
+                <label htmlFor="phone" className="text-sm font-semibold text-gray-700">
                   Teléfono
-                </Label>
-                <Input
+                </label>
+                <input
                   id="phone"
                   name="phone"
                   type="tel"
@@ -180,17 +170,17 @@ export default function SignUpForm() {
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  className="h-10"
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                 />
               </div>
             </div>
 
             {/* Address */}
             <div className="space-y-2">
-              <Label htmlFor="address" className="font-semibold text-gray-700">
+              <label htmlFor="address" className="text-sm font-semibold text-gray-700">
                 Dirección
-              </Label>
-              <Input
+              </label>
+              <input
                 id="address"
                 name="address"
                 type="text"
@@ -198,17 +188,17 @@ export default function SignUpForm() {
                 value={formData.address}
                 onChange={handleChange}
                 required
-                className="h-10"
+                className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
               />
             </div>
 
             {/* Password */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="font-semibold text-gray-700">
+              <label htmlFor="password" className="text-sm font-semibold text-gray-700">
                 Contraseña
-              </Label>
+              </label>
               <div className="relative">
-                <Input
+                <input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
@@ -216,7 +206,7 @@ export default function SignUpForm() {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="h-10 pr-10"
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 pr-10 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                 />
                 <button
                   type="button"
@@ -236,14 +226,14 @@ export default function SignUpForm() {
 
             {/* Confirm Password */}
             <div className="space-y-2">
-              <Label
+              <label
                 htmlFor="confirmPassword"
-                className="font-semibold text-gray-700"
+                className="text-sm font-semibold text-gray-700"
               >
                 Confirmar contraseña
-              </Label>
+              </label>
               <div className="relative">
-                <Input
+                <input
                   id="confirmPassword"
                   name="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
@@ -251,7 +241,7 @@ export default function SignUpForm() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
-                  className={`h-10 pr-10 ${
+                  className={`flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 pr-10 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm ${
                     passwordsVisible && !passwordsMatch && "border-red-500"
                   }`}
                 />
@@ -280,9 +270,9 @@ export default function SignUpForm() {
                   </p>
                 ))}
             </div>
-          </CardContent>
+          </div>
 
-          <CardFooter className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 px-6 pb-6">
             <SubmitButton
               disabled={Boolean(passwordsVisible && !passwordsMatch)}
             />
@@ -295,9 +285,9 @@ export default function SignUpForm() {
                 Inicia sesión
               </Link>
             </div>
-          </CardFooter>
+          </div>
         </form>
-      </Card>
+      </div>
     </div>
   );
 }
@@ -305,19 +295,19 @@ export default function SignUpForm() {
 const SubmitButton = ({ disabled }: { disabled: boolean }) => {
   const { pending } = useFormStatus();
   return (
-    <Button
+    <button
       type="submit"
-      className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+      className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
       disabled={pending || disabled}
     >
       {pending ? (
-        <span className="flex items-center gap-2">
+        <span className="flex items-center justify-center gap-2">
           <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
           Registrando...
         </span>
       ) : (
         "Crear cuenta"
       )}
-    </Button>
+    </button>
   );
 };
