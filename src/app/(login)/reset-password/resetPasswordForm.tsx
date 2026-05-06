@@ -4,7 +4,7 @@ import React, { useActionState } from "react";
 import { resetPasswordAction } from "./action";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { IconAlertCircle, IconCircleCheck, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -35,7 +35,7 @@ export default function ResetPasswordForm() {
           </div>
 
           <div className="flex flex-col items-center gap-4 px-6 py-8">
-            <AlertCircle className="h-16 w-16 text-red-500" />
+            <IconAlertCircle size={64} className="text-red-500" />
             <h2 className="text-xl font-semibold text-gray-800">
               Enlace inválido
             </h2>
@@ -76,7 +76,7 @@ export default function ResetPasswordForm() {
           </div>
 
           <div className="flex flex-col items-center gap-4 px-6 py-8">
-            <CheckCircle2 className="h-16 w-16 text-green-500" />
+            <IconCircleCheck size={64} className="text-green-500" />
             <h2 className="text-xl font-semibold text-gray-800">
               Contraseña actualizada
             </h2>
@@ -120,7 +120,7 @@ export default function ResetPasswordForm() {
           <div className="flex flex-col gap-5 px-6 py-6">
             {state?.error && (
               <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <IconAlertCircle size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-red-700">{state.error}</p>
               </div>
             )}
@@ -151,9 +151,9 @@ export default function ResetPasswordForm() {
                   tabIndex={-1}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
+                    <IconEyeOff size={16} />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <IconEye size={16} />
                   )}
                 </button>
               </div>
@@ -191,9 +191,9 @@ export default function ResetPasswordForm() {
                   tabIndex={-1}
                 >
                   {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4" />
+                    <IconEyeOff size={16} />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <IconEye size={16} />
                   )}
                 </button>
               </div>
@@ -204,7 +204,7 @@ export default function ResetPasswordForm() {
               )}
               {passwordsMatch && (
                 <p className="text-xs text-green-600 flex items-center gap-1">
-                  <CheckCircle2 className="h-3 w-3" />
+                  <IconCircleCheck size={12} />
                   Las contraseñas coinciden
                 </p>
               )}

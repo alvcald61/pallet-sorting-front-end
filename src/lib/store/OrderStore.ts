@@ -1,7 +1,6 @@
 import { AddressFormProps, Pallet } from "@/lib/types/palletType";
 import { create } from "zustand";
 import { Bulk } from "@/lib/types/bulkType";
-// Note: 'create' as a default export is a deprecated import.
 
 type OrderStoreState = {
   bulkOrder: Bulk[];
@@ -22,6 +21,7 @@ type OrderStoreActions = {
   addAddress: (newElement: Address) => void;
   deleteItem: (id: string) => void;
   addUserId: (id: string) => void;
+  resetOrder: () => void;
 };
 
 type OrderStore = OrderStoreState & OrderStoreActions;
@@ -29,7 +29,7 @@ type OrderStore = OrderStoreState & OrderStoreActions;
 const useOrderStore = create<OrderStore>((set) => ({
   bulkOrder: [],
   palletOrder: [],
-  address: { fromAddress: {}, toAddress: {} } as Address,
+  address: { fromAddress: {} as AddressFormProps, toAddress: {} as AddressFormProps, date: null, time: null },
   addBulk: (newElement) =>
     set((state) => ({
       bulkOrder: [...state.bulkOrder, newElement],
@@ -52,7 +52,14 @@ const useOrderStore = create<OrderStore>((set) => ({
     set((state) => ({
       ...state,
       userId: id,
-    }))
+    })),
+  resetOrder: () =>
+    set({
+      bulkOrder: [],
+      palletOrder: [],
+      address: { fromAddress: {} as AddressFormProps, toAddress: {} as AddressFormProps, date: null, time: null },
+      userId: undefined,
+    }),
 }));
 
 export default useOrderStore;

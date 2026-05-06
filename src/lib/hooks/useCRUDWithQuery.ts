@@ -4,8 +4,8 @@ import {
   useQueryClient,
   type UseQueryOptions,
 } from "@tanstack/react-query";
-import { useState } from "react";
 import { notifications } from "@mantine/notifications";
+import { modals } from "@mantine/modals";
 
 /**
  * Configuration for CRUD operations using React Query
@@ -176,13 +176,13 @@ export function useCRUDWithQuery<
   // Helper function to delete with confirmation
   const remove = (item: T) => {
     const displayName = getItemDisplayName(item);
-    if (
-      window.confirm(
-        `¿Estás seguro de que deseas eliminar ${displayName}?`
-      )
-    ) {
-      deleteMutation.mutate(getItemId(item));
-    }
+    modals.openConfirmModal({
+      title: `Eliminar ${entityName}`,
+      children: `¿Estás seguro de que deseas eliminar ${displayName}?`,
+      labels: { confirm: "Eliminar", cancel: "Cancelar" },
+      confirmProps: { color: "red" },
+      onConfirm: () => deleteMutation.mutate(getItemId(item)),
+    });
   };
 
   return {

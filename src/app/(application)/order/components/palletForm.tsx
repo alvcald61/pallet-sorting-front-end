@@ -7,7 +7,7 @@ import { useDisclosure } from "@mantine/hooks";
 
 import { Pallet } from "@/lib/types/palletType";
 import { getAllPallets } from "@/lib/api/order/palletApi";
-import { FaRegTrashCan } from "react-icons/fa6";
+
 import { ActionIcon } from "@mantine/core";
 import { PackageItem } from "./packageItem";
 import "./style.css";

@@ -4,7 +4,7 @@ import React, { useActionState } from "react";
 import { forgotPassword } from "./action";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { AlertCircle, CheckCircle2, Mail } from "lucide-react";
+import { IconAlertCircle, IconCircleCheck, IconMail } from "@tabler/icons-react";
 import { useState } from "react";
 
 export default function ForgotPasswordForm() {
@@ -25,7 +25,7 @@ export default function ForgotPasswordForm() {
           </div>
 
           <div className="flex flex-col items-center gap-4 px-6 py-8">
-            <CheckCircle2 className="h-16 w-16 text-green-500" />
+            <IconCircleCheck size={64} className="text-green-500" />
             <h2 className="text-xl font-semibold text-gray-800">
               Correo enviado
             </h2>
@@ -64,7 +64,7 @@ export default function ForgotPasswordForm() {
           <div className="flex flex-col gap-5 px-6 py-6">
             {state?.error && (
               <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <IconAlertCircle size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-red-700">{state.error}</p>
               </div>
             )}
@@ -90,7 +90,7 @@ export default function ForgotPasswordForm() {
                   autoFocus
                   className={`flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 pl-10 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm ${emailError ? "border-red-500" : ""}`}
                 />
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <IconMail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               </div>
               {emailError && (
                 <p className="text-xs text-red-500">Ingresa un correo válido</p>

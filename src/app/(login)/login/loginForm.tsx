@@ -3,7 +3,7 @@
 import React, { useActionState, useEffect, useState } from "react";
 import { login } from "./action";
 import { useFormStatus } from "react-dom";
-import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { IconAlertCircle, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
@@ -59,7 +59,7 @@ export default function LoginForm() {
               {/* Error Alert */}
               {state?.error && (
                 <div className="flex items-start gap-2 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-                  <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <IconAlertCircle size={16} className="flex-shrink-0 mt-0.5" />
                   <span>{state.error}</span>
                 </div>
               )}
@@ -121,9 +121,9 @@ export default function LoginForm() {
                     }
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
+                      <IconEyeOff size={16} />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <IconEye size={16} />
                     )}
                   </button>
                 </div>

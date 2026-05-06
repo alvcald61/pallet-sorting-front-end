@@ -106,7 +106,6 @@ async function request<T>(
 
     // Handle non-OK responses
     if (!response.ok) {
-      console.log(url);
       const errorMessage = await extractErrorMessage(response);
       throw new Error(errorMessage || `Request failed: ${response.statusText}`);
     }
@@ -225,82 +224,6 @@ export async function postFormData<T>(
   }
 
   return await response.json();
-}
-
-/**
- * Download file from endpoint
- * @param endpoint - API endpoint to download from
- * @param filename - Optional filename for the download
- * @param options - Optional request options
- */
-export async function downloadFile(
-  endpoint: string,
-  filename?: string,
-  options?: RequestOptions,
-): Promise<void> {
-  const { params, ...fetchOptions } = options || {};
-
-  // Build URL with /api prefix and query params if provided
-  let url = buildURL(endpoint);
-  if (params) {
-    const searchParams = new URLSearchParams(
-      Object.entries(params).map(([key, value]) => [key, String(value)]),
-    );
-    url += `?${searchParams.toString()}`;
-  }
-
-  // Get headers with Authorization
-  const headers = await getHeaders(fetchOptions.headers);
-
-  try {
-    const response = await fetch(url, {
-      ...fetchOptions,
-      method: "GET",
-      headers,
-    });
-
-    if (!response.ok) {
-      const errorMessage = await extractErrorMessage(response);
-      throw new Error(
-        errorMessage || `Download failed: ${response.statusText}`,
-      );
-    }
-
-    // Get the blob
-    const blob = await response.blob();
-
-    // Extract filename from Content-Disposition header if not provided
-    let downloadFilename = filename;
-    if (!downloadFilename) {
-      const contentDisposition = response.headers.get("content-disposition");
-      if (contentDisposition) {
-        const match = contentDisposition.match(/filename[^;=\n]*=([^;\n]*)/);
-        if (match && match[1]) {
-          downloadFilename = match[1].trim().replace(/['"]/g, "");
-        }
-      }
-    }
-
-    // If still no filename, use a default
-    if (!downloadFilename) {
-      downloadFilename = `download_${Date.now()}`;
-    }
-
-    // Create blob URL and trigger download
-    const blobUrl = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.download = downloadFilename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(blobUrl);
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`File download error: ${error.message}`);
-    }
-    throw error;
-  }
 }
 
 /**

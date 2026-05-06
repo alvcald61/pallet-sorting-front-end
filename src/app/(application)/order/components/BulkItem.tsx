@@ -1,6 +1,6 @@
 import { ActionIcon } from "@mantine/core";
 import React from "react";
-import { FaRegTrashCan } from "react-icons/fa6";
+import { IconTrash } from "@tabler/icons-react";
 
 type PackageItemType = {
   name?: string;
@@ -33,7 +33,7 @@ export const BulkItem = ({
         color="red"
         onClick={() => onDelete(id)}
       >
-        <FaRegTrashCan style={{ width: "70%", height: "70%" }} stroke={"1.5"} />
+        <IconTrash size="70%" stroke={1.5} />
       </ActionIcon>
     </div>
   );

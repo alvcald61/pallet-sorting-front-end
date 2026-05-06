@@ -4,7 +4,7 @@ import React, { useActionState, useState } from "react";
 import { register } from "./action";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { AlertCircle, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { IconAlertCircle, IconEye, IconEyeOff, IconCircleCheck } from "@tabler/icons-react";
 
 export default function SignUpForm() {
   const [state, formAction] = useActionState(register, undefined);
@@ -55,7 +55,7 @@ export default function SignUpForm() {
             {/* Error Alert */}
             {state?.error && (
               <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <IconAlertCircle size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-red-700">{state.error}</p>
               </div>
             )}
@@ -215,9 +215,9 @@ export default function SignUpForm() {
                   tabIndex={-1}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
+                    <IconEyeOff size={16} />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <IconEye size={16} />
                   )}
                 </button>
               </div>
@@ -252,16 +252,16 @@ export default function SignUpForm() {
                   tabIndex={-1}
                 >
                   {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4" />
+                    <IconEyeOff size={16} />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <IconEye size={16} />
                   )}
                 </button>
               </div>
               {passwordsVisible &&
                 (passwordsMatch ? (
                   <p className="text-xs text-green-600 flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5" /> Las contraseñas
+                    <IconCircleCheck size={14} /> Las contraseñas
                     coinciden
                   </p>
                 ) : (

@@ -1,6 +1,6 @@
 import { ActionIcon } from "@mantine/core";
 import React from "react";
-import { FaRegTrashCan } from "react-icons/fa6";
+import { IconTrash } from "@tabler/icons-react";
 
 type PackageItemType = {
   is3D?: boolean;
@@ -41,7 +41,7 @@ export const PackageItem = ({
         color="red"
         onClick={() => onDelete(id)}
       >
-        <FaRegTrashCan style={{ width: "70%", height: "70%" }} stroke={"1.5"} />
+        <IconTrash size="70%" stroke={1.5} />
       </ActionIcon>
       {/* <button className="text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 m-2">
                       <FaRegTrashCan

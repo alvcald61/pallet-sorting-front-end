@@ -5,7 +5,7 @@ import { Notification } from "@mantine/core";
 import { Button, Group, Stepper } from "@mantine/core";
 import useOrderStore from "@/lib/store/OrderStore";
 import { createOrder } from "@/lib/api/order/orderApi";
-import { FaCheckCircle } from "react-icons/fa";
+import { IconCircleCheck } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 interface OrderLayoutWrapperProps {
   children: React.ReactNode;
@@ -123,7 +123,7 @@ export default function OrderLayoutWrapper({
       </main>
       {notificationVisible && (
         <Notification
-          icon={<FaCheckCircle />}
+          icon={<IconCircleCheck size={16} />}
           color="green"
           title="Orden creada"
         >

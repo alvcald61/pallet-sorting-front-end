@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { AlertCircle } from "lucide-react";
+import { IconAlertCircle } from "@tabler/icons-react";
 import Link from "next/link";
 
 export default function LoginError({
@@ -24,7 +24,7 @@ export default function LoginError({
         </div>
 
         <div className="flex flex-col items-center gap-4 px-6 py-8">
-          <AlertCircle className="h-16 w-16 text-red-500" />
+          <IconAlertCircle size={64} className="text-red-500" />
           <h2 className="text-xl font-semibold text-gray-800">
             Algo salió mal
           </h2>
