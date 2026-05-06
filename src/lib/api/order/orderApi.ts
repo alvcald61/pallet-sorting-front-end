@@ -32,6 +32,7 @@ interface ContinueOrderParams {
   amount?: number | string;
   gpsLink?: number | string;
   deny: boolean;
+  notes?: string;
 }
 
 /**
@@ -103,10 +104,12 @@ export const continueOrder = async ({
   amount,
   gpsLink,
   deny,
+  notes,
 }: ContinueOrderParams) => {
   const params = new URLSearchParams();
   if (amount !== undefined) params.append("amount", String(amount));
   if (gpsLink !== undefined) params.append("gpsLink", String(gpsLink));
+  if (notes) params.append("notes", notes);
   params.append("denied", String(deny));
   return put<Wrapper<Order>>(`/order/${orderId}/continue?${params.toString()}`);
 };

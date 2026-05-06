@@ -15,6 +15,7 @@ import {
   IconAlertCircle,
   IconClock,
   IconMapPin,
+  IconParking,
 } from "@tabler/icons-react";
 
 interface DeliveryStatusTimelineProps {
@@ -41,12 +42,6 @@ function getStatusInfo(status: TransportStatus) {
       description: "Esperando asignación",
       icon: <IconClock className="w-5 h-5" />,
       color: "bg-gray-100 text-gray-700",
-    },
-    [TransportStatus.TRUCK_ASSIGNED]: {
-      label: "Camión Asignado",
-      description: "Transporte disponible",
-      icon: <IconTruck className="w-5 h-5" />,
-      color: "bg-blue-100 text-blue-700",
     },
     [TransportStatus.EN_ROUTE_TO_WAREHOUSE]: {
       label: "En Ruta al Almacén",
@@ -101,6 +96,18 @@ function getStatusInfo(status: TransportStatus) {
       description: "Orden completada",
       icon: <IconCheck className="w-5 h-5" />,
       color: "bg-emerald-100 text-emerald-700",
+    },
+    [TransportStatus.RETURNING_TO_PARKING]: {
+      label: "Retornando al Estacionamiento",
+      description: "Camión en camino de vuelta",
+      icon: <IconParking className="w-5 h-5" />,
+      color: "bg-indigo-100 text-indigo-700",
+    },
+    [TransportStatus.RETURNED_TO_PARKING]: {
+      label: "Retornado al Estacionamiento",
+      description: "Camión disponible nuevamente",
+      icon: <IconParking className="w-5 h-5" />,
+      color: "bg-green-100 text-green-700",
     },
   };
 
@@ -162,6 +169,8 @@ const TRANSPORT_FLOW: TransportStatus[] = [
   TransportStatus.UNLOADING,
   TransportStatus.UNLOADING_COMPLETED,
   TransportStatus.DELIVERED,
+  TransportStatus.RETURNING_TO_PARKING,
+  TransportStatus.RETURNED_TO_PARKING,
 ];
 
 function getNextStatus(current: TransportStatus): TransportStatus | null {
@@ -318,16 +327,16 @@ export default function DeliveryStatusTimeline({
             Pendiente
           </span>
           <span className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-blue-300"></span>
-            Camión Asignado
-          </span>
-          <span className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-cyan-300"></span>
             En Ruta
           </span>
           <span className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-300"></span>
             Completado
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-indigo-300"></span>
+            Retornando
           </span>
         </div>
       </div>

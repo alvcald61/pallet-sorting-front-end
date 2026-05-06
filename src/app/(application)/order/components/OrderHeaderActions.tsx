@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { NumberInput, Button, Group, Modal, TextInput } from "@mantine/core";
+import { NumberInput, Button, Group, Modal, TextInput, Textarea } from "@mantine/core";
 import { continueOrder } from "@/lib/api/order/orderApi";
 import { useRouter } from "next/navigation";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
@@ -35,6 +35,7 @@ export default function OrderHeaderActions({
   const [isLoading, setIsLoading] = useState(false);
   const [action, setAction] = useState<ActionType>(null);
   const [showModal, setShowModal] = useState(false);
+  const [notes, setNotes] = useState("");
 
   const canModifyOrder = [
     OrderStatus.PRE_APPROVED,
@@ -60,6 +61,7 @@ export default function OrderHeaderActions({
       setAmount(undefined);
       setGpsLink(undefined);
     }
+    setNotes("");
     setAction(actionType);
     setShowModal(true);
   };
@@ -72,6 +74,7 @@ export default function OrderHeaderActions({
         amount,
         gpsLink,
         deny: action === "cancel",
+        notes: notes.trim() || undefined,
       });
       setShowModal(false);
       setAction(null);
@@ -220,6 +223,17 @@ export default function OrderHeaderActions({
               Link GPS: <strong>{gpsLink}</strong>
             </p>
           )}
+          <Textarea
+            label="Comentario"
+            placeholder="Agrega un comentario opcional sobre este cambio de estado..."
+            value={notes}
+            onChange={(e) => setNotes(e.currentTarget.value)}
+            maxLength={500}
+            autosize
+            minRows={2}
+            maxRows={4}
+            description={`${notes.length}/500 caracteres`}
+          />
           <Group justify="flex-end" mt="lg">
             <Button
               variant="default"

@@ -6,7 +6,6 @@ import {
   getDistributionImg,
   continueOrder,
   createOrder,
-  updateOrderStatus,
 } from "@/lib/api/order/orderApi";
 import { uploadOrderDocument } from "@/lib/api/order/orderActions";
 import { quickStatusUpdate } from "@/lib/api/transport/transportApi";
@@ -16,7 +15,6 @@ import { TransportStatus } from "@/lib/types/transportTypes";
 
 const TRANSPORT_STATUS_LABELS: Record<TransportStatus, string> = {
   [TransportStatus.PENDING]: "Pendiente",
-  [TransportStatus.TRUCK_ASSIGNED]: "Camión Asignado",
   [TransportStatus.EN_ROUTE_TO_WAREHOUSE]: "En Ruta al Almacén",
   [TransportStatus.ARRIVED_AT_WAREHOUSE]: "Llegó al Almacén",
   [TransportStatus.LOADING]: "Cargando",
@@ -26,6 +24,8 @@ const TRANSPORT_STATUS_LABELS: Record<TransportStatus, string> = {
   [TransportStatus.UNLOADING]: "Descargando",
   [TransportStatus.UNLOADING_COMPLETED]: "Descarga Completada",
   [TransportStatus.DELIVERED]: "Entregado",
+  [TransportStatus.RETURNING_TO_PARKING]: "Retornando al Estacionamiento",
+  [TransportStatus.RETURNED_TO_PARKING]: "Retornado al Estacionamiento",
 };
 
 /**
@@ -164,7 +164,7 @@ export const useQuickStatusUpdate = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       orderId,
       status,
       notes,
@@ -172,13 +172,7 @@ export const useQuickStatusUpdate = () => {
       orderId: string;
       status: TransportStatus;
       notes?: string;
-    }) => {
-      const promises: Promise<unknown>[] = [quickStatusUpdate(orderId, status, notes)];
-      if (status === TransportStatus.DELIVERED) {
-        promises.push(updateOrderStatus(orderId, "DELIVERED"));
-      }
-      await Promise.all(promises);
-    },
+    }) => quickStatusUpdate(orderId, status, notes),
     onSuccess: (_, { orderId, status }) => {
       queryClient.invalidateQueries({ queryKey: ["order", orderId] });
       queryClient.invalidateQueries({ queryKey: ["order-status", orderId] });
