@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
+  Anchor,
   Grid,
   Paper,
   Text,
@@ -42,9 +43,13 @@ import {
 } from "@/lib/api/dashboard/dashboardApi";
 import { showNotification } from "@mantine/notifications";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
+import { useInvoiceBalance } from "@/lib/hooks/useInvoice";
 
 const Dashboard = () => {
   const isAdmin = useCanAccess(["ADMIN"]);
+  const currentClientId = 0; // TODO: replace with auth context clientId
+  const { data: balanceData } = useInvoiceBalance(isAdmin ? 0 : currentClientId);
+  const pendingBalance = balanceData?.data?.pending;
   const [stats, setStats] = useState<any>(null);
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);
   const [ordersByClient, setOrdersByClient] = useState<any[]>([]);
@@ -181,16 +186,26 @@ const Dashboard = () => {
 
   if (!isAdmin) {
     return (
-      <Center style={{ height: "60vh" }}>
-        <div style={{ textAlign: "center" }}>
-          <Text size="xl" fw={700} c="dimmed" mb="sm">
-            Acceso restringido
+      <div className="flex flex-col w-full grow p-4 sm:p-10">
+        <Breadcrumbs mb="md">
+          <span>Dashboard</span>
+        </Breadcrumbs>
+        <Title order={2} mb="lg">Dashboard</Title>
+        <Paper withBorder p="md" radius="md" style={{ maxWidth: 320 }}>
+          <Group justify="space-between" mb="xs">
+            <Text size="xs" c="dimmed" tt="uppercase">Saldo Pendiente</Text>
+            <ThemeIcon color="yellow" variant="light" size="sm">
+              <IconClock size={14} />
+            </ThemeIcon>
+          </Group>
+          <Text fw={700} size="xl" c="yellow">
+            {pendingBalance !== undefined ? `S/. ${Number(pendingBalance).toFixed(2)}` : "—"}
           </Text>
-          <Text size="sm" c="dimmed">
-            No tienes permisos para ver el dashboard.
-          </Text>
-        </div>
-      </Center>
+          <Anchor href="/balance" size="xs" mt="xs" display="block">
+            Ver mi balance →
+          </Anchor>
+        </Paper>
+      </div>
     );
   }
 
