@@ -6,7 +6,7 @@ import BalanceSummaryCards from "./components/BalanceSummaryCards";
 import ClientInvoiceTable from "./components/ClientInvoiceTable";
 
 const useCurrentClientId = (): number => {
-  // TODO: replace with real auth context — e.g. useUserStore(state => state.currentUser?.clientId)
+  // TODO: replace with real auth context — e.g. useAuth() from authStore
   return 5;
 };
 
