@@ -26,7 +26,7 @@ import { LinksGroup } from "./NavbarLinksGroup";
 import classes from "./NavbarNested.module.css";
 import { ROLES } from "@/lib/const/rbac";
 import { ProtectedElement } from "@/lib/utils/rbacUtils";
-import { useRBAC } from "@/lib/contexts/RBACContext";
+import { useAuth } from "@/lib/hooks/useAuth";
 import { logout } from "@/app/(login)/login/action";
 import { useRouter } from "next/navigation";
 import { NotificationMenu } from "@/app/(application)/notifications/components/NotificationMenu";
@@ -129,7 +129,7 @@ interface NavbarNestedProps {
 }
 
 export function NavbarNested({ opened = true, onClose }: NavbarNestedProps) {
-  const { user } = useRBAC();
+  const { user } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {

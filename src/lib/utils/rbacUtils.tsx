@@ -1,4 +1,4 @@
-import { useRBAC } from "@/lib/contexts/RBACContext";
+import { useAuth } from "@/lib/hooks/useAuth";
 import { Skeleton } from "@mantine/core";
 import { ReactNode } from "react";
 
@@ -25,9 +25,9 @@ export function ProtectedElement({
   requireAll = true,
   fallback = null,
 }: ProtectedElementProps) {
-  const { hasRole, hasAnyPermission, loading } = useRBAC();
+  const { hasRole, hasAnyPermission, isLoading } = useAuth();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Skeleton animate={false} height={8} mt={6} width="70%" radius="xl" />
     );
@@ -67,9 +67,9 @@ export function useCanAccess(
   requiredPermissions?: { resource: string; action: string }[],
   requireAll: boolean = true
 ): boolean {
-  const { hasRole, hasAnyPermission, loading } = useRBAC();
+  const { hasRole, hasAnyPermission, isLoading } = useAuth();
 
-  if (loading) return false;
+  if (isLoading) return false;
 
   let hasAccess = true;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { useRBAC } from "@/lib/contexts/RBACContext";
+import { useAuth } from "@/lib/hooks/useAuth";
 import { Title, Text, Button, Stack, Card, Skeleton } from "@mantine/core";
 import { IconLock } from "@tabler/icons-react";
 import Link from "next/link";
@@ -17,9 +17,9 @@ export function ProtectedPage({
   requiredRoles,
   requireAll = false,
 }: ProtectedPageProps) {
-  const { hasRole, loading, user } = useRBAC();
+  const { hasRole, isLoading, user } = useAuth();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col w-full grow p-10 gap-4">
         <Skeleton height={30} width="30%" radius="sm" />
