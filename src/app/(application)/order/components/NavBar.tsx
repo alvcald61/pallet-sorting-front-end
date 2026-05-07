@@ -11,6 +11,8 @@ import {
   IconClipboardText,
   IconLogout,
   IconCurrencyDollar,
+  IconFileInvoice,
+  IconWallet,
 } from "@tabler/icons-react";
 import {
   Group,
@@ -84,6 +86,18 @@ const mockdata = [
     icon: IconCurrencyDollar,
     link: "/pricing",
     roles: [ROLES.ADMIN],
+  },
+  {
+    label: "Facturas SUNAT",
+    icon: IconFileInvoice,
+    link: "/invoice",
+    roles: [ROLES.ADMIN],
+  },
+  {
+    label: "Mi Balance",
+    icon: IconWallet,
+    link: "/balance",
+    roles: [ROLES.CLIENT],
   },
 
   // {
