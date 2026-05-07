@@ -5,9 +5,11 @@ import { login } from "./action";
 import { useFormStatus } from "react-dom";
 import { IconAlertCircle, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import useAuthStore from "@/lib/store/authStore";
 
 export default function LoginForm() {
   const router = useRouter();
+  const setUser = useAuthStore((s) => s.setUser)
   const [state, formAction] = useActionState(login, undefined);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -16,10 +18,11 @@ export default function LoginForm() {
   const emailError = email && !isValidEmail(email);
 
   useEffect(() => {
-    if (state?.success) {
-      router.push("/");
+    if (state?.success && state.user) {
+      setUser(state.user)
+      router.push("/")
     }
-  }, [state, router]);
+  }, [state, router, setUser])
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
