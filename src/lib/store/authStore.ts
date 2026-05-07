@@ -21,7 +21,7 @@ const useAuthStore = create<AuthState & AuthActions>((set) => ({
   isAuthenticated: false,
   error: null,
   setUser: (user) => set({ user, isAuthenticated: true, error: null }),
-  clearAuth: () => set({ user: null, isAuthenticated: false, error: null }),
+  clearAuth: () => set({ user: null, isAuthenticated: false, isLoading: false, error: null }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
 }))
