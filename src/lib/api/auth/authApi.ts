@@ -7,7 +7,7 @@ const BASE_URL =
 
 export const getAuthToken = async (
   email: string,
-  password: string
+  password: string,
 ): Promise<LoginResponse> => {
   const res = await fetch(`${BASE_URL}/api/auth/login`, {
     method: "POST",
@@ -19,6 +19,7 @@ export const getAuthToken = async (
     const contentType = res.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       const errorData = await res.json();
+      console.log("Error response data:", BASE_URL);
       throw new Error(errorData.message || "Credenciales incorrectas");
     }
     throw new Error("Credenciales incorrectas");

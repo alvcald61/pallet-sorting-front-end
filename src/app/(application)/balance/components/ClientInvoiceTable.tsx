@@ -15,7 +15,8 @@ interface Props {
 export default function ClientInvoiceTable({ clientId }: Props) {
   const [page, setPage] = useState(1);
   const { data, isLoading } = useClientInvoices(clientId, page - 1, PAGE_SIZE);
-  const records = data?.data ?? [];
+  const records = data?.data.content ?? [];
+  console.log("Fetched invoices for client ID", clientId, ":", data);
   const pageInfo = data?.pageInfo ?? { totalElements: 0, totalPages: 0 };
 
   return (
@@ -34,7 +35,9 @@ export default function ClientInvoiceTable({ clientId }: Props) {
         {
           accessor: "status",
           title: "Estado",
-          render: (inv) => <InvoiceStatusBadge status={inv.status as InvoiceStatus} />,
+          render: (inv) => (
+            <InvoiceStatusBadge status={inv.status as InvoiceStatus} />
+          ),
         },
       ]}
       loading={isLoading}

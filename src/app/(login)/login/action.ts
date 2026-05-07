@@ -10,7 +10,10 @@ export interface LoginFormState {
   success?: boolean;
 }
 
-export async function login(prevState: LoginFormState | undefined, formData: FormData) {
+export async function login(
+  prevState: LoginFormState | undefined,
+  formData: FormData,
+) {
   try {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
@@ -30,6 +33,7 @@ export async function login(prevState: LoginFormState | undefined, formData: For
 
     // Obtener el token
     const authResponse = await getAuthToken(email, password);
+    console.log("Auth response:", authResponse);
 
     // Guardar el token en la cookie
     (await cookies()).set("session", authResponse.accessToken, {

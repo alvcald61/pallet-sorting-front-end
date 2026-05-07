@@ -7,11 +7,12 @@ import ClientInvoiceTable from "./components/ClientInvoiceTable";
 
 const useCurrentClientId = (): number => {
   // TODO: replace with real auth context — e.g. useUserStore(state => state.currentUser?.clientId)
-  return 0;
+  return 5;
 };
 
 const BalancePage = () => {
   const clientId = useCurrentClientId();
+  console.log("Current client ID:", clientId);
   const { data: balanceData, isLoading } = useInvoiceBalance(clientId);
   const balance = balanceData?.data;
 
@@ -22,7 +23,9 @@ const BalancePage = () => {
         <span>Mi Balance</span>
       </Breadcrumbs>
 
-      <Title order={2} mb="lg">Mi Balance</Title>
+      <Title order={2} mb="lg">
+        Mi Balance
+      </Title>
 
       <BalanceSummaryCards balance={balance} isLoading={isLoading} />
       {clientId > 0 && <ClientInvoiceTable clientId={clientId} />}
