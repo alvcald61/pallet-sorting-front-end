@@ -7,7 +7,7 @@ import ClientInvoiceTable from "./components/ClientInvoiceTable";
 
 const useCurrentClientId = (): number => {
   // TODO: replace with real auth context — e.g. useUserStore(state => state.currentUser?.clientId)
-  return 5;
+  return 1;
 };
 
 const BalancePage = () => {

@@ -17,7 +17,7 @@ export default function InvoiceTable() {
   const [filters, setFilters] = useState<InvoiceFilters>({});
 
   const { data, isLoading } = useInvoices(page - 1, PAGE_SIZE, filters);
-  const records = data?.data ?? [];
+  const records = data?.data.content ?? [];
   const pageInfo = data?.pageInfo ?? { totalElements: 0, totalPages: 0 };
 
   const hasFilters = Object.values(filters).some(Boolean);
