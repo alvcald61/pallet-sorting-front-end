@@ -1,5 +1,13 @@
 export interface LoginResponse {
+  id: string;
   accessToken: string;
+  refreshToken: string;
+  tokenType: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  roles: string[];
+  permissions: Permission[];
 }
 
 export interface Role {

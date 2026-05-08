@@ -3,7 +3,7 @@ import { NavbarNested } from "@/app/(application)/order/components/NavBar";
 import { ReactNode, useState, useEffect } from "react";
 import { ActionIcon, Burger } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { useRBAC } from "@/lib/contexts/RBACContext";
+import { useAuth } from "@/lib/hooks/useAuth";
 import { useOneSignalListeners } from "@/lib/hooks/useOneSignalListeners";
 import OneSignal from "react-onesignal";
 
@@ -14,7 +14,7 @@ interface BaseLayoutProps {
 export const BaseLayout = ({ children }: BaseLayoutProps) => {
   const isDesktop = useMediaQuery("(min-width: 1024px)", true);
   const [opened, { toggle, close, open }] = useDisclosure(false);
-  const { user } = useRBAC();
+  const { user } = useAuth();
   const [oneSignalInitialized, setOneSignalInitialized] = useState(false);
 
   // Initialize OneSignal when user is available

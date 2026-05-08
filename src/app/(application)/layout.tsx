@@ -16,7 +16,7 @@ import {
 import { theme } from "./theme";
 // import "style.css"
 import "./styles.css";
-import { RBACProvider } from "@/lib/contexts/RBACContext";
+import { AuthProvider } from "@/lib/contexts/RBACContext";
 import { BaseLayout } from "@/components/layouts/BaseLayout";
 import { ReactQueryProvider } from "@/lib/providers/ReactQueryProvider";
 import { Notifications } from "@mantine/notifications";
@@ -53,9 +53,9 @@ export default function RootLayout({
           >
             <Notifications position="top-right" />
             <ModalsProvider>
-              <RBACProvider>
+              <AuthProvider>
                 <BaseLayout>{children}</BaseLayout>
-              </RBACProvider>
+              </AuthProvider>
             </ModalsProvider>
           </MantineProvider>
         </ReactQueryProvider>
