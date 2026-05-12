@@ -2,18 +2,14 @@
 
 import { Anchor, Breadcrumbs, Title } from "@mantine/core";
 import { useInvoiceBalance } from "@/lib/hooks/useInvoice";
+import { useAuth } from "@/lib/hooks/useAuth";
 import BalanceSummaryCards from "./components/BalanceSummaryCards";
 import ClientInvoiceTable from "./components/ClientInvoiceTable";
 
-const useCurrentClientId = (): number => {
-  // TODO: replace with real auth context — e.g. useUserStore(state => state.currentUser?.clientId)
-  return 5;
-};
-
 const BalancePage = () => {
-  const clientId = useCurrentClientId();
-  console.log("Current client ID:", clientId);
-  const { data: balanceData, isLoading } = useInvoiceBalance(clientId);
+  const { user } = useAuth();
+  const userId = user ? parseInt(user.id, 10) : 0;
+  const { data: balanceData, isLoading } = useInvoiceBalance(userId);
   const balance = balanceData?.data;
 
   return (
@@ -28,7 +24,7 @@ const BalancePage = () => {
       </Title>
 
       <BalanceSummaryCards balance={balance} isLoading={isLoading} />
-      {clientId > 0 && <ClientInvoiceTable clientId={clientId} />}
+      {userId > 0 && <ClientInvoiceTable userId={userId} />}
     </div>
   );
 };

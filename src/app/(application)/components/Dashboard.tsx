@@ -44,11 +44,13 @@ import {
 import { showNotification } from "@mantine/notifications";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
 import { useInvoiceBalance } from "@/lib/hooks/useInvoice";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 const Dashboard = () => {
   const isAdmin = useCanAccess(["ADMIN"]);
-  const currentClientId = 0; // TODO: replace with auth context clientId
-  const { data: balanceData } = useInvoiceBalance(isAdmin ? 0 : currentClientId);
+  const { user } = useAuth();
+  const currentUserId = user ? parseInt(user.id, 10) : 0;
+  const { data: balanceData } = useInvoiceBalance(isAdmin ? 0 : currentUserId);
   const pendingBalance = balanceData?.data?.pending;
   const [stats, setStats] = useState<any>(null);
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);

@@ -20,7 +20,7 @@ const InvoiceDetailPage = () => {
 
   const invoice = data?.data;
   const isPaid = invoice?.status === InvoiceStatus.PAID;
-  const isUnassigned = !invoice?.clientId;
+  const isUnassigned = !invoice?.userId;
 
   if (isLoading) return <div className="p-10"><Skeleton height={200} /></div>;
   if (!invoice) return null;

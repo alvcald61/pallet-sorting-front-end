@@ -63,7 +63,7 @@ export default function InvoiceTable() {
             accessor: "status",
             title: "Estado",
             render: (inv) => (
-              <InvoiceStatusBadge status={inv.clientId ? inv.status : null} />
+              <InvoiceStatusBadge status={inv.userId ? inv.status : null} />
             ),
           },
         ]}

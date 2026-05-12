@@ -91,10 +91,10 @@ export default async ({ params }: PageParams) => {
             <TruckAndDriverCard truck={order.truck} driver={order.driver} />
             {(order.orderStatus === OrderStatus.APPROVED ||
               order.orderStatus === OrderStatus.DOCUMENT_PENDING) &&
-              order.clientId && (
+              order.userId && (
                 <DispatcherAssignment
                   orderId={order.id}
-                  clientId={order.clientId}
+                  userId={order.userId}
                   currentDispatcher={order.dispatcher}
                 />
               )}

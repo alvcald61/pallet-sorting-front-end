@@ -24,13 +24,13 @@ import {
 
 interface DispatcherAssignmentProps {
   orderId: string;
-  clientId: number;
+  userId: number;
   currentDispatcher?: Dispatcher;
 }
 
 export default function DispatcherAssignment({
   orderId,
-  clientId,
+  userId,
   currentDispatcher,
 }: DispatcherAssignmentProps) {
   const router = useRouter();
@@ -43,8 +43,8 @@ export default function DispatcherAssignment({
   >(currentDispatcher ? String(currentDispatcher.id) : null);
 
   const { data: dispatchersData, isLoading } = useQuery({
-    queryKey: ["dispatchers", clientId],
-    queryFn: () => getDispatchersByClient(clientId),
+    queryKey: ["dispatchers", userId],
+    queryFn: () => getDispatchersByClient(userId),
   });
 
   const dispatchers = dispatchersData?.data ?? [];
@@ -70,7 +70,7 @@ export default function DispatcherAssignment({
   const createMutation = useMutation({
     mutationFn: createDispatcher,
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ["dispatchers", clientId] });
+      queryClient.invalidateQueries({ queryKey: ["dispatchers", userId] });
       closeModal();
       form.reset();
       // Auto-assign the new dispatcher
@@ -111,7 +111,7 @@ export default function DispatcherAssignment({
     lastName: string;
     phone: string;
   }) => {
-    createMutation.mutate({ ...values, clientId });
+    createMutation.mutate({ ...values, userId });
   };
 
   return (

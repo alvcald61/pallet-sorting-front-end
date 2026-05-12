@@ -13,7 +13,7 @@ export default function InvoiceDetailCard({ invoice }: Props) {
     <Card withBorder radius="md" p="lg" mb="lg">
       <Group justify="space-between" mb="md">
         <Title order={3}>{invoice.invoiceNumber}</Title>
-        <InvoiceStatusBadge status={invoice.clientId ? invoice.status : null} />
+        <InvoiceStatusBadge status={invoice.userId ? invoice.status : null} />
       </Group>
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
         <div>

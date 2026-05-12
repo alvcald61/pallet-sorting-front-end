@@ -9,14 +9,13 @@ import { InvoiceStatus } from "@/lib/types/invoiceTypes";
 const PAGE_SIZE = 10;
 
 interface Props {
-  clientId: number;
+  userId: number;
 }
 
-export default function ClientInvoiceTable({ clientId }: Props) {
+export default function ClientInvoiceTable({ userId }: Props) {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useClientInvoices(clientId, page - 1, PAGE_SIZE);
+  const { data, isLoading } = useClientInvoices(userId, page - 1, PAGE_SIZE);
   const records = data?.data.content ?? [];
-  console.log("Fetched invoices for client ID", clientId, ":", data);
   const pageInfo = data?.pageInfo ?? { totalElements: 0, totalPages: 0 };
 
   return (
