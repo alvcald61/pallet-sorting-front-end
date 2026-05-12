@@ -17,7 +17,7 @@ import { ConditionsTab } from "./components/ConditionsTab";
 
 export default function PricingPage() {
   const isAdmin = useCanAccess(["ADMIN"]);
-  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const { data: clientsData } = useQuery({
     queryKey: ["clients"],
@@ -53,11 +53,11 @@ export default function PricingPage() {
         label="Cliente"
         placeholder="Todos los clientes"
         data={(clientsData?.data ?? []).map((c) => ({
-          value: String(c.id),
+          value: c.userId ? String(c.userId) : "",
           label: c.businessName,
         }))}
-        value={selectedClientId}
-        onChange={setSelectedClientId}
+        value={selectedUserId}
+        onChange={setSelectedUserId}
         clearable
         searchable
         mb="md"
@@ -81,7 +81,7 @@ export default function PricingPage() {
         </Tabs.List>
 
         <Tabs.Panel value="prices">
-          <PricesTab clientId={selectedClientId ? Number(selectedClientId) : null} />
+          <PricesTab userId={selectedUserId ? Number(selectedUserId) : null} />
         </Tabs.Panel>
 
         <Tabs.Panel value="zones">

@@ -22,17 +22,17 @@ import {
 } from "@/lib/api/pricing/priceApi";
 
 interface PricesTabProps {
-  clientId: number | null;
+  userId: number | null;
 }
 
-export function PricesTab({ clientId }: PricesTabProps) {
+export function PricesTab({ userId }: PricesTabProps) {
   const queryClient = useQueryClient();
   const [opened, { open, close }] = useDisclosure(false);
   const [editingPrice, setEditingPrice] = useState<Price | undefined>();
 
   const { data: pricesData, isLoading: loadingPrices } = useQuery({
-    queryKey: ["prices", clientId],
-    queryFn: () => getPrices(clientId),
+    queryKey: ["prices", userId],
+    queryFn: () => getPrices(userId),
   });
 
   const { data: zonesData } = useQuery({
@@ -71,7 +71,7 @@ export function PricesTab({ clientId }: PricesTabProps) {
         zone: { id: number };
         priceCondition: { priceConditionId: number };
         price: number;
-        clientId?: number | null;
+        userId?: number | null;
       };
     }) => updatePrice(id, data),
     onSuccess: () => {
@@ -110,7 +110,7 @@ export function PricesTab({ clientId }: PricesTabProps) {
     zone: { id: number };
     priceCondition: { priceConditionId: number };
     price: number;
-    clientId?: number | null;
+    userId?: number | null;
   }) => {
     if (editingPrice) {
       await updateMutation.mutateAsync({ id: editingPrice.priceId, data });
@@ -200,7 +200,7 @@ export function PricesTab({ clientId }: PricesTabProps) {
         );
       },
     },
-    ...(!clientId
+    ...(!userId
       ? [
           {
             accessor: "clientBusinessName",
@@ -275,7 +275,7 @@ export function PricesTab({ clientId }: PricesTabProps) {
         conditions={conditions}
         initialValues={editingPrice}
         loading={isSubmitting}
-        clientId={clientId}
+        userId={userId}
       />
 
       <EnhancedDataTable

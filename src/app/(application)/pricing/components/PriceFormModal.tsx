@@ -26,13 +26,13 @@ interface PriceFormModalProps {
     zone: { id: number };
     priceCondition: { priceConditionId: number };
     price: number;
-    clientId?: number | null;
+    userId?: number | null;
   }) => Promise<void>;
   zones: Zone[];
   conditions: PriceCondition[];
   initialValues?: Price;
   loading?: boolean;
-  clientId?: number | null;
+  userId?: number | null;
 }
 
 function formatConditionLabel(c: PriceCondition): string {
@@ -50,7 +50,7 @@ export function PriceFormModal({
   conditions,
   initialValues,
   loading = false,
-  clientId,
+  userId,
 }: PriceFormModalProps) {
   const isEdit = !!initialValues;
 
@@ -86,7 +86,7 @@ export function PriceFormModal({
       zone: { id: Number(values.zoneId) },
       priceCondition: { priceConditionId: Number(values.priceConditionId) },
       price: values.price,
-      clientId: clientId,
+      userId: userId,
     });
     form.reset();
   };
