@@ -24,18 +24,18 @@ export const useInvoice = (id: string) =>
     enabled: !!id,
   });
 
-export const useClientInvoices = (clientId: number, page: number, pageSize: number) =>
+export const useClientInvoices = (userId: number, page: number, pageSize: number) =>
   useQuery({
-    queryKey: ["client-invoices", clientId, page, pageSize],
-    queryFn: () => getClientInvoices(clientId, page, pageSize),
-    enabled: !!clientId,
+    queryKey: ["client-invoices", userId, page, pageSize],
+    queryFn: () => getClientInvoices(userId, page, pageSize),
+    enabled: !!userId,
   });
 
-export const useInvoiceBalance = (clientId: number) =>
+export const useInvoiceBalance = (userId: number) =>
   useQuery({
-    queryKey: ["invoice-balance", clientId],
-    queryFn: () => getBalance(clientId),
-    enabled: !!clientId,
+    queryKey: ["invoice-balance", userId],
+    queryFn: () => getBalance(userId),
+    enabled: !!userId,
   });
 
 export const useUploadInvoices = () => {
@@ -67,7 +67,7 @@ export const usePayInvoice = (invoiceId: number) => {
 export const useAssignClient = (invoiceId: number) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (clientId: number) => assignClient(invoiceId, clientId),
+    mutationFn: (userId: number) => assignClient(invoiceId, userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["invoice", String(invoiceId)] });
       queryClient.invalidateQueries({ queryKey: ["invoices"] });
