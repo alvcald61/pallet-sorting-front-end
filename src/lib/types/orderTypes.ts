@@ -31,7 +31,7 @@ export interface Order {
   transportStatus?: TransportStatus;
   sunatDocumentPath?: string;
   dispatcher?: Dispatcher;
-  clientId?: number;
+  userId?: number;
 }
 
 export interface Dispatcher {
@@ -39,7 +39,7 @@ export interface Dispatcher {
   firstName: string;
   lastName: string;
   phone: string;
-  clientId: number;
+  userId: number;
 }
 
 export interface Document {

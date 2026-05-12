@@ -21,7 +21,7 @@ export interface Invoice {
   igv: number;
   total: number;
   status: InvoiceStatus;
-  clientId: number | null;
+  userId: number | null;
   clientBusinessName: string | null;
   paidAt: string | null;
   evidenceFiles?: PaymentEvidence[];
@@ -51,7 +51,7 @@ export interface InvoiceBalance {
 
 export interface InvoiceFilters {
   status?: InvoiceStatus;
-  clientId?: number;
+  userId?: number;
   dateFrom?: string;
   dateTo?: string;
 }
