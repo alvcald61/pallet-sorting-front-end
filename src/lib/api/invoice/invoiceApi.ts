@@ -34,7 +34,7 @@ export const getInvoices = async (
   params.append("page", String(page));
   params.append("size", String(pageSize));
   if (filters?.status) params.append("status", filters.status);
-  if (filters?.clientId) params.append("clientId", String(filters.clientId));
+  if (filters?.userId) params.append("userId", String(filters.userId));
   if (filters?.dateFrom) params.append("dateFrom", filters.dateFrom);
   if (filters?.dateTo) params.append("dateTo", filters.dateTo);
   return get<PaginatedInvoices>(`/invoice?${params.toString()}`);
@@ -46,9 +46,9 @@ export const getInvoiceById = async (id: string): Promise<Wrapper<Invoice>> => {
 
 export const assignClient = async (
   invoiceId: number,
-  clientId: number,
+  userId: number,
 ): Promise<void> => {
-  return patch<void>(`/invoice/${invoiceId}/client?clientId=${clientId}`);
+  return patch<void>(`/invoice/${invoiceId}/client?userId=${userId}`);
 };
 
 export const payInvoice = async (
@@ -61,13 +61,13 @@ export const payInvoice = async (
 };
 
 export const getBalance = async (
-  clientId: number,
+  userId: number,
 ): Promise<Wrapper<InvoiceBalance>> => {
-  return get<Wrapper<InvoiceBalance>>(`/invoice/balance/${clientId}`);
+  return get<Wrapper<InvoiceBalance>>(`/invoice/balance/${userId}`);
 };
 
 export const getClientInvoices = async (
-  clientId: number,
+  userId: number,
   page: number,
   pageSize: number,
 ): Promise<PaginatedInvoices> => {
@@ -75,6 +75,6 @@ export const getClientInvoices = async (
   params.append("page", String(page));
   params.append("size", String(pageSize));
   return get<PaginatedInvoices>(
-    `/invoice/client/${clientId}?${params.toString()}`,
+    `/invoice/client/${userId}?${params.toString()}`,
   );
 };

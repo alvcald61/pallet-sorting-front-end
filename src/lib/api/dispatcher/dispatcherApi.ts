@@ -10,16 +10,16 @@ interface ApiResponse<T> {
 }
 
 export const getDispatchersByClient = async (
-  clientId: number
+  userId: number
 ): Promise<ApiResponse<Dispatcher[]>> => {
-  return get<ApiResponse<Dispatcher[]>>(`dispatcher?clientId=${clientId}`);
+  return get<ApiResponse<Dispatcher[]>>(`dispatcher?userId=${userId}`);
 };
 
 export const createDispatcher = async (data: {
   firstName: string;
   lastName: string;
   phone: string;
-  clientId: number;
+  userId: number;
 }): Promise<ApiResponse<Dispatcher>> => {
   return post<ApiResponse<Dispatcher>>("dispatcher", data);
 };
