@@ -25,12 +25,21 @@ const InvoicePage = () => {
       if (filters.dateTo)   params.append("dateTo",   filters.dateTo);
       const query = params.toString();
       const url = `/api/invoice/report${query ? `?${query}` : ""}`;
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = url;
+      link.href = blobUrl;
       link.download = "reporte-facturas.xlsx";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
     } catch {
       notifications.show({
         color: "red",
