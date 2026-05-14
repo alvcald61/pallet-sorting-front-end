@@ -13,6 +13,7 @@ import {
   MantineProvider,
   mantineHtmlProps,
 } from "@mantine/core";
+import { DatesProvider } from "@mantine/dates";
 import { theme } from "./theme";
 // import "style.css"
 import "./styles.css";
@@ -52,11 +53,13 @@ export default function RootLayout({
             theme={theme}
           >
             <Notifications position="top-right" />
-            <ModalsProvider>
-              <AuthProvider>
-                <BaseLayout>{children}</BaseLayout>
-              </AuthProvider>
-            </ModalsProvider>
+            <DatesProvider settings={{}}>
+              <ModalsProvider>
+                <AuthProvider>
+                  <BaseLayout>{children}</BaseLayout>
+                </AuthProvider>
+              </ModalsProvider>
+            </DatesProvider>
           </MantineProvider>
         </ReactQueryProvider>
       </body>
