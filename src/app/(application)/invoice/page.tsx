@@ -9,13 +9,12 @@ import InvoiceTable from "./components/InvoiceTable";
 import InvoiceUploadModal from "./components/InvoiceUploadModal";
 import { InvoiceFilters } from "@/lib/types/invoiceTypes";
 import { useCanAccess } from "@/lib/utils/rbacUtils";
-import { PERMISSIONS } from "@/lib/const/rbac";
 
 const InvoicePage = () => {
   const [uploadOpened, { open, close }] = useDisclosure(false);
   const [filters, setFilters] = useState<InvoiceFilters>({});
   const [isDownloading, setIsDownloading] = useState(false);
-  const canExportReports = useCanAccess(undefined, [PERMISSIONS.REPORTS.EXPORT]);
+  const canExportReports = useCanAccess(["ADMIN"]);
 
   const handleDownloadReport = async () => {
     setIsDownloading(true);
